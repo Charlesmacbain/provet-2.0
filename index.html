@@ -488,13 +488,11 @@
     .search-overlay.open { display: flex; }
 
     .search-modal {
-      width: 540px;
-      max-width: 90vw;
-      background: #fff;
-      border-radius: 10px;
+      width: 780px; max-width: 90vw;
+      background: #fff; border-radius: 12px;
       box-shadow: 0 16px 60px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.06);
-      overflow: hidden;
-      animation: searchIn 0.15s ease;
+      overflow: hidden; animation: searchIn 0.15s ease;
+      display: flex; flex-direction: column; max-height: 520px;
     }
     @keyframes searchIn {
       from { opacity: 0; transform: translateY(-6px) scale(0.98); }
@@ -502,11 +500,9 @@
     }
 
     .search-input-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 14px;
-      border-bottom: 1px solid #eee;
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,0.06);
+      flex-shrink: 0;
     }
     .search-input-row .s-icon { width: 16px; height: 16px; color: rgba(0,0,0,0.35); flex-shrink: 0; }
     .search-input-row .s-icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
@@ -515,28 +511,123 @@
       color: #222; background: transparent;
     }
     .search-input-row input::placeholder { color: rgba(0,0,0,0.3); }
-    .search-esc {
+    .search-ask-ai {
+      font-size: 12px; color: rgba(0,0,0,0.35); flex-shrink: 0;
+      display: flex; align-items: center; gap: 4px; cursor: pointer;
+    }
+    .search-ask-ai:hover { color: rgba(0,0,0,0.6); }
+    .search-ask-ai .kbd {
       font-size: 10px; font-family: 'SF Mono', 'Fira Code', monospace;
-      color: rgba(0,0,0,0.3); background: rgba(0,0,0,0.05);
-      padding: 2px 5px; border-radius: 3px; flex-shrink: 0;
+      color: rgba(0,0,0,0.25); background: rgba(0,0,0,0.04);
+      padding: 1px 4px; border-radius: 3px;
     }
 
-    .search-body { padding: 6px; max-height: 340px; overflow-y: auto; }
+    .search-panels { display: flex; flex: 1; min-height: 0; overflow: hidden; }
 
+    /* Left: results list */
+    .search-list {
+      width: 55%; border-right: 1px solid rgba(0,0,0,0.06);
+      overflow-y: auto; padding: 6px;
+    }
     .search-section-label {
       font-size: 10px; font-weight: 600; color: rgba(0,0,0,0.35);
-      text-transform: uppercase; letter-spacing: 0.4px; padding: 6px 8px 3px;
+      text-transform: uppercase; letter-spacing: 0.4px; padding: 8px 8px 4px;
     }
-
     .search-result {
       display: flex; align-items: center; gap: 8px;
-      padding: 6px 8px; border-radius: 5px; cursor: pointer;
+      padding: 7px 8px; border-radius: 6px; cursor: pointer;
       font-size: 13px; color: rgba(0,0,0,0.7); transition: background 0.08s;
     }
     .search-result:hover, .search-result.focused { background: rgba(0,0,0,0.04); }
+    .search-result .r-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .search-result .r-name { font-weight: 500; color: #222; }
+    .search-result .r-sub { font-size: 12px; color: rgba(0,0,0,0.35); margin-left: 4px; }
+    .search-result .r-badge {
+      margin-left: auto; font-size: 10px; font-weight: 600; padding: 2px 8px;
+      border-radius: 4px; flex-shrink: 0;
+    }
+    .search-result .r-badge.client { background: rgba(94,106,210,0.08); color: #5e6ad2; }
+    .search-result .r-badge.patient { background: rgba(87,171,90,0.08); color: #57ab5a; }
     .search-result .r-icon { width: 16px; height: 16px; color: rgba(0,0,0,0.35); flex-shrink: 0; }
     .search-result .r-icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
-    .search-result .r-hint { font-size: 11px; color: rgba(0,0,0,0.25); margin-left: auto; }
+
+    /* Right: preview */
+    .search-preview {
+      width: 45%; overflow-y: auto; padding: 16px 20px;
+    }
+    .search-preview-empty {
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      color: rgba(0,0,0,0.2); font-size: 12px;
+    }
+    .search-preview-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+    }
+    .search-preview-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .search-preview-name { font-size: 15px; font-weight: 700; color: #222; }
+    .search-preview-badge {
+      font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+      margin-left: 4px;
+    }
+    .search-preview-section {
+      font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.35);
+      margin-bottom: 10px; margin-top: 16px;
+    }
+    .search-preview-field {
+      display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;
+    }
+    .search-preview-field .spf-icon {
+      width: 16px; height: 16px; color: rgba(0,0,0,0.25); flex-shrink: 0; margin-top: 1px;
+    }
+    .search-preview-field .spf-icon svg { width: 16px; height: 16px; stroke-width: 1.7; }
+    .search-preview-field .spf-value { font-size: 13px; color: #222; line-height: 1.4; }
+    .search-preview-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .search-preview-tag {
+      font-size: 11px; padding: 2px 8px; border-radius: 4px;
+      background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55);
+    }
+
+    /* Bottom bar */
+    .search-footer {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 16px; border-top: 1px solid rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+    .search-footer-nav {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 11px; color: rgba(0,0,0,0.3);
+    }
+    .search-footer-nav .key {
+      width: 20px; height: 20px; border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center;
+      justify-content: center; font-size: 11px; color: rgba(0,0,0,0.35);
+    }
+    .search-footer-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .search-footer-actions {
+      font-size: 12px; color: rgba(0,0,0,0.35);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .search-footer-actions .kbd {
+      font-size: 10px; font-family: 'SF Mono', monospace;
+      color: rgba(0,0,0,0.25); background: rgba(0,0,0,0.04);
+      padding: 1px 4px; border-radius: 3px;
+    }
+    .search-open-btn {
+      padding: 6px 14px; border-radius: 6px; border: none;
+      background: #5e6ad2; color: #fff; font-size: 12px; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .search-open-btn:hover { background: #4f5bc4; }
+    .search-open-btn .kbd { font-size: 11px; color: rgba(255,255,255,0.5); }
+
     .search-empty { padding: 20px; text-align: center; font-size: 13px; color: rgba(0,0,0,0.3); }
 
     /* ═══ Content area ═══ */
@@ -656,45 +747,26 @@
 
     .inbox-detail { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-    /* Patient header bar */
-    .inbox-patient-bar {
+    /* Detail header — aligned to page-topbar height (44px) */
+    .inbox-detail-header {
       display: flex; align-items: center; gap: 10px;
-      padding: 10px 20px; background: #2d3250; flex-shrink: 0;
-      color: #fff; min-height: 52px;
+      padding: 0 20px; border-bottom: 1px solid rgba(0,0,0,0.06);
+      flex-shrink: 0; min-height: 44px;
     }
-    .inbox-patient-bar-avatar {
-      width: 34px; height: 34px; border-radius: 50%;
+    .inbox-detail-avatar {
+      width: 26px; height: 26px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
-      background: rgba(255,255,255,0.15);
+      font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0;
     }
-    .inbox-patient-bar-info { flex: 1; min-width: 0; }
-    .inbox-patient-bar-names {
-      font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px;
-    }
-    .inbox-patient-bar-names .client-name { color: rgba(255,255,255,0.7); font-weight: 400; }
-    .inbox-patient-bar-names .sep { color: rgba(255,255,255,0.3); }
-    .inbox-patient-bar-names .pet-name { color: #fff; font-weight: 700; }
-    .inbox-patient-bar-meta {
-      font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .inbox-patient-bar-meta span { margin-right: 4px; }
-    .inbox-patient-bar-meta .dot { color: rgba(255,255,255,0.2); }
-    .inbox-patient-bar-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .inbox-patient-bar-actions button {
-      padding: 5px 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.15);
-      background: none; color: rgba(255,255,255,0.75); font-size: 11px; font-weight: 500;
-      cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 4px;
-    }
-    .inbox-patient-bar-actions button:hover { background: rgba(255,255,255,0.08); color: #fff; }
-    .inbox-patient-bar-actions button svg { width: 13px; height: 13px; stroke-width: 2; }
+    .inbox-detail-title { font-size: 14px; font-weight: 600; color: #222; }
+    .inbox-detail-time { font-size: 11px; color: rgba(0,0,0,0.3); margin-left: auto; }
 
     /* Detail tabs */
     .inbox-detail-tabs {
       display: flex; gap: 0; padding: 0 20px; border-bottom: 1px solid rgba(0,0,0,0.06);
-      flex-shrink: 0; background: #fff;
+      flex-shrink: 0; background: #fff; overflow-x: auto; scrollbar-width: none;
     }
+    .inbox-detail-tabs::-webkit-scrollbar { display: none; }
     .inbox-detail-tab {
       padding: 10px 14px; font-size: 12px; font-weight: 500; color: rgba(0,0,0,0.4);
       cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.1s;
@@ -785,31 +857,214 @@
     }
     .inbox-action-btn.danger:hover { background: rgba(229,83,75,0.04); }
 
+    /* ═══ Tab content panels ═══ */
+    .tab-section { margin-bottom: 20px; }
+    .tab-section-title {
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      color: rgba(0,0,0,0.3); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .tab-section-title i { width: 12px; height: 12px; stroke-width: 2; }
+
+    .tab-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .tab-table th {
+      text-align: left; padding: 6px 10px; font-weight: 600; font-size: 11px;
+      color: rgba(0,0,0,0.4); border-bottom: 1px solid rgba(0,0,0,0.08);
+      text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap;
+    }
+    .tab-table td {
+      padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); color: #333;
+      vertical-align: top;
+    }
+    .tab-table tr:last-child td { border-bottom: none; }
+    .tab-table tr:hover td { background: rgba(0,0,0,0.015); }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500;
+    }
+    .status-pill.active { background: rgba(87,171,90,0.1); color: #2d8a3e; }
+    .status-pill.completed { background: rgba(94,106,210,0.08); color: #5e6ad2; }
+    .status-pill.pending { background: rgba(207,142,62,0.1); color: #a06b1f; }
+    .status-pill.overdue { background: rgba(229,83,75,0.08); color: #e5534b; }
+    .status-pill.normal { background: rgba(87,171,90,0.1); color: #2d8a3e; }
+    .status-pill.abnormal { background: rgba(229,83,75,0.08); color: #e5534b; }
+    .status-pill.due { background: rgba(207,142,62,0.1); color: #a06b1f; }
+    .status-pill.paid { background: rgba(87,171,90,0.1); color: #2d8a3e; }
+    .status-pill.unpaid { background: rgba(229,83,75,0.08); color: #e5534b; }
+    .status-pill.draft { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.45); }
+    .status-pill.high { background: rgba(229,83,75,0.08); color: #e5534b; }
+    .status-pill.medium { background: rgba(207,142,62,0.1); color: #a06b1f; }
+    .status-pill.low { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.45); }
+    .status-pill.dot::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+    }
+
+    .chart-timeline { position: relative; padding-left: 20px; }
+    .chart-entry {
+      position: relative; padding: 10px 14px; margin-bottom: 4px;
+      border-radius: 6px; background: rgba(0,0,0,0.02);
+      border-left: 3px solid rgba(0,0,0,0.06);
+    }
+    .chart-entry:hover { background: rgba(0,0,0,0.03); }
+    .chart-entry .entry-date { font-size: 10px; color: rgba(0,0,0,0.3); font-weight: 600; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .chart-entry .entry-title { font-size: 13px; font-weight: 600; color: #222; margin-bottom: 2px; }
+    .chart-entry .entry-note { font-size: 12px; color: rgba(0,0,0,0.5); line-height: 1.5; }
+    .chart-entry .entry-vet { font-size: 11px; color: rgba(0,0,0,0.3); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+    .chart-entry .entry-vet i { width: 11px; height: 11px; stroke-width: 2; }
+    .chart-entry.consultation { border-left-color: #5e6ad2; }
+    .chart-entry.vaccination { border-left-color: #57ab5a; }
+    .chart-entry.surgery { border-left-color: #c14c8a; }
+    .chart-entry.lab { border-left-color: #cf8e3e; }
+    .chart-entry.followup { border-left-color: #986ee2; }
+    .chart-entry.emergency { border-left-color: #e5534b; }
+
+    .vitals-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px;
+    }
+    .vital-card {
+      padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06); background: #fff;
+    }
+    .vital-label { font-size: 10px; color: rgba(0,0,0,0.35); text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; margin-bottom: 2px; }
+    .vital-value { font-size: 18px; font-weight: 700; color: #222; letter-spacing: -0.02em; }
+    .vital-unit { font-size: 11px; font-weight: 400; color: rgba(0,0,0,0.35); margin-left: 2px; }
+    .vital-note { font-size: 10px; color: rgba(0,0,0,0.3); margin-top: 2px; }
+
+    .msg-item {
+      display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .msg-item:last-child { border-bottom: none; }
+    .msg-avatar {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #fff;
+    }
+    .msg-body { flex: 1; min-width: 0; }
+    .msg-header { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+    .msg-sender { font-size: 12px; font-weight: 600; color: #222; }
+    .msg-channel { font-size: 10px; color: rgba(0,0,0,0.3); background: rgba(0,0,0,0.04); padding: 1px 5px; border-radius: 3px; }
+    .msg-time-sm { font-size: 10px; color: rgba(0,0,0,0.25); margin-left: auto; }
+    .msg-text { font-size: 12px; color: rgba(0,0,0,0.55); line-height: 1.5; }
+
+    .task-item {
+      display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px;
+      border-radius: 6px; margin-bottom: 2px; cursor: default;
+    }
+    .task-item:hover { background: rgba(0,0,0,0.02); }
+    .task-check {
+      width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid rgba(0,0,0,0.2);
+      flex-shrink: 0; margin-top: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .task-check.done { background: #5e6ad2; border-color: #5e6ad2; }
+    .task-check.done::after { content: '✓'; color: #fff; font-size: 10px; font-weight: 700; }
+    .task-body { flex: 1; }
+    .task-title { font-size: 13px; color: #222; }
+    .task-item.done .task-title { text-decoration: line-through; color: rgba(0,0,0,0.3); }
+    .task-meta { font-size: 11px; color: rgba(0,0,0,0.3); margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+    .task-meta i { width: 11px; height: 11px; stroke-width: 2; }
+    .task-priority { margin-left: auto; }
+
+    .form-item {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+      border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; margin-bottom: 6px;
+      cursor: pointer; transition: border-color 0.1s, background 0.1s;
+    }
+    .form-item:hover { background: rgba(0,0,0,0.015); border-color: rgba(0,0,0,0.1); }
+    .form-icon {
+      width: 32px; height: 32px; border-radius: 6px; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .form-icon i { width: 16px; height: 16px; stroke-width: 1.8; }
+    .form-icon.blue { background: rgba(94,106,210,0.08); color: #5e6ad2; }
+    .form-icon.green { background: rgba(87,171,90,0.08); color: #57ab5a; }
+    .form-icon.orange { background: rgba(207,142,62,0.08); color: #cf8e3e; }
+    .form-icon.purple { background: rgba(152,110,226,0.08); color: #986ee2; }
+    .form-icon.red { background: rgba(229,83,75,0.08); color: #e5534b; }
+    .form-body { flex: 1; }
+    .form-name { font-size: 13px; font-weight: 500; color: #222; }
+    .form-desc { font-size: 11px; color: rgba(0,0,0,0.35); margin-top: 1px; }
+    .form-status { flex-shrink: 0; }
+
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .info-label { font-size: 10px; color: rgba(0,0,0,0.35); text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; margin-bottom: 1px; }
+    .info-value { font-size: 13px; color: #222; }
+
+    .billing-summary {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;
+    }
+    .billing-card {
+      padding: 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06);
+    }
+    .billing-card .bc-label { font-size: 10px; color: rgba(0,0,0,0.35); text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; margin-bottom: 2px; }
+    .billing-card .bc-value { font-size: 20px; font-weight: 700; color: #222; letter-spacing: -0.02em; }
+    .billing-card .bc-sub { font-size: 10px; color: rgba(0,0,0,0.3); margin-top: 1px; }
+    .billing-card.overdue .bc-value { color: #e5534b; }
+
+    .imm-bar-wrap { margin-bottom: 16px; }
+    .imm-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: rgba(0,0,0,0.4); margin-bottom: 4px; font-weight: 500; }
+    .imm-bar { height: 6px; background: rgba(0,0,0,0.06); border-radius: 3px; overflow: hidden; }
+    .imm-bar-fill { height: 100%; border-radius: 3px; background: #57ab5a; transition: width 0.5s ease; }
+
+    body.dark .tab-section-title { color: rgba(255,255,255,0.25); }
+    body.dark .tab-table th { color: rgba(255,255,255,0.3); border-bottom-color: rgba(255,255,255,0.08); }
+    body.dark .tab-table td { color: #d4d4d4; border-bottom-color: rgba(255,255,255,0.04); }
+    body.dark .tab-table tr:hover td { background: rgba(255,255,255,0.02); }
+    body.dark .chart-entry { background: rgba(255,255,255,0.03); }
+    body.dark .chart-entry:hover { background: rgba(255,255,255,0.05); }
+    body.dark .chart-entry .entry-date { color: rgba(255,255,255,0.25); }
+    body.dark .chart-entry .entry-title { color: #d4d4d4; }
+    body.dark .chart-entry .entry-note { color: rgba(255,255,255,0.45); }
+    body.dark .chart-entry .entry-vet { color: rgba(255,255,255,0.25); }
+    body.dark .vital-card { background: #1e1e1e; border-color: rgba(255,255,255,0.06); }
+    body.dark .vital-label { color: rgba(255,255,255,0.3); }
+    body.dark .vital-value { color: #d4d4d4; }
+    body.dark .vital-unit { color: rgba(255,255,255,0.3); }
+    body.dark .vital-note { color: rgba(255,255,255,0.25); }
+    body.dark .msg-sender { color: #d4d4d4; }
+    body.dark .msg-text { color: rgba(255,255,255,0.45); }
+    body.dark .msg-channel { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.3); }
+    body.dark .msg-time-sm { color: rgba(255,255,255,0.2); }
+    body.dark .msg-item { border-bottom-color: rgba(255,255,255,0.04); }
+    body.dark .task-check { border-color: rgba(255,255,255,0.2); }
+    body.dark .task-title { color: #d4d4d4; }
+    body.dark .task-item.done .task-title { color: rgba(255,255,255,0.25); }
+    body.dark .task-meta { color: rgba(255,255,255,0.25); }
+    body.dark .task-item:hover { background: rgba(255,255,255,0.03); }
+    body.dark .form-item { border-color: rgba(255,255,255,0.06); }
+    body.dark .form-item:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); }
+    body.dark .form-name { color: #d4d4d4; }
+    body.dark .form-desc { color: rgba(255,255,255,0.3); }
+    body.dark .info-label { color: rgba(255,255,255,0.25); }
+    body.dark .info-value { color: #d4d4d4; }
+    body.dark .billing-card { border-color: rgba(255,255,255,0.06); }
+    body.dark .billing-card .bc-label { color: rgba(255,255,255,0.25); }
+    body.dark .billing-card .bc-value { color: #d4d4d4; }
+    body.dark .billing-card .bc-sub { color: rgba(255,255,255,0.2); }
+    body.dark .billing-card.overdue .bc-value { color: #e5534b; }
+    body.dark .imm-bar { background: rgba(255,255,255,0.06); }
+    body.dark .imm-bar-label { color: rgba(255,255,255,0.3); }
+
     /* Right drawer */
     .inbox-drawer {
       width: 280px; min-width: 280px; border-left: 1px solid rgba(0,0,0,0.06);
       display: flex; flex-direction: column; overflow: hidden;
       flex-shrink: 0; transition: width 0.15s, min-width 0.15s;
     }
-    .inbox-drawer.collapsed { width: 0; min-width: 0; border-left: none; }
+    .inbox-drawer.collapsed { width: 0; min-width: 0; border-left: none; overflow: hidden; }
     .inbox-drawer-tabs {
-      display: flex; border-bottom: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
+      display: flex; align-items: stretch;
+      border-bottom: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
+      min-height: 44px;
     }
     .inbox-drawer-tab {
-      flex: 1; padding: 10px 0; text-align: center; font-size: 12px; font-weight: 500;
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 500;
       color: rgba(0,0,0,0.4); cursor: pointer; border-bottom: 2px solid transparent;
       transition: color 0.1s;
     }
     .inbox-drawer-tab:hover { color: rgba(0,0,0,0.7); }
     .inbox-drawer-tab.active { color: #222; border-bottom-color: #222; }
-    .inbox-drawer-toggle {
-      position: absolute; top: 10px; right: 10px; width: 22px; height: 22px;
-      border-radius: 4px; border: none; background: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      color: rgba(0,0,0,0.3);
-    }
-    .inbox-drawer-toggle:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
-    .inbox-drawer-toggle svg { width: 14px; height: 14px; stroke-width: 2; }
+
+    /* Drawer toggle — inherits page-topbar-right button styles */
     .inbox-drawer-body { flex: 1; overflow-y: auto; padding: 16px; }
     .inbox-drawer-section { margin-bottom: 16px; }
     .inbox-drawer-section-title {
@@ -846,18 +1101,33 @@
     .ask-ai-suggestion:hover { background: rgba(0,0,0,0.03); }
     .ask-ai-suggestion svg { width: 14px; height: 14px; stroke-width: 1.7; color: rgba(94,106,210,0.5); flex-shrink: 0; }
 
-    /* Expand drawer button (shown when collapsed) */
-    .inbox-drawer-expand {
-      position: absolute; top: 10px; right: 10px;
-      width: 28px; height: 28px; border-radius: 6px;
-      border: 1px solid rgba(0,0,0,0.08); background: #fff;
-      cursor: pointer; display: none; align-items: center; justify-content: center;
-      color: rgba(0,0,0,0.35); z-index: 2;
+    /* Hidden — toggle is now always in the detail header */
+    .inbox-drawer-expand { display: none !important; }
+
+    /* ═══ Record view (search → open record) ═══ */
+    .record-page {
+      display: flex; flex-direction: row; height: 100%; overflow: hidden;
     }
-    .inbox-drawer-expand:hover { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.6); }
-    .inbox-drawer-expand svg { width: 14px; height: 14px; stroke-width: 2; }
-    .inbox-panel .inbox-drawer.collapsed ~ .inbox-drawer-expand,
-    .inbox-drawer.collapsed + .inbox-drawer-expand { display: flex; }
+    .record-main {
+      flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0;
+    }
+    .record-drawer {
+      width: 280px; min-width: 280px; border-left: 1px solid rgba(0,0,0,0.06);
+      display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
+      transition: width 0.15s, min-width 0.15s;
+    }
+    .record-drawer.collapsed { width: 0; min-width: 0; border-left: none; overflow: hidden; }
+    .record-back-btn {
+      display: flex; align-items: center; gap: 4px;
+      padding: 0; border: none; background: none; cursor: pointer;
+      font-size: 12px; color: rgba(0,0,0,0.4); font-family: inherit;
+    }
+    .record-back-btn:hover { color: rgba(0,0,0,0.7); }
+    .record-back-btn svg { width: 14px; height: 14px; stroke-width: 2; }
+
+    body.dark .record-drawer { border-left-color: rgba(255,255,255,0.06); }
+    body.dark .record-back-btn { color: rgba(255,255,255,0.35); }
+    body.dark .record-back-btn:hover { color: rgba(255,255,255,0.65); }
 
     /* ═══ Unified page topbar ═══ */
     .page-topbar {
@@ -887,6 +1157,13 @@
     }
     .page-topbar-right button:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55); }
     .page-topbar-right button svg { width: 15px; height: 15px; stroke-width: 1.7; }
+    .page-topbar-right-btn {
+      width: 26px; height: 26px; border-radius: 4px; border: none;
+      background: none; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; color: rgba(0,0,0,0.3); font-family: inherit;
+    }
+    .page-topbar-right-btn:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55); }
+    .page-topbar-right-btn svg { width: 15px; height: 15px; stroke-width: 1.7; }
     .page-topbar-right .ptb-add {
       background: none; border: 1px solid rgba(0,0,0,0.1); color: rgba(0,0,0,0.4);
     }
@@ -900,6 +1177,8 @@
     body.dark .page-topbar-right button { color: rgba(255,255,255,0.25); }
     body.dark .page-topbar-right button:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
     body.dark .page-topbar-right .ptb-add { border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.35); }
+    body.dark .page-topbar-right-btn { color: rgba(255,255,255,0.25); }
+    body.dark .page-topbar-right-btn:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
 
     /* Page view */
     #pageView { flex: 1; display: none; flex-direction: column; overflow: hidden; min-height: 0; }
@@ -1288,7 +1567,9 @@
     body.dark .inbox-middle-empty { color: rgba(255,255,255,0.25); }
     body.dark .inbox-middle-empty .inbox-empty-icon { color: rgba(255,255,255,0.06); }
     body.dark .inbox-middle-empty .inbox-empty-text { color: rgba(255,255,255,0.25); }
-    body.dark .inbox-patient-bar { background: #1a1d33; }
+    body.dark .inbox-detail-header { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .inbox-detail-title { color: #d4d4d4; }
+    body.dark .inbox-detail-time { color: rgba(255,255,255,0.25); }
     body.dark .inbox-detail-tabs { background: #1a1a1a; border-bottom-color: rgba(255,255,255,0.06); }
     body.dark .inbox-detail-tab { color: rgba(255,255,255,0.35); }
     body.dark .inbox-detail-tab:hover { color: rgba(255,255,255,0.65); }
@@ -1319,7 +1600,7 @@
     body.dark .ask-ai-hint { color: rgba(255,255,255,0.25); }
     body.dark .ask-ai-suggestion { color: rgba(255,255,255,0.45); }
     body.dark .ask-ai-suggestion:hover { background: rgba(255,255,255,0.04); }
-    body.dark .inbox-drawer-expand { background: #2a2a2a; border-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); }
+    /* drawer toggle inherits page-topbar-right button dark styles */
 
     /* Views page dark */
     body.dark .vp-title { color: #d4d4d4; }
@@ -1369,12 +1650,25 @@
     body.dark .search-input-row .s-icon { color: rgba(255,255,255,0.3); }
     body.dark .search-input-row input { color: #d4d4d4; }
     body.dark .search-input-row input::placeholder { color: rgba(255,255,255,0.25); }
-    body.dark .search-esc { color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); }
+    body.dark .search-ask-ai { color: rgba(255,255,255,0.3); }
+    body.dark .search-ask-ai .kbd { color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); }
+    body.dark .search-list { border-right-color: rgba(255,255,255,0.06); }
     body.dark .search-section-label { color: rgba(255,255,255,0.3); }
     body.dark .search-result { color: rgba(255,255,255,0.6); }
     body.dark .search-result:hover, body.dark .search-result.focused { background: rgba(255,255,255,0.06); }
-    body.dark .search-result .r-icon { color: rgba(255,255,255,0.3); }
-    body.dark .search-result .r-hint { color: rgba(255,255,255,0.2); }
+    body.dark .search-result .r-name { color: #d4d4d4; }
+    body.dark .search-result .r-sub { color: rgba(255,255,255,0.3); }
+    body.dark .search-preview-name { color: #d4d4d4; }
+    body.dark .search-preview-section { color: rgba(255,255,255,0.3); }
+    body.dark .search-preview-field .spf-icon { color: rgba(255,255,255,0.2); }
+    body.dark .search-preview-field .spf-value { color: #d4d4d4; }
+    body.dark .search-preview-tag { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.45); }
+    body.dark .search-preview-empty { color: rgba(255,255,255,0.15); }
+    body.dark .search-footer { border-top-color: rgba(255,255,255,0.06); }
+    body.dark .search-footer-nav { color: rgba(255,255,255,0.25); }
+    body.dark .search-footer-nav .key { border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); }
+    body.dark .search-footer-actions { color: rgba(255,255,255,0.25); }
+    body.dark .search-footer-actions .kbd { color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); }
     body.dark .search-empty { color: rgba(255,255,255,0.25); }
 
     /* Collapsed tooltips dark */
@@ -1544,6 +1838,229 @@
     body.dark .settings-theme-desc { color: rgba(255,255,255,0.35); }
     body.dark .settings-theme-icon.light { background: #333; color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.08); }
     body.dark .settings-theme-row { border-bottom-color: rgba(255,255,255,0.04); }
+
+    /* ═══ Customize Sidebar Modal ═══ */
+    .customize-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+      z-index: 200; display: none; align-items: flex-start;
+      justify-content: center; padding-top: 10vh;
+    }
+    .customize-overlay.open { display: flex; }
+    .customize-modal {
+      width: 480px; max-width: 90vw; max-height: 75vh;
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 16px 60px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.06);
+      overflow: hidden; animation: searchIn 0.15s ease;
+      display: flex; flex-direction: column;
+    }
+    .customize-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px 16px; flex-shrink: 0;
+    }
+    .customize-header h3 { font-size: 16px; font-weight: 650; color: #222; margin: 0; }
+    .customize-close {
+      width: 28px; height: 28px; border-radius: 6px; border: none; background: none;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: rgba(0,0,0,0.4); transition: background 0.1s, color 0.1s;
+    }
+    .customize-close:hover { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.7); }
+    .customize-close svg { width: 16px; height: 16px; stroke-width: 2; }
+    .customize-body {
+      flex: 1; overflow-y: auto; padding: 0 24px 24px;
+      scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.08) transparent;
+    }
+    .customize-body::-webkit-scrollbar { width: 4px; }
+    .customize-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 4px; }
+    .customize-section-label {
+      font-size: 12px; font-weight: 600; color: rgba(0,0,0,0.5);
+      margin-bottom: 8px; margin-top: 16px;
+    }
+    .customize-section-label:first-child { margin-top: 0; }
+    .customize-group {
+      background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 10px; overflow: hidden;
+    }
+    .customize-row {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      font-size: 13px; color: rgba(0,0,0,0.75); cursor: grab;
+      transition: background 0.08s; border-bottom: 1px solid rgba(0,0,0,0.04);
+      user-select: none; position: relative;
+    }
+    .customize-row:last-child { border-bottom: none; }
+    .customize-row:hover { background: rgba(0,0,0,0.03); }
+    .customize-row.dragging { opacity: 0.5; background: rgba(0,0,0,0.04); }
+    .customize-row.drag-over { box-shadow: inset 0 2px 0 0 var(--p-blue, #3559c7); }
+    .customize-drag-handle {
+      display: flex; align-items: center; justify-content: center;
+      width: 16px; height: 16px; color: rgba(0,0,0,0.2); flex-shrink: 0; cursor: grab;
+    }
+    .customize-row-icon {
+      width: 16px; height: 16px; display: flex; align-items: center;
+      justify-content: center; color: rgba(0,0,0,0.4); flex-shrink: 0;
+    }
+    .customize-row-icon svg { width: 16px; height: 16px; stroke-width: 1.7; }
+    .customize-row-label { flex: 1; font-weight: 500; }
+    .customize-visibility-btn {
+      font-size: 12px; color: rgba(0,0,0,0.45); background: none; border: none;
+      cursor: pointer; display: flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 4px; transition: background 0.08s, color 0.08s;
+      flex-shrink: 0; font-family: inherit; white-space: nowrap;
+    }
+    .customize-visibility-btn:hover { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.65); }
+    .customize-visibility-btn svg { width: 12px; height: 12px; stroke-width: 2; }
+    .customize-visibility-menu {
+      position: absolute; right: 14px; top: 100%; background: #fff;
+      border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06);
+      z-index: 210; padding: 4px; min-width: 150px; display: none; animation: dropIn 0.1s ease;
+    }
+    .customize-visibility-menu.open { display: block; }
+    .customize-vis-option {
+      display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+      border-radius: 5px; cursor: pointer; font-size: 12px;
+      color: rgba(0,0,0,0.65); transition: background 0.08s;
+    }
+    .customize-vis-option:hover { background: rgba(0,0,0,0.04); }
+    .customize-vis-option.active { font-weight: 600; color: rgba(0,0,0,0.85); }
+    .customize-vis-option .vis-check {
+      width: 14px; height: 14px; display: flex; align-items: center;
+      justify-content: center; color: var(--p-blue, #3559c7);
+    }
+    .customize-vis-option .vis-check svg { width: 14px; height: 14px; stroke-width: 2.5; }
+    /* Hidden nav items in sidebar */
+    .nav-item.sidebar-hidden { display: none; }
+
+    body.dark .customize-overlay { background: rgba(0,0,0,0.6); }
+    body.dark .customize-modal { background: #2a2a2a; box-shadow: 0 16px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06); }
+    body.dark .customize-header h3 { color: #d4d4d4; }
+    body.dark .customize-close { color: rgba(255,255,255,0.4); }
+    body.dark .customize-close:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+    body.dark .customize-section-label { color: rgba(255,255,255,0.4); }
+    body.dark .customize-group { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.06); }
+    body.dark .customize-row { color: rgba(255,255,255,0.75); border-bottom-color: rgba(255,255,255,0.04); }
+    body.dark .customize-row:hover { background: rgba(255,255,255,0.04); }
+    body.dark .customize-drag-handle { color: rgba(255,255,255,0.2); }
+    body.dark .customize-row-icon { color: rgba(255,255,255,0.4); }
+    body.dark .customize-visibility-btn { color: rgba(255,255,255,0.4); }
+    body.dark .customize-visibility-btn:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+    body.dark .customize-visibility-menu { background: #333; box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.06); }
+    body.dark .customize-vis-option { color: rgba(255,255,255,0.6); }
+    body.dark .customize-vis-option:hover { background: rgba(255,255,255,0.06); }
+    body.dark .customize-vis-option.active { color: rgba(255,255,255,0.85); }
+    body.dark .customize-row.drag-over { box-shadow: inset 0 2px 0 0 #539bf5; }
+
+    /* ═══ Database Views ═══ */
+    .dbv-page { display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
+    .dbv-header { padding: 16px 24px 0; flex-shrink: 0; }
+    .dbv-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .dbv-title-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.4); }
+    .dbv-title-icon svg { width: 18px; height: 18px; }
+    .dbv-title-input { font-size: 18px; font-weight: 650; border: none; outline: none; background: transparent; color: #222; font-family: inherit; flex: 1; padding: 2px 0; }
+    .dbv-title-input::placeholder { color: rgba(0,0,0,0.25); }
+    .dbv-desc-input { font-size: 13px; border: none; outline: none; background: transparent; color: rgba(0,0,0,0.4); font-family: inherit; width: 100%; padding: 0 0 0 38px; margin-bottom: 10px; }
+    .dbv-desc-input::placeholder { color: rgba(0,0,0,0.25); }
+    .dbv-save-row { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0; }
+    .dbv-save-btn { padding: 4px 12px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.1s; }
+    .dbv-save-btn.primary { background: #222; color: #fff; }
+    .dbv-save-btn.primary:hover { background: #333; }
+    .dbv-save-btn.ghost { background: none; color: rgba(0,0,0,0.5); }
+    .dbv-save-btn.ghost:hover { background: rgba(0,0,0,0.04); }
+    .dbv-source-tabs { display: flex; align-items: center; gap: 2px; flex-shrink: 0; padding: 0 24px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .dbv-source-tab { padding: 8px 14px; font-size: 12px; font-weight: 500; color: rgba(0,0,0,0.45); cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.1s; white-space: nowrap; }
+    .dbv-source-tab:hover { color: rgba(0,0,0,0.7); }
+    .dbv-source-tab.active { color: #222; border-bottom-color: #5e6ad2; font-weight: 600; }
+    .dbv-filter-icon { padding: 6px 10px; font-size: 12px; color: rgba(0,0,0,0.35); cursor: pointer; display: flex; align-items: center; gap: 4px; border-radius: 4px; transition: background 0.1s; position: relative; }
+    .dbv-filter-icon:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
+    .dbv-filter-icon svg { width: 14px; height: 14px; stroke-width: 1.8; }
+    .dbv-toolbar { display: flex; align-items: center; gap: 6px; padding: 8px 24px; flex-shrink: 0; border-bottom: 1px solid rgba(0,0,0,0.04); flex-wrap: wrap; }
+    .dbv-tool-btn { display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 5px; border: 1px solid rgba(0,0,0,0.08); background: #fff; font-size: 12px; color: rgba(0,0,0,0.55); cursor: pointer; font-family: inherit; transition: all 0.1s; white-space: nowrap; }
+    .dbv-tool-btn:hover { border-color: rgba(0,0,0,0.15); color: rgba(0,0,0,0.75); background: rgba(0,0,0,0.02); }
+    .dbv-tool-btn svg { width: 13px; height: 13px; stroke-width: 1.8; }
+    .dbv-tool-btn.has-value { background: rgba(94,106,210,0.06); border-color: rgba(94,106,210,0.2); color: #5e6ad2; }
+    .dbv-tool-spacer { flex: 1; }
+    .dbv-group-header { display: flex; align-items: center; gap: 8px; padding: 8px 24px; font-size: 12px; font-weight: 600; color: rgba(0,0,0,0.6); background: rgba(0,0,0,0.015); border-bottom: 1px solid rgba(0,0,0,0.04); cursor: pointer; user-select: none; }
+    .dbv-group-header .g-arrow { font-size: 9px; color: rgba(0,0,0,0.3); }
+    .dbv-group-header .g-count { color: rgba(0,0,0,0.3); font-weight: 500; margin-left: 4px; }
+    .dbv-group-header .g-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dbv-table-wrap { flex: 1; overflow: auto; }
+    .dbv-table { width: 100%; border-collapse: collapse; min-width: 900px; }
+    .dbv-table th { position: sticky; top: 0; z-index: 2; background: #fafafa; padding: 6px 14px; font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.4); text-align: left; border-bottom: 1px solid rgba(0,0,0,0.06); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.3px; cursor: pointer; user-select: none; }
+    .dbv-table th:hover { color: rgba(0,0,0,0.6); }
+    .dbv-table td { padding: 8px 14px; font-size: 13px; color: rgba(0,0,0,0.7); border-bottom: 1px solid rgba(0,0,0,0.03); white-space: nowrap; }
+    .dbv-table tr:hover td { background: rgba(0,0,0,0.015); }
+    .dbv-table .col-id { width: 90px; color: rgba(0,0,0,0.35); font-family: 'SF Mono', monospace; font-size: 11px; }
+    .dbv-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+    .dbv-pill.green { background: rgba(87,171,90,0.1); color: #57ab5a; }
+    .dbv-pill.yellow { background: rgba(207,142,62,0.1); color: #cf8e3e; }
+    .dbv-pill.red { background: rgba(229,83,75,0.1); color: #e5534b; }
+    .dbv-pill.blue { background: rgba(94,106,210,0.1); color: #5e6ad2; }
+    .dbv-pill.purple { background: rgba(152,110,226,0.1); color: #986ee2; }
+    .dbv-pill.gray { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.45); }
+    .dbv-pill .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .dbv-add-row { display: flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 12px; color: rgba(0,0,0,0.3); cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.03); }
+    .dbv-add-row:hover { color: rgba(0,0,0,0.5); }
+    .dbv-add-row svg { width: 14px; height: 14px; }
+    .dbv-filter-dropdown { position: absolute; top: 100%; left: 0; width: 240px; background: #fff; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06); z-index: 100; padding: 6px; animation: dropIn 0.1s ease; }
+    .dbv-filter-search { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-bottom: 1px solid rgba(0,0,0,0.06); margin-bottom: 4px; }
+    .dbv-filter-search input { border: none; outline: none; font-size: 12px; font-family: inherit; flex: 1; background: transparent; color: #222; }
+    .dbv-filter-search input::placeholder { color: rgba(0,0,0,0.3); }
+    .dbv-filter-search svg { width: 13px; height: 13px; color: rgba(0,0,0,0.3); }
+    .dbv-filter-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 5px; font-size: 12px; color: rgba(0,0,0,0.65); cursor: pointer; transition: background 0.08s; }
+    .dbv-filter-item:hover { background: rgba(0,0,0,0.04); }
+    .dbv-filter-item svg { width: 14px; height: 14px; stroke-width: 1.7; color: rgba(0,0,0,0.35); }
+    .dbv-filter-item .fi-arrow { margin-left: auto; color: rgba(0,0,0,0.2); }
+    .dbv-filter-item .fi-arrow svg { width: 12px; height: 12px; }
+    .dbv-props-panel { position: absolute; top: 0; right: 0; width: 300px; height: 100%; background: #fff; border-left: 1px solid rgba(0,0,0,0.06); box-shadow: -4px 0 20px rgba(0,0,0,0.04); z-index: 50; display: flex; flex-direction: column; animation: slideInRight 0.15s ease; overflow-y: auto; }
+    @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    .dbv-props-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,0.06); flex-shrink: 0; }
+    .dbv-props-header h4 { font-size: 13px; font-weight: 600; color: #222; margin: 0; }
+    .dbv-props-close { width: 24px; height: 24px; border-radius: 4px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.4); }
+    .dbv-props-close:hover { background: rgba(0,0,0,0.06); }
+    .dbv-props-close svg { width: 14px; height: 14px; }
+    .dbv-props-body { padding: 12px 16px; flex: 1; }
+    .dbv-props-section { margin-bottom: 16px; }
+    .dbv-props-section-title { font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.4); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px; }
+    .dbv-props-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 12px; }
+    .dbv-props-row-label { color: rgba(0,0,0,0.6); }
+    .dbv-props-select { padding: 3px 8px; border-radius: 5px; border: 1px solid rgba(0,0,0,0.1); font-size: 12px; font-family: inherit; color: rgba(0,0,0,0.65); background: #fff; cursor: pointer; }
+    .dbv-props-toggle { width: 32px; height: 18px; border-radius: 9px; border: none; cursor: pointer; position: relative; transition: background 0.15s; }
+    .dbv-props-toggle.off { background: rgba(0,0,0,0.12); }
+    .dbv-props-toggle.on { background: #5e6ad2; }
+    .dbv-props-toggle::after { content: ''; position: absolute; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: left 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+    .dbv-props-toggle.off::after { left: 2px; }
+    .dbv-props-toggle.on::after { left: 16px; }
+    .dbv-col-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+    .dbv-col-chip { padding: 4px 10px; border-radius: 5px; font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.1s; border: 1px solid rgba(0,0,0,0.08); }
+    .dbv-col-chip.on { background: rgba(94,106,210,0.08); border-color: rgba(94,106,210,0.2); color: #5e6ad2; }
+    .dbv-col-chip.off { background: rgba(0,0,0,0.02); color: rgba(0,0,0,0.35); }
+    .dbv-col-chip:hover { border-color: rgba(0,0,0,0.2); }
+    body.dark .dbv-title-input { color: #d4d4d4; }
+    body.dark .dbv-desc-input { color: rgba(255,255,255,0.4); }
+    body.dark .dbv-source-tabs { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .dbv-source-tab { color: rgba(255,255,255,0.4); }
+    body.dark .dbv-source-tab.active { color: #d4d4d4; }
+    body.dark .dbv-toolbar { border-bottom-color: rgba(255,255,255,0.04); }
+    body.dark .dbv-tool-btn { border-color: rgba(255,255,255,0.08); background: transparent; color: rgba(255,255,255,0.5); }
+    body.dark .dbv-tool-btn:hover { border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); }
+    body.dark .dbv-tool-btn.has-value { background: rgba(94,106,210,0.1); border-color: rgba(94,106,210,0.25); color: #7c8aff; }
+    body.dark .dbv-group-header { background: rgba(255,255,255,0.02); color: rgba(255,255,255,0.6); border-bottom-color: rgba(255,255,255,0.04); }
+    body.dark .dbv-table th { background: #1e1e1e; color: rgba(255,255,255,0.35); border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .dbv-table td { color: rgba(255,255,255,0.65); border-bottom-color: rgba(255,255,255,0.03); }
+    body.dark .dbv-table tr:hover td { background: rgba(255,255,255,0.02); }
+    body.dark .dbv-table .col-id { color: rgba(255,255,255,0.25); }
+    body.dark .dbv-filter-dropdown { background: #2a2a2a; box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.06); }
+    body.dark .dbv-filter-item { color: rgba(255,255,255,0.6); }
+    body.dark .dbv-filter-item:hover { background: rgba(255,255,255,0.06); }
+    body.dark .dbv-filter-search input { color: #d4d4d4; }
+    body.dark .dbv-props-panel { background: #2a2a2a; border-left-color: rgba(255,255,255,0.06); }
+    body.dark .dbv-props-header { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .dbv-props-header h4 { color: #d4d4d4; }
+    body.dark .dbv-props-row-label { color: rgba(255,255,255,0.5); }
+    body.dark .dbv-props-select { background: #333; border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+    body.dark .dbv-col-chip.on { background: rgba(94,106,210,0.15); color: #7c8aff; }
+    body.dark .dbv-col-chip.off { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.3); border-color: rgba(255,255,255,0.06); }
+    body.dark .dbv-save-btn.primary { background: #d4d4d4; color: #1a1a1a; }
+    body.dark .dbv-save-btn.ghost { color: rgba(255,255,255,0.4); }
+    body.dark .dbv-add-row { color: rgba(255,255,255,0.25); }
   </style>
 </head>
 <body>
@@ -1576,6 +2093,10 @@
           <div class="org-dropdown-item" data-action="contact-us">
             <span class="dd-icon"><i data-lucide="mail"></i></span>
             <span class="dd-label">Contact us</span>
+          </div>
+          <div class="org-dropdown-item" data-action="customize-sidebar">
+            <span class="dd-icon"><i data-lucide="layout-list"></i></span>
+            <span class="dd-label">Customize sidebar</span>
           </div>
           <div class="org-dropdown-item" data-action="dark-mode">
             <span class="dd-icon"><i data-lucide="moon"></i></span>
@@ -1613,6 +2134,10 @@
       <div class="nav-item" data-nav="customers" data-tooltip="Customers" tabindex="0">
         <span class="nav-icon"><i data-lucide="users"></i></span>
         <span class="nav-label">Customers</span>
+      </div>
+      <div class="nav-item" data-nav="views-page" data-tooltip="Views" tabindex="0">
+        <span class="nav-icon"><i data-lucide="layout-grid"></i></span>
+        <span class="nav-label">Views</span>
       </div>
       <div class="nav-item" data-nav="billing-page" data-tooltip="Billing" tabindex="0">
         <span class="nav-icon"><i data-lucide="receipt"></i></span>
@@ -1666,6 +2191,7 @@
             <button><i data-lucide="filter"></i></button>
             <button><i data-lucide="sliders-horizontal"></i></button>
           </div>
+          <button class="inbox-drawer-toggle page-topbar-right-btn" id="inboxDrawerToggle" title="Toggle side panel" style="margin-left:auto;"><i data-lucide="panel-right-close"></i></button>
         </div>
         <div class="inbox-list" id="inboxList"></div>
       </div>
@@ -1676,8 +2202,7 @@
         </div>
         <div class="inbox-detail" id="inboxDetail" style="display:none;"></div>
       </div>
-      <div class="inbox-drawer" id="inboxDrawer" style="position:relative;">
-        <button class="inbox-drawer-toggle" id="inboxDrawerToggle" title="Collapse panel"><i data-lucide="panel-right-close"></i></button>
+      <div class="inbox-drawer" id="inboxDrawer">
         <div class="inbox-drawer-tabs" id="inboxDrawerTabs">
           <div class="inbox-drawer-tab active" data-drawer-tab="client">Client</div>
           <div class="inbox-drawer-tab" data-drawer-tab="patient">Patient</div>
@@ -1685,11 +2210,23 @@
         </div>
         <div class="inbox-drawer-body" id="inboxDrawerBody"></div>
       </div>
-      <button class="inbox-drawer-expand" id="inboxDrawerExpand" title="Open panel" style="position:absolute;top:10px;right:10px;display:none;"><i data-lucide="panel-right-open"></i></button>
     </div>
 
     <!-- Page view -->
     <div id="pageView"><div id="pageViewContent"></div></div>
+  </div>
+</div>
+
+<!-- ═══ Customize Sidebar Modal ═══ -->
+<div class="customize-overlay" id="customizeOverlay">
+  <div class="customize-modal" role="dialog" aria-label="Customize sidebar">
+    <div class="customize-header">
+      <h3>Customize sidebar</h3>
+      <button class="customize-close" id="customizeClose"><i data-lucide="x"></i></button>
+    </div>
+    <div class="customize-body" id="customizeBody">
+      <!-- Populated by JS -->
+    </div>
   </div>
 </div>
 
@@ -1698,10 +2235,26 @@
   <div class="search-modal" role="dialog" aria-label="Search" id="searchModal">
     <div class="search-input-row">
       <span class="s-icon"><i data-lucide="search"></i></span>
-      <input type="text" id="searchInput" placeholder="Search..." autocomplete="off" />
-      <span class="search-esc">Esc</span>
+      <input type="text" id="searchInput" placeholder="Search records..." autocomplete="off" />
+      <span class="search-ask-ai">Ask AI <span class="kbd">Tab</span></span>
     </div>
-    <div class="search-body" id="searchBody"></div>
+    <div class="search-panels">
+      <div class="search-list" id="searchList"></div>
+      <div class="search-preview" id="searchPreview">
+        <div class="search-preview-empty">Select a record to preview</div>
+      </div>
+    </div>
+    <div class="search-footer">
+      <div class="search-footer-nav">
+        <span class="key">&uarr;</span>
+        <span class="key">&darr;</span>
+        Navigate
+      </div>
+      <div class="search-footer-right">
+        <div class="search-footer-actions">Actions <span class="kbd">${navigator.platform?.toUpperCase().indexOf('MAC') >= 0 ? '⌘' : 'Ctrl'}K</span></div>
+        <button class="search-open-btn" id="searchOpenBtn">Open record <span class="kbd">&crarr;</span></button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1773,6 +2326,222 @@
       }
     });
   });
+
+  // ═══ Customize Sidebar Modal ═══
+  (function() {
+    const overlay = document.getElementById('customizeOverlay');
+    const closeBtn = document.getElementById('customizeClose');
+    const body = document.getElementById('customizeBody');
+
+    // Sidebar items config - matches the nav items in the sidebar
+    const SIDEBAR_ITEMS = [
+      { id: 'inbox', label: 'Inbox', icon: 'inbox', group: 'navigation' },
+      { id: 'calendar', label: 'Calendar', icon: 'calendar', group: 'navigation' },
+      { id: 'customers', label: 'Customers', icon: 'users', group: 'workspace' },
+      { id: 'views-page', label: 'Views', icon: 'layout-grid', group: 'workspace' },
+      { id: 'billing-page', label: 'Billing', icon: 'receipt', group: 'workspace' },
+      { id: 'care-page', label: 'Care', icon: 'heart-pulse', group: 'workspace' },
+      { id: 'inventory-page', label: 'Inventory', icon: 'package', group: 'workspace' },
+      { id: 'reports', label: 'Reports', icon: 'bar-chart-3', group: 'workspace' },
+    ];
+
+    const VISIBILITY_OPTIONS = ['Always show', 'Show when badged', 'Hide'];
+    const STORAGE_KEY = 'provet-sidebar-customize';
+
+    function loadConfig() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved) return saved;
+      } catch(e) {}
+      // Default: all items visible in original order
+      const cfg = {};
+      SIDEBAR_ITEMS.forEach((item, i) => {
+        cfg[item.id] = { order: i, visibility: 'Always show' };
+      });
+      return cfg;
+    }
+
+    function saveConfig(cfg) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+    }
+
+    function applySidebarConfig() {
+      const cfg = loadConfig();
+      const nav = document.getElementById('sidebarNav');
+      const navItems = Array.from(nav.querySelectorAll('.nav-item[data-nav]'));
+      // Sort nav items by configured order
+      const sorted = navItems.sort((a, b) => {
+        const oa = cfg[a.dataset.nav] ? cfg[a.dataset.nav].order : 99;
+        const ob = cfg[b.dataset.nav] ? cfg[b.dataset.nav].order : 99;
+        return oa - ob;
+      });
+      // Find the insertion point (after search button)
+      const searchBtn = document.getElementById('searchBtn');
+      const favSection = document.getElementById('favouritesSection');
+      sorted.forEach(item => {
+        nav.insertBefore(item, favSection);
+        const vis = cfg[item.dataset.nav] ? cfg[item.dataset.nav].visibility : 'Always show';
+        item.classList.toggle('sidebar-hidden', vis === 'Hide');
+      });
+    }
+
+    function openCustomizeModal() {
+      const cfg = loadConfig();
+      // Build sorted items list
+      const items = [...SIDEBAR_ITEMS].sort((a, b) => {
+        const oa = cfg[a.id] ? cfg[a.id].order : 99;
+        const ob = cfg[b.id] ? cfg[b.id].order : 99;
+        return oa - ob;
+      });
+
+      body.innerHTML = '';
+
+      const group = document.createElement('div');
+      group.className = 'customize-group';
+
+      items.forEach(item => {
+        const vis = cfg[item.id] ? cfg[item.id].visibility : 'Always show';
+        const row = document.createElement('div');
+        row.className = 'customize-row';
+        row.draggable = true;
+        row.dataset.itemId = item.id;
+        row.innerHTML =
+          '<span class="customize-drag-handle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></svg></span>' +
+          '<span class="customize-row-icon"><i data-lucide="' + item.icon + '"></i></span>' +
+          '<span class="customize-row-label">' + item.label + '</span>' +
+          '<button class="customize-visibility-btn" data-item-id="' + item.id + '">' + vis + ' <i data-lucide="chevron-down"></i></button>';
+        group.appendChild(row);
+      });
+
+      body.appendChild(group);
+      setupDragAndDrop(group);
+
+      lucide.createIcons({ nodes: body.querySelectorAll('i') });
+
+      // Visibility button click handlers
+      body.querySelectorAll('.customize-visibility-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // Close any other open menus
+          body.querySelectorAll('.customize-visibility-menu.open').forEach(m => m.remove());
+
+          const row = btn.closest('.customize-row');
+          const itemId = btn.dataset.itemId;
+          const currentVis = cfg[itemId] ? cfg[itemId].visibility : 'Always show';
+
+          const menu = document.createElement('div');
+          menu.className = 'customize-visibility-menu open';
+          VISIBILITY_OPTIONS.forEach(opt => {
+            const option = document.createElement('div');
+            option.className = 'customize-vis-option' + (opt === currentVis ? ' active' : '');
+            option.innerHTML =
+              '<span class="vis-check">' + (opt === currentVis ? '<i data-lucide="check"></i>' : '') + '</span>' +
+              '<span>' + opt + '</span>';
+            option.addEventListener('click', (ev) => {
+              ev.stopPropagation();
+              if (!cfg[itemId]) cfg[itemId] = { order: 0, visibility: opt };
+              else cfg[itemId].visibility = opt;
+              saveConfig(cfg);
+              btn.innerHTML = opt + ' <i data-lucide="chevron-down"></i>';
+              lucide.createIcons({ nodes: btn.querySelectorAll('i') });
+              menu.remove();
+              applySidebarConfig();
+            });
+            menu.appendChild(option);
+          });
+          lucide.createIcons({ nodes: menu.querySelectorAll('i') });
+          row.appendChild(menu);
+
+          // Close on outside click
+          setTimeout(() => {
+            const closer = (ev) => {
+              if (!menu.contains(ev.target)) { menu.remove(); document.removeEventListener('click', closer); }
+            };
+            document.addEventListener('click', closer);
+          }, 0);
+        });
+      });
+
+      overlay.classList.add('open');
+    }
+
+    function setupDragAndDrop(group) {
+      let dragItem = null;
+
+      group.querySelectorAll('.customize-row').forEach(row => {
+        row.addEventListener('dragstart', (e) => {
+          dragItem = row;
+          row.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', row.dataset.itemId);
+        });
+        row.addEventListener('dragend', () => {
+          row.classList.remove('dragging');
+          group.querySelectorAll('.customize-row').forEach(r => r.classList.remove('drag-over'));
+          dragItem = null;
+          // Save new order
+          const cfg = loadConfig();
+          const allRows = group.closest('.customize-body') || body;
+          let order = 0;
+          allRows.querySelectorAll('.customize-row').forEach(r => {
+            const id = r.dataset.itemId;
+            if (cfg[id]) cfg[id].order = order;
+            order++;
+          });
+          saveConfig(cfg);
+          applySidebarConfig();
+        });
+        row.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          if (row !== dragItem) {
+            group.querySelectorAll('.customize-row').forEach(r => r.classList.remove('drag-over'));
+            row.classList.add('drag-over');
+          }
+        });
+        row.addEventListener('dragleave', () => {
+          row.classList.remove('drag-over');
+        });
+        row.addEventListener('drop', (e) => {
+          e.preventDefault();
+          row.classList.remove('drag-over');
+          if (dragItem && dragItem !== row) {
+            const rows = Array.from(group.querySelectorAll('.customize-row'));
+            const fromIdx = rows.indexOf(dragItem);
+            const toIdx = rows.indexOf(row);
+            if (fromIdx < toIdx) {
+              row.after(dragItem);
+            } else {
+              row.before(dragItem);
+            }
+          }
+        });
+      });
+    }
+
+    function closeCustomizeModal() {
+      overlay.classList.remove('open');
+      // Clean up menus
+      body.querySelectorAll('.customize-visibility-menu').forEach(m => m.remove());
+    }
+
+    closeBtn.addEventListener('click', closeCustomizeModal);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeCustomizeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) closeCustomizeModal();
+    });
+
+    // Hook into dropdown action
+    document.querySelector('[data-action="customize-sidebar"]').addEventListener('click', () => {
+      orgDropdown.classList.remove('open');
+      openCustomizeModal();
+    });
+
+    // Apply saved config on load
+    applySidebarConfig();
+  })();
 
   // ═══ Sidebar collapse ═══
   const sidebar = document.getElementById('sidebar');
@@ -1947,24 +2716,14 @@
       return;
     }
 
-    // Views page
+    // Views page (database views)
     if (page.type === 'views') {
       pageView.style.display = 'flex';
       pageView.style.overflow = 'hidden';
       const c = document.getElementById('pageViewContent');
       c.innerHTML = renderViewsPage();
       lucide.createIcons({ nodes: c.querySelectorAll('i') });
-      // Wire up view tabs
-      c.querySelectorAll('.vp-tab').forEach(tab => {
-        tab.onclick = function() {
-          c.querySelectorAll('.vp-tab').forEach(t => t.classList.remove('active'));
-          this.classList.add('active');
-        };
-      });
-      // Wire up view rows to navigate
-      c.querySelectorAll('.vp-row[data-nav]').forEach(row => {
-        row.onclick = function() { navigateTo(this.dataset.nav); };
-      });
+      wireDbView(c);
       return;
     }
 
@@ -2034,9 +2793,145 @@
     lucide.createIcons({ nodes: c.querySelectorAll('i') });
   }
 
-  // ═══ Views page renderer ═══
-  function renderViewsPage() {
-    const views = [
+  // ═══ Views page renderer (database views) ═══
+  const VIEW_SOURCES = {
+    customers: { label: 'Customers', icon: 'users',
+      columns: ['ID','Name','Email','Phone','Pets','Visits','Revenue','Status','Source','Created'],
+      filterFields: ['Name','Email','Status','Source','Revenue','Created','Visits'],
+      data: [
+        { ID:'CL-1001', Name:'Sarah Johnson', Email:'sarah.j@email.com', Phone:'+1 555-0112', Pets:'2', Visits:'14', Revenue:'$2,840', Status:'Active', Source:'Walk-in', Created:'Jan 15, 2024' },
+        { ID:'CL-1002', Name:'Michael Chen', Email:'mchen@email.com', Phone:'+1 555-0234', Pets:'1', Visits:'8', Revenue:'$1,450', Status:'Active', Source:'Referral', Created:'Mar 3, 2024' },
+        { ID:'CL-1003', Name:'Emma Rodriguez', Email:'emma.r@email.com', Phone:'+1 555-0387', Pets:'3', Visits:'22', Revenue:'$4,120', Status:'Active', Source:'Online', Created:'Nov 20, 2023' },
+        { ID:'CL-1004', Name:'James Wilson', Email:'jwilson@email.com', Phone:'+1 555-0456', Pets:'1', Visits:'5', Revenue:'$890', Status:'Active', Source:'Walk-in', Created:'Jun 8, 2024' },
+        { ID:'CL-1005', Name:'Maria Santos', Email:'msantos@email.com', Phone:'+1 555-0521', Pets:'2', Visits:'11', Revenue:'$2,100', Status:'Active', Source:'Referral', Created:'Feb 14, 2024' },
+        { ID:'CL-1006', Name:'David Park', Email:'dpark@email.com', Phone:'+1 555-0678', Pets:'1', Visits:'3', Revenue:'$420', Status:'Inactive', Source:'Online', Created:'Sep 5, 2025' },
+        { ID:'CL-1007', Name:'Lisa Thompson', Email:'lthompson@email.com', Phone:'+1 555-0789', Pets:'4', Visits:'31', Revenue:'$6,750', Status:'Active', Source:'Walk-in', Created:'Aug 1, 2023' },
+        { ID:'CL-1008', Name:'Rebecca Young', Email:'ryoung@email.com', Phone:'+1 555-0834', Pets:'1', Visits:'7', Revenue:'$1,280', Status:'Active', Source:'Online', Created:'Dec 28, 2023' },
+      ] },
+    patients: { label: 'Patients', icon: 'paw-print',
+      columns: ['ID','Name','Species','Breed','Sex','Age','Weight','Owner','Status','Last visit'],
+      filterFields: ['Name','Species','Breed','Sex','Owner','Status','Age'],
+      data: [
+        { ID:'PT-3001', Name:'Bella', Species:'Canine', Breed:'Golden Retriever', Sex:'Female', Age:'4 yrs', Weight:'28 kg', Owner:'Sarah Johnson', Status:'Active', 'Last visit':'Mar 14, 2026' },
+        { ID:'PT-3002', Name:'Max', Species:'Canine', Breed:'German Shepherd', Sex:'Male', Age:'6 yrs', Weight:'34 kg', Owner:'Sarah Johnson', Status:'Active', 'Last visit':'Feb 20, 2026' },
+        { ID:'PT-3003', Name:'Luna', Species:'Feline', Breed:'Siamese', Sex:'Female', Age:'3 yrs', Weight:'4.2 kg', Owner:'Michael Chen', Status:'Active', 'Last visit':'Mar 10, 2026' },
+        { ID:'PT-3004', Name:'Charlie', Species:'Canine', Breed:'Labrador', Sex:'Male', Age:'2 yrs', Weight:'30 kg', Owner:'Emma Rodriguez', Status:'Active', 'Last visit':'Mar 12, 2026' },
+        { ID:'PT-3005', Name:'Milo', Species:'Feline', Breed:'Maine Coon', Sex:'Male', Age:'5 yrs', Weight:'7.8 kg', Owner:'Emma Rodriguez', Status:'Active', 'Last visit':'Jan 15, 2026' },
+        { ID:'PT-3006', Name:'Daisy', Species:'Canine', Breed:'Beagle', Sex:'Female', Age:'8 yrs', Weight:'11 kg', Owner:'Emma Rodriguez', Status:'Active', 'Last visit':'Mar 1, 2026' },
+        { ID:'PT-3007', Name:'Rocky', Species:'Canine', Breed:'Bulldog', Sex:'Male', Age:'5 yrs', Weight:'23 kg', Owner:'James Wilson', Status:'Active', 'Last visit':'Feb 28, 2026' },
+        { ID:'PT-3008', Name:'Nala', Species:'Canine', Breed:'Mixed Breed', Sex:'Female', Age:'2 yrs', Weight:'14 kg', Owner:'Rebecca Young', Status:'Active', 'Last visit':'Mar 14, 2026' },
+      ] },
+    invoices: { label: 'Invoices', icon: 'receipt',
+      columns: ['ID','Client','Patient','Description','Amount','Status','Due date','Created','Veterinarian'],
+      filterFields: ['Client','Patient','Status','Amount','Due date','Created','Veterinarian'],
+      data: [
+        { ID:'INV-4401', Client:'Sarah Johnson', Patient:'Bella', Description:'Annual wellness exam', Amount:'$285.00', Status:'Paid', 'Due date':'Mar 28, 2026', Created:'Mar 14, 2026', Veterinarian:'Dr. Smith' },
+        { ID:'INV-4402', Client:'Michael Chen', Patient:'Luna', Description:'Vaccination — FVRCP booster', Amount:'$145.00', Status:'Paid', 'Due date':'Mar 24, 2026', Created:'Mar 10, 2026', Veterinarian:'Dr. Smith' },
+        { ID:'INV-4403', Client:'Emma Rodriguez', Patient:'Charlie', Description:'Dental cleaning + extraction', Amount:'$680.00', Status:'Overdue', 'Due date':'Mar 1, 2026', Created:'Feb 15, 2026', Veterinarian:'Dr. Wilson' },
+        { ID:'INV-4404', Client:'James Wilson', Patient:'Rocky', Description:'Skin allergy consultation', Amount:'$195.00', Status:'Pending', 'Due date':'Apr 2, 2026', Created:'Mar 12, 2026', Veterinarian:'Dr. Smith' },
+        { ID:'INV-4405', Client:'Rebecca Young', Patient:'Nala', Description:'Spay procedure', Amount:'$450.00', Status:'Paid', 'Due date':'Oct 1, 2025', Created:'Sep 1, 2025', Veterinarian:'Dr. Wilson' },
+        { ID:'INV-4406', Client:'Lisa Thompson', Patient:'Daisy', Description:'Emergency — GI obstruction', Amount:'$2,340.00', Status:'Partial', 'Due date':'Mar 20, 2026', Created:'Mar 5, 2026', Veterinarian:'Dr. Wilson' },
+        { ID:'INV-4407', Client:'Maria Santos', Patient:'Milo', Description:'Blood panel + urinalysis', Amount:'$220.00', Status:'Pending', 'Due date':'Apr 5, 2026', Created:'Mar 15, 2026', Veterinarian:'Dr. Smith' },
+        { ID:'INV-4408', Client:'David Park', Patient:'Rocky', Description:'Microchip implant', Amount:'$75.00', Status:'Paid', 'Due date':'Feb 15, 2026', Created:'Feb 10, 2026', Veterinarian:'Dr. Smith' },
+      ] },
+    estimates: { label: 'Estimates', icon: 'file-text',
+      columns: ['ID','Client','Patient','Description','Low','High','Status','Created','Veterinarian'],
+      filterFields: ['Client','Patient','Status','Created','Veterinarian'],
+      data: [
+        { ID:'EST-2201', Client:'Sarah Johnson', Patient:'Bella', Description:'Dental cleaning — Grade 2', Low:'$350', High:'$550', Status:'Approved', Created:'Mar 14, 2026', Veterinarian:'Dr. Smith' },
+        { ID:'EST-2202', Client:'Emma Rodriguez', Patient:'Daisy', Description:'Mass removal — left flank', Low:'$800', High:'$1,200', Status:'Pending', Created:'Mar 12, 2026', Veterinarian:'Dr. Wilson' },
+        { ID:'EST-2203', Client:'James Wilson', Patient:'Rocky', Description:'Allergy testing panel', Low:'$280', High:'$420', Status:'Approved', Created:'Mar 10, 2026', Veterinarian:'Dr. Smith' },
+        { ID:'EST-2204', Client:'Michael Chen', Patient:'Luna', Description:'Dental extraction — canine', Low:'$500', High:'$750', Status:'Draft', Created:'Mar 8, 2026', Veterinarian:'Dr. Wilson' },
+        { ID:'EST-2205', Client:'Lisa Thompson', Patient:'Milo', Description:'Orthopaedic surgery — cruciate', Low:'$3,200', High:'$4,500', Status:'Sent', Created:'Mar 1, 2026', Veterinarian:'Dr. Wilson' },
+        { ID:'EST-2206', Client:'Maria Santos', Patient:'Charlie', Description:'Annual wellness + vaccines', Low:'$180', High:'$260', Status:'Expired', Created:'Feb 15, 2026', Veterinarian:'Dr. Smith' },
+      ] },
+    'lab-requests': { label: 'Lab requests', icon: 'flask-conical',
+      columns: ['ID','Patient','Owner','Test','Status','Priority','Requested','Completed','Veterinarian'],
+      filterFields: ['Patient','Owner','Test','Status','Priority','Requested','Veterinarian'],
+      data: [
+        { ID:'LAB-501', Patient:'Bella', Owner:'Sarah Johnson', Test:'Complete blood count', Status:'Completed', Priority:'Routine', Requested:'Mar 14, 2026', Completed:'Mar 14, 2026', Veterinarian:'Dr. Smith' },
+        { ID:'LAB-502', Patient:'Luna', Owner:'Michael Chen', Test:'Feline leukaemia screen', Status:'Completed', Priority:'Routine', Requested:'Mar 10, 2026', Completed:'Mar 11, 2026', Veterinarian:'Dr. Smith' },
+        { ID:'LAB-503', Patient:'Charlie', Owner:'Emma Rodriguez', Test:'Pre-anaesthetic panel', Status:'Pending', Priority:'Urgent', Requested:'Mar 16, 2026', Completed:'—', Veterinarian:'Dr. Wilson' },
+        { ID:'LAB-504', Patient:'Rocky', Owner:'James Wilson', Test:'Allergy panel — environmental', Status:'In progress', Priority:'Routine', Requested:'Mar 12, 2026', Completed:'—', Veterinarian:'Dr. Smith' },
+        { ID:'LAB-505', Patient:'Nala', Owner:'Rebecca Young', Test:'Urinalysis', Status:'Completed', Priority:'Routine', Requested:'Mar 14, 2026', Completed:'Mar 14, 2026', Veterinarian:'Dr. Smith' },
+        { ID:'LAB-506', Patient:'Daisy', Owner:'Emma Rodriguez', Test:'Histopathology — mass biopsy', Status:'Sent to lab', Priority:'High', Requested:'Mar 5, 2026', Completed:'—', Veterinarian:'Dr. Wilson' },
+      ] },
+    medications: { label: 'Medications', icon: 'pill',
+      columns: ['ID','Patient','Owner','Medication','Dosage','Frequency','Start','End','Status','Prescriber'],
+      filterFields: ['Patient','Medication','Status','Prescriber','Start'],
+      data: [
+        { ID:'RX-701', Patient:'Bella', Owner:'Sarah Johnson', Medication:'Carprofen', Dosage:'50 mg', Frequency:'BID', Start:'Mar 14, 2026', End:'Mar 21, 2026', Status:'Active', Prescriber:'Dr. Smith' },
+        { ID:'RX-702', Patient:'Rocky', Owner:'James Wilson', Medication:'Apoquel', Dosage:'16 mg', Frequency:'SID', Start:'Mar 12, 2026', End:'Apr 12, 2026', Status:'Active', Prescriber:'Dr. Smith' },
+        { ID:'RX-703', Patient:'Luna', Owner:'Michael Chen', Medication:'Metronidazole', Dosage:'125 mg', Frequency:'BID', Start:'Mar 1, 2026', End:'Mar 8, 2026', Status:'Completed', Prescriber:'Dr. Wilson' },
+        { ID:'RX-704', Patient:'Daisy', Owner:'Emma Rodriguez', Medication:'Tramadol', Dosage:'25 mg', Frequency:'TID', Start:'Mar 5, 2026', End:'Mar 12, 2026', Status:'Completed', Prescriber:'Dr. Wilson' },
+      ] },
+    appointments: { label: 'Appointments', icon: 'calendar-check',
+      columns: ['ID','Patient','Owner','Type','Veterinarian','Date','Time','Duration','Status'],
+      filterFields: ['Patient','Owner','Type','Veterinarian','Date','Status'],
+      data: [
+        { ID:'APT-801', Patient:'Bella', Owner:'Sarah Johnson', Type:'Dental cleaning', Veterinarian:'Dr. Smith', Date:'Mar 25, 2026', Time:'09:00', Duration:'90 min', Status:'Confirmed' },
+        { ID:'APT-802', Patient:'Rocky', Owner:'James Wilson', Type:'Follow-up', Veterinarian:'Dr. Smith', Date:'Mar 20, 2026', Time:'14:30', Duration:'30 min', Status:'Confirmed' },
+        { ID:'APT-803', Patient:'Charlie', Owner:'Emma Rodriguez', Type:'Surgery', Veterinarian:'Dr. Wilson', Date:'Mar 22, 2026', Time:'08:00', Duration:'120 min', Status:'Confirmed' },
+        { ID:'APT-804', Patient:'Milo', Owner:'Emma Rodriguez', Type:'Wellness exam', Veterinarian:'Dr. Smith', Date:'Apr 1, 2026', Time:'11:00', Duration:'30 min', Status:'Scheduled' },
+        { ID:'APT-805', Patient:'Luna', Owner:'Michael Chen', Type:'Vaccination', Veterinarian:'Dr. Smith', Date:'Mar 28, 2026', Time:'10:00', Duration:'15 min', Status:'Scheduled' },
+        { ID:'APT-806', Patient:'Daisy', Owner:'Emma Rodriguez', Type:'Mass removal', Veterinarian:'Dr. Wilson', Date:'Mar 24, 2026', Time:'08:30', Duration:'90 min', Status:'Pending approval' },
+      ] },
+    consultations: { label: 'Consultations', icon: 'stethoscope',
+      columns: ['ID','Patient','Owner','Reason','Veterinarian','Date','Status','Notes'],
+      filterFields: ['Patient','Owner','Reason','Veterinarian','Date','Status'],
+      data: [
+        { ID:'CON-901', Patient:'Bella', Owner:'Sarah Johnson', Reason:'Annual wellness exam', Veterinarian:'Dr. Smith', Date:'Mar 14, 2026', Status:'Completed', Notes:'All clear, dental grade 1' },
+        { ID:'CON-902', Patient:'Luna', Owner:'Michael Chen', Reason:'FVRCP booster + exam', Veterinarian:'Dr. Smith', Date:'Mar 10, 2026', Status:'Completed', Notes:'Healthy, weight stable' },
+        { ID:'CON-903', Patient:'Rocky', Owner:'James Wilson', Reason:'Skin allergy — itching', Veterinarian:'Dr. Smith', Date:'Mar 12, 2026', Status:'Completed', Notes:'Started Apoquel, recheck 4 wk' },
+        { ID:'CON-904', Patient:'Daisy', Owner:'Emma Rodriguez', Reason:'Mass evaluation — left flank', Veterinarian:'Dr. Wilson', Date:'Mar 5, 2026', Status:'Completed', Notes:'FNA sent to lab, surgery rec' },
+        { ID:'CON-905', Patient:'Nala', Owner:'Rebecca Young', Reason:'Annual wellness exam', Veterinarian:'Dr. Smith', Date:'Mar 14, 2026', Status:'Completed', Notes:'Healthy, all vaccinations current' },
+        { ID:'CON-906', Patient:'Charlie', Owner:'Emma Rodriguez', Reason:'Pre-surgical assessment', Veterinarian:'Dr. Wilson', Date:'Mar 16, 2026', Status:'In progress', Notes:'Awaiting lab results' },
+      ] }
+  };
+  let dbvActiveSource = 'invoices', dbvGroupBy = 'none', dbvVisibleCols = {}, dbvShowProps = false, dbvFilterOpen = false;
+  Object.keys(VIEW_SOURCES).forEach(k => { dbvVisibleCols[k] = [...VIEW_SOURCES[k].columns]; });
+
+  function statusPillClass(v) { v=(v||'').toLowerCase(); if('paid completed active approved confirmed'.includes(v))return'green'; if('pending in progress sent sent to lab scheduled partial'.includes(v))return'yellow'; if('overdue inactive expired cancelled'.includes(v))return'red'; if('draft pending approval'.includes(v))return'gray'; return'blue'; }
+
+  function renderDbView() {
+    var src = VIEW_SOURCES[dbvActiveSource], cols = dbvVisibleCols[dbvActiveSource] || src.columns, data = src.data;
+    var groups = null;
+    if (dbvGroupBy !== 'none' && cols.includes(dbvGroupBy)) { groups = {}; data.forEach(function(r) { var g = r[dbvGroupBy]||'—'; if(!groups[g])groups[g]=[]; groups[g].push(r); }); }
+    var thHtml = cols.map(function(c){return '<th>'+c+'</th>';}).join('');
+    function buildRows(rows) { return rows.map(function(row) { return '<tr>'+cols.map(function(c) { var val=row[c]||'—'; if(c==='ID')return '<td class="col-id">'+val+'</td>'; if(c==='Status')return '<td><span class="dbv-pill '+statusPillClass(val)+'"><span class="pill-dot" style="background:currentColor;opacity:0.6"></span>'+val+'</span></td>'; if(c==='Priority'){var pc=val==='Urgent'?'red':val==='High'?'yellow':'gray';return '<td><span class="dbv-pill '+pc+'">'+val+'</span></td>';} return '<td>'+val+'</td>'; }).join('')+'</tr>'; }).join(''); }
+    var tableBody = '';
+    if (groups) { var gc={'Paid':'#57ab5a','Completed':'#57ab5a','Active':'#57ab5a','Approved':'#57ab5a','Confirmed':'#57ab5a','Pending':'#cf8e3e','In progress':'#cf8e3e','Overdue':'#e5534b','Inactive':'#e5534b','Draft':'#888','Scheduled':'#5e6ad2','Sent':'#cf8e3e','Partial':'#cf8e3e','Expired':'#e5534b','Sent to lab':'#cf8e3e','Pending approval':'#cf8e3e'}; Object.keys(groups).forEach(function(gn){var co=gc[gn]||'#888'; tableBody+='<tr><td colspan="'+cols.length+'"><div class="dbv-group-header"><span class="g-arrow">▼</span><span class="g-dot" style="background:'+co+'"></span>'+gn+'<span class="g-count">'+groups[gn].length+'</span></div></td></tr>'; tableBody+=buildRows(groups[gn]);}); }
+    else { tableBody = buildRows(data); }
+    var srcTabs = Object.keys(VIEW_SOURCES).map(function(k){return '<div class="dbv-source-tab'+(k===dbvActiveSource?' active':'')+'" data-dbv-src="'+k+'">'+VIEW_SOURCES[k].label+'</div>';}).join('');
+    var filterItems = src.filterFields.map(function(f){return '<div class="dbv-filter-item"><i data-lucide="hash"></i>'+f+'<span class="fi-arrow"><i data-lucide="chevron-right"></i></span></div>';}).join('');
+    var colChips = src.columns.map(function(c){return '<span class="dbv-col-chip '+(cols.includes(c)?'on':'off')+'" data-dbv-col="'+c+'">'+c+'</span>';}).join('');
+    var groupOpts = '<option value="none">No grouping</option>'+src.columns.filter(function(c){return c!=='ID'&&c!=='Notes';}).map(function(c){return '<option value="'+c+'"'+(c===dbvGroupBy?' selected':'')+'>'+c+'</option>';}).join('');
+    return '<div class="dbv-page">'
+      +'<div class="dbv-header"><div class="dbv-title-row"><span class="dbv-title-icon"><i data-lucide="layout-grid"></i></span><input class="dbv-title-input" value="All '+src.label.toLowerCase()+'" /><div class="dbv-save-row"><span style="font-size:12px;color:rgba(0,0,0,0.35)">Save to</span><button class="dbv-save-btn ghost"><i data-lucide="lock" style="width:12px;height:12px;margin-right:2px"></i> Personal</button><button class="dbv-save-btn ghost">Cancel</button><button class="dbv-save-btn primary">Save</button></div></div><input class="dbv-desc-input" placeholder="Description (optional)" /></div>'
+      +'<div class="dbv-source-tabs">'+srcTabs+'<div class="dbv-filter-icon" id="dbvFilterToggle" style="margin-left:8px;"><i data-lucide="filter"></i>'+(dbvFilterOpen?'<div class="dbv-filter-dropdown" id="dbvFilterDropdown"><div class="dbv-filter-search"><i data-lucide="search"></i><input placeholder="Add Filter..." /><span style="font-size:10px;color:rgba(0,0,0,0.25);font-family:monospace">F</span></div>'+filterItems+'</div>':'')+'</div></div>'
+      +'<div class="dbv-toolbar"><button class="dbv-tool-btn'+(dbvGroupBy!=='none'?' has-value':'')+'" id="dbvGroupBtn" style="position:relative"><i data-lucide="layers"></i> Grouping<select id="dbvGroupSelect" style="position:absolute;opacity:0;inset:0;cursor:pointer;width:100%;height:100%">'+groupOpts+'</select></button><button class="dbv-tool-btn" id="dbvSortBtn"><i data-lucide="arrow-up-down"></i> Ordering</button><div class="dbv-tool-spacer"></div><button class="dbv-tool-btn" id="dbvPropsToggle"><i data-lucide="sliders-horizontal"></i> Display</button></div>'
+      +'<div class="dbv-table-wrap"><table class="dbv-table"><thead><tr>'+thHtml+'</tr></thead><tbody>'+tableBody+'<tr><td colspan="'+cols.length+'"><div class="dbv-add-row"><i data-lucide="plus"></i> New '+src.label.slice(0,-1).toLowerCase()+'</div></td></tr></tbody></table></div>'
+      +(dbvShowProps?'<div class="dbv-props-panel" id="dbvPropsPanel"><div class="dbv-props-header"><h4>Display properties</h4><button class="dbv-props-close" id="dbvPropsClose"><i data-lucide="x"></i></button></div><div class="dbv-props-body"><div class="dbv-props-section"><div class="dbv-props-row"><span class="dbv-props-row-label">Grouping</span><select class="dbv-props-select" id="dbvPropsGroupSelect">'+groupOpts+'</select></div><div class="dbv-props-row"><span class="dbv-props-row-label">Ordering</span><select class="dbv-props-select"><option>Default</option>'+src.columns.map(function(c){return '<option>'+c+'</option>';}).join('')+'</select></div></div><div class="dbv-props-section"><div class="dbv-props-section-title">Display properties</div><div class="dbv-col-chips">'+colChips+'</div></div></div></div>':'')
+      +'</div>';
+  }
+
+  function wireDbView(container) {
+    container.querySelectorAll('.dbv-source-tab[data-dbv-src]').forEach(function(tab){tab.onclick=function(){dbvActiveSource=tab.dataset.dbvSrc;dbvGroupBy='none';dbvShowProps=false;dbvFilterOpen=false;refreshDbView(container);};});
+    var ft=container.querySelector('#dbvFilterToggle'); if(ft)ft.onclick=function(e){if(e.target.closest('.dbv-filter-dropdown'))return;dbvFilterOpen=!dbvFilterOpen;refreshDbView(container);};
+    var gs=container.querySelector('#dbvGroupSelect'); if(gs)gs.onchange=function(){dbvGroupBy=gs.value;refreshDbView(container);};
+    var pt=container.querySelector('#dbvPropsToggle'); if(pt)pt.onclick=function(){dbvShowProps=!dbvShowProps;refreshDbView(container);};
+    var pc=container.querySelector('#dbvPropsClose'); if(pc)pc.onclick=function(){dbvShowProps=false;refreshDbView(container);};
+    var pgs=container.querySelector('#dbvPropsGroupSelect'); if(pgs)pgs.onchange=function(){dbvGroupBy=pgs.value;refreshDbView(container);};
+    container.querySelectorAll('.dbv-col-chip[data-dbv-col]').forEach(function(chip){chip.onclick=function(){var col=chip.dataset.dbvCol,vis=dbvVisibleCols[dbvActiveSource];if(vis.includes(col)){if(vis.length>1)dbvVisibleCols[dbvActiveSource]=vis.filter(function(c){return c!==col;});}else{dbvVisibleCols[dbvActiveSource]=[].concat(VIEW_SOURCES[dbvActiveSource].columns).filter(function(c){return vis.includes(c)||c===col;});}refreshDbView(container);};});
+    if(dbvFilterOpen){setTimeout(function(){var closer=function(ev){if(!ev.target.closest('#dbvFilterToggle')&&!ev.target.closest('.dbv-filter-dropdown')){dbvFilterOpen=false;refreshDbView(container);document.removeEventListener('click',closer);}};document.addEventListener('click',closer);},0);}
+  }
+
+  function refreshDbView(container){container.innerHTML=renderDbView();lucide.createIcons({nodes:container.querySelectorAll('i')});wireDbView(container);}
+
+  function renderViewsPage() { return renderDbView(); }
+
+  // Keep old views list for reference (unused)
+  var _oldViews = [
       { nav: 'diagnostic-imaging', icon: 'scan', name: 'Diagnostic imaging', desc: 'Radiology, ultrasound, and other imaging requests', owner: 'Provet Cloud', color: '#cf8e3e' },
       { nav: 'estimates', icon: 'file-text', name: 'Estimates', desc: 'Pending and approved treatment estimates', owner: 'Provet Cloud', color: '#5e6ad2' },
       { nav: 'invoices', icon: 'receipt', name: 'Invoices', desc: 'All invoices across clients and patients', owner: 'Provet Cloud', color: '#57ab5a' },
@@ -2896,85 +3791,325 @@
     { client: 'Rebecca Young', pet: 'Nala', species: 'Canine', breed: 'Mixed Breed', sex: 'Female', age: '2 years', weight: '14 kg', dob: 'Dec 28, 2023', id: '30079', activeTab: 'Chart' },
   ];
 
-  const DETAIL_TABS = ['Chart','Medications','Immunizations','Labs','Billing','Messages','Tasks','Forms','Info'];
+  const DETAIL_TABS = ['Chart','Medications','Immunizations','Labs','Billing','Messages','Tasks','Forms','Consultations'];
+
+  // Track active tab per inbox item
+  const activeDetailTabs = {};
 
   function renderInboxDetail(item, idx) {
     const ctx = INBOX_CONTEXT[idx];
-    const isStock = idx === 9; // Low stock has no patient
+    const isStock = idx === 9;
+    const currentTab = activeDetailTabs[idx] || ctx.activeTab;
 
-    // Patient header bar
-    let patientBar = '';
-    if (!isStock) {
-      patientBar = `
-        <div class="inbox-patient-bar">
-          <div class="inbox-patient-bar-avatar">${ctx.pet.charAt(0)}</div>
-          <div class="inbox-patient-bar-info">
-            <div class="inbox-patient-bar-names">
-              <span class="client-name">${ctx.client}</span>
-              <span class="sep">&rsaquo;</span>
-              <span class="pet-name">${ctx.pet}</span>
-            </div>
-            <div class="inbox-patient-bar-meta">
-              <span>${ctx.age}</span><span class="dot">&middot;</span>
-              <span>${ctx.sex}</span><span class="dot">&middot;</span>
-              <span>${ctx.species}</span><span class="dot">&middot;</span>
-              <span>${ctx.breed}</span><span class="dot">&middot;</span>
-              <span>Weight: ${ctx.weight}</span><span class="dot">&middot;</span>
-              <span>DOB: ${ctx.dob}</span><span class="dot">&middot;</span>
-              <span>ID: ${ctx.id}</span>
-            </div>
-          </div>
-          <div class="inbox-patient-bar-actions">
-            <button><i data-lucide="mail"></i> Compose email</button>
-          </div>
-        </div>`;
-    } else {
-      patientBar = `
-        <div class="inbox-patient-bar">
-          <div class="inbox-patient-bar-avatar"><i data-lucide="package" style="width:16px;height:16px;stroke-width:2;color:#fff;"></i></div>
-          <div class="inbox-patient-bar-info">
-            <div class="inbox-patient-bar-names">
-              <span class="pet-name">Metacam 1.5mg/mL</span>
-            </div>
-            <div class="inbox-patient-bar-meta">
-              <span>Oral suspension</span><span class="dot">&middot;</span>
-              <span>Meloxicam</span><span class="dot">&middot;</span>
-              <span>Anti-inflammatory</span><span class="dot">&middot;</span>
-              <span>Stock: 3 units</span>
-            </div>
-          </div>
-          <div class="inbox-patient-bar-actions">
-            <button><i data-lucide="shopping-cart"></i> Reorder</button>
-          </div>
-        </div>`;
-    }
+    let header = `
+      <div class="inbox-detail-header">
+        <div class="inbox-detail-avatar" style="background:${item.color}">${item.initials}</div>
+        <div class="inbox-detail-title">${item.title}</div>
+        <div class="inbox-detail-time">${item.time} ago</div>
+      </div>`;
 
-    // Tabs
     let tabs = '';
     if (!isStock) {
       tabs = '<div class="inbox-detail-tabs">' + DETAIL_TABS.map(t => {
-        let cls = t === ctx.activeTab ? ' active' : '';
+        let cls = t === currentTab ? ' active' : '';
         let badge = '';
         if (t === 'Billing' && (idx === 0 || idx === 4)) badge = '<span class="tab-badge due">Due</span>';
-        return `<div class="inbox-detail-tab${cls}" data-detail-tab="${t}">${t}${badge}</div>`;
+        return `<div class="inbox-detail-tab${cls}" data-detail-tab="${t}" data-inbox-idx="${idx}">${t}${badge}</div>`;
       }).join('') + '</div>';
     } else {
       tabs = `<div class="inbox-detail-tabs">
-        <div class="inbox-detail-tab active" data-detail-tab="Info">Stock Info</div>
-        <div class="inbox-detail-tab" data-detail-tab="History">Order History</div>
-        <div class="inbox-detail-tab" data-detail-tab="Usage">Usage</div>
+        <div class="inbox-detail-tab${currentTab === 'Info' ? ' active' : ''}" data-detail-tab="Info" data-inbox-idx="${idx}">Stock Info</div>
+        <div class="inbox-detail-tab${currentTab === 'History' ? ' active' : ''}" data-detail-tab="History" data-inbox-idx="${idx}">Order History</div>
+        <div class="inbox-detail-tab${currentTab === 'Usage' ? ' active' : ''}" data-detail-tab="Usage" data-inbox-idx="${idx}">Usage</div>
       </div>`;
     }
 
-    // Body content
-    let body = renderDetailContent(idx, ctx);
+    let body = renderTabContent(currentTab, idx, ctx);
+    let chatBar = currentTab === 'Messages' ?
+      `<div class="chat-input-row"><input class="chat-input" placeholder="Type a message..." /><button class="chat-send-btn"><i data-lucide="send"></i></button></div>` : '';
 
-    return patientBar + tabs + `<div class="inbox-detail-body">${body}</div>` +
-      (idx === 0 ? `<div class="chat-input-row"><input class="chat-input" placeholder="Type a message..." /><button class="chat-send-btn"><i data-lucide="send"></i></button></div>` : '');
+    return header + tabs + `<div class="inbox-detail-body">${body}</div>` + chatBar;
   }
 
-  function renderDetailContent(idx, ctx) {
-    // Amy Collins — Messages tab (chat)
+  // Wire tab clicks via event delegation
+  document.addEventListener('click', (e) => {
+    const tab = e.target.closest('.inbox-detail-tab[data-inbox-idx]');
+    if (!tab) return;
+    const idx = parseInt(tab.dataset.inboxIdx);
+    const tabName = tab.dataset.detailTab;
+    activeDetailTabs[idx] = tabName;
+    const detail = document.getElementById('inboxDetail');
+    const item = INBOX_ITEMS[idx];
+    detail.innerHTML = renderInboxDetail(item, idx);
+    lucide.createIcons({ nodes: detail.querySelectorAll('i') });
+  });
+
+  // ═══ Tab content renderers ═══
+  function renderTabContent(tabName, idx, ctx) {
+    switch(tabName) {
+      case 'Chart': return renderChartTab(idx, ctx);
+      case 'Medications': return renderMedicationsTab(idx, ctx);
+      case 'Immunizations': return renderImmunizationsTab(idx, ctx);
+      case 'Labs': return renderLabsTab(idx, ctx);
+      case 'Billing': return renderBillingTab(idx, ctx);
+      case 'Messages': return renderMessagesTab(idx, ctx);
+      case 'Tasks': return renderTasksTab(idx, ctx);
+      case 'Forms': return renderFormsTab(idx, ctx);
+      case 'Consultations': return renderConsultationsTab(idx, ctx);
+      case 'Info': return renderInfoTab(idx, ctx);
+      case 'History': return renderStockHistoryTab();
+      case 'Usage': return renderStockUsageTab();
+      default: return '';
+    }
+  }
+
+  // ── Chart tab ──
+  function renderChartTab(idx, ctx) {
+    const petName = ctx.pet;
+    const entries = [
+      { date: 'Mar 14, 2026', type: 'consultation', title: 'Annual wellness exam', note: `${petName} appears healthy overall. Weight stable. Heart and lungs clear. Dental grade 1 — mild tartar on upper premolars. Recommend dental cleaning within 6 months.`, vet: 'Dr. Sarah Smith' },
+      { date: 'Feb 28, 2026', type: 'vaccination', title: 'Rabies booster administered', note: '3-year rabies vaccine administered in right rear leg. No adverse reaction observed. Next due: Feb 2029.', vet: 'Dr. Katie Brown' },
+      { date: 'Jan 15, 2026', type: 'lab', title: 'Blood panel — routine', note: 'CBC and chemistry panel within normal limits. BUN 18, creatinine 1.1, ALT 42. Glucose 95. All values WNL.', vet: 'Dr. Sarah Smith' },
+      { date: 'Nov 20, 2025', type: 'consultation', title: 'Skin irritation — left flank', note: 'Owner reports intermittent scratching for 2 weeks. Mild erythema on left flank. No parasites on skin scraping. Prescribed Apoquel 16mg daily for 14 days.', vet: 'Dr. Mike Johnson' },
+      { date: 'Sep 5, 2025', type: 'followup', title: 'Post-dental follow-up', note: 'Dental cleaning performed Sep 1. Healing well, no signs of infection. Owner reports eating normally. Suture site clean.', vet: 'Dr. Sarah Smith' },
+      { date: 'Sep 1, 2025', type: 'surgery', title: 'Dental cleaning + extraction', note: 'Grade 2 periodontal disease. Full scaling and polishing. Tooth #108 extracted due to root resorption. Prescribed Metacam for 3 days.', vet: 'Dr. Mike Johnson' },
+    ];
+
+    const vitals = `
+      <div class="vitals-row">
+        <div class="vital-card">
+          <div class="vital-label">Weight</div>
+          <div class="vital-value">${ctx.weight.replace(' kg','')}<span class="vital-unit">kg</span></div>
+          <div class="vital-note">Stable</div>
+        </div>
+        <div class="vital-card">
+          <div class="vital-label">Temp</div>
+          <div class="vital-value">38.5<span class="vital-unit">&deg;C</span></div>
+          <div class="vital-note">Normal</div>
+        </div>
+        <div class="vital-card">
+          <div class="vital-label">Heart Rate</div>
+          <div class="vital-value">${ctx.species === 'Feline' ? '180' : '90'}<span class="vital-unit">bpm</span></div>
+          <div class="vital-note">Normal</div>
+        </div>
+        <div class="vital-card">
+          <div class="vital-label">Resp Rate</div>
+          <div class="vital-value">${ctx.species === 'Feline' ? '28' : '18'}<span class="vital-unit">/min</span></div>
+          <div class="vital-note">Normal</div>
+        </div>
+      </div>`;
+
+    const timeline = entries.map(e => `
+      <div class="chart-entry ${e.type}">
+        <div class="entry-date">${e.date}</div>
+        <div class="entry-title">${e.title}</div>
+        <div class="entry-note">${e.note}</div>
+        <div class="entry-vet"><i data-lucide="user"></i> ${e.vet}</div>
+      </div>`).join('');
+
+    return `
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="activity"></i> Latest Vitals — ${petName}</div>
+        ${vitals}
+      </div>
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="clock"></i> Medical Timeline</div>
+        <div class="chart-timeline">${timeline}</div>
+      </div>`;
+  }
+
+  // ── Medications tab ──
+  function renderMedicationsTab(idx, ctx) {
+    const meds = [
+      { name: 'Apoquel (Oclacitinib)', dose: '16mg tablet', freq: '1 tablet twice daily then once daily', prescribed: 'Nov 20, 2025', status: 'active', refills: '2 remaining' },
+      { name: 'Metacam (Meloxicam)', dose: '1.5mg/mL oral suspension', freq: '0.1mg/kg once daily with food', prescribed: 'Sep 1, 2025', status: 'completed', refills: '—' },
+      { name: 'Heartgard Plus', dose: ctx.species === 'Feline' ? '57mcg chewable' : '272mcg chewable', freq: '1 tablet monthly', prescribed: 'Jan 15, 2026', status: 'active', refills: '6 remaining' },
+      { name: 'Nexgard (Afoxolaner)', dose: ctx.species === 'Feline' ? '11.3mg chewable' : '68mg chewable', freq: '1 tablet monthly', prescribed: 'Jan 15, 2026', status: 'active', refills: '6 remaining' },
+      { name: 'Amoxicillin-Clavulanate', dose: '250mg tablet', freq: '1 tablet twice daily for 10 days', prescribed: 'Sep 1, 2025', status: 'completed', refills: '—' },
+    ];
+
+    const rows = meds.map(m => `
+      <tr>
+        <td><strong>${m.name}</strong><br><span style="font-size:11px;color:rgba(0,0,0,0.4)">${m.dose}</span></td>
+        <td>${m.freq}</td>
+        <td><span class="status-pill ${m.status}">${m.status.charAt(0).toUpperCase() + m.status.slice(1)}</span></td>
+        <td>${m.refills}</td>
+        <td style="font-size:11px;color:rgba(0,0,0,0.4)">${m.prescribed}</td>
+      </tr>`).join('');
+
+    return `
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="pill"></i> Current & Past Medications — ${ctx.pet}</div>
+        <table class="tab-table">
+          <thead><tr><th>Medication</th><th>Dosage</th><th>Status</th><th>Refills</th><th>Prescribed</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+
+  // ── Immunizations tab ──
+  function renderImmunizationsTab(idx, ctx) {
+    const isCat = ctx.species === 'Feline';
+    const vaccines = isCat ? [
+      { name: 'FVRCP (Core)', last: 'Feb 28, 2026', next: 'Feb 28, 2029', status: 'current', series: '3/3' },
+      { name: 'Rabies', last: 'Feb 28, 2026', next: 'Feb 28, 2029', status: 'current', series: '2/2' },
+      { name: 'FeLV (Feline Leukemia)', last: 'Mar 10, 2023', next: 'Mar 10, 2026', status: 'overdue', series: '2/2' },
+      { name: 'Bordetella', last: '—', next: '—', status: 'not started', series: '0/1' },
+    ] : [
+      { name: 'DA2PP (Core)', last: 'Feb 28, 2026', next: 'Feb 28, 2029', status: 'current', series: '4/4' },
+      { name: 'Rabies', last: 'Feb 28, 2026', next: 'Feb 28, 2029', status: 'current', series: '2/2' },
+      { name: 'Bordetella', last: 'Jan 15, 2026', next: 'Jul 15, 2026', status: 'current', series: '2/2' },
+      { name: 'Leptospirosis', last: 'Jan 15, 2026', next: 'Jan 15, 2027', status: 'current', series: '2/2' },
+      { name: 'Canine Influenza (H3N2/H3N8)', last: 'Oct 5, 2025', next: 'Oct 5, 2026', status: 'current', series: '2/2' },
+      { name: 'Lyme Disease', last: '—', next: '—', status: 'not started', series: '0/2' },
+    ];
+
+    const completed = vaccines.filter(v => v.status === 'current').length;
+    const total = vaccines.length;
+    const pct = Math.round((completed / total) * 100);
+
+    const rows = vaccines.map(v => {
+      const sCls = v.status === 'current' ? 'active' : v.status === 'overdue' ? 'overdue' : 'draft';
+      const sLabel = v.status === 'current' ? 'Current' : v.status === 'overdue' ? 'Overdue' : 'Not started';
+      return `<tr>
+        <td><strong>${v.name}</strong></td>
+        <td>${v.series}</td>
+        <td>${v.last}</td>
+        <td>${v.next}</td>
+        <td><span class="status-pill ${sCls}">${sLabel}</span></td>
+      </tr>`;
+    }).join('');
+
+    return `
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="shield-check"></i> Vaccination Status — ${ctx.pet}</div>
+        <div class="imm-bar-wrap">
+          <div class="imm-bar-label"><span>${completed} of ${total} up to date</span><span>${pct}%</span></div>
+          <div class="imm-bar"><div class="imm-bar-fill" style="width:${pct}%"></div></div>
+        </div>
+        <table class="tab-table">
+          <thead><tr><th>Vaccine</th><th>Series</th><th>Last Given</th><th>Next Due</th><th>Status</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+
+  // ── Labs tab ──
+  function renderLabsTab(idx, ctx) {
+    const panels = [
+      {
+        name: 'Complete Blood Panel', date: 'Jan 15, 2026', lab: 'VetPath Diagnostics', orderedBy: 'Dr. Sarah Smith',
+        results: [
+          { test: 'WBC', value: '8.2 \u00d710\u00b3/\u00b5L', range: '5.5\u201316.9', flag: '' },
+          { test: 'RBC', value: '7.1 \u00d710\u2076/\u00b5L', range: '5.5\u20138.5', flag: '' },
+          { test: 'Hemoglobin', value: '16.2 g/dL', range: '12.0\u201318.0', flag: '' },
+          { test: 'Hematocrit', value: '47%', range: '37\u201355', flag: '' },
+          { test: 'Platelets', value: '285 \u00d710\u00b3/\u00b5L', range: '175\u2013500', flag: '' },
+          { test: 'BUN', value: '18 mg/dL', range: '7\u201327', flag: '' },
+          { test: 'Creatinine', value: '1.1 mg/dL', range: '0.5\u20131.8', flag: '' },
+          { test: 'ALT', value: '42 U/L', range: '10\u2013125', flag: '' },
+          { test: 'Glucose', value: '95 mg/dL', range: '74\u2013143', flag: '' },
+          { test: 'Total Protein', value: '6.8 g/dL', range: '5.2\u20138.2', flag: '' },
+        ]
+      },
+      {
+        name: 'Thyroid Panel', date: 'Nov 20, 2025', lab: 'VetPath Diagnostics', orderedBy: 'Dr. Mike Johnson',
+        results: [
+          { test: 'T4 (Total)', value: '2.1 \u00b5g/dL', range: '1.0\u20134.0', flag: '' },
+          { test: 'Free T4', value: '22 pmol/L', range: '12\u201335', flag: '' },
+          { test: 'TSH', value: '0.18 ng/mL', range: '0.05\u20130.42', flag: '' },
+        ]
+      },
+      {
+        name: 'Urinalysis', date: 'Sep 5, 2025', lab: 'In-house', orderedBy: 'Dr. Sarah Smith',
+        results: [
+          { test: 'Specific Gravity', value: '1.035', range: '1.015\u20131.045', flag: '' },
+          { test: 'pH', value: '6.5', range: '5.5\u20137.5', flag: '' },
+          { test: 'Protein', value: 'Negative', range: 'Negative', flag: '' },
+          { test: 'Glucose', value: 'Negative', range: 'Negative', flag: '' },
+          { test: 'WBC', value: '0\u20132 /HPF', range: '0\u20135', flag: '' },
+        ]
+      }
+    ];
+
+    return panels.map(panel => {
+      const rows = panel.results.map(r => {
+        return `<tr>
+          <td>${r.test}</td>
+          <td style="font-weight:600">${r.value}</td>
+          <td style="font-size:11px;color:rgba(0,0,0,0.35)">${r.range}</td>
+          <td>${r.flag ? `<span class="status-pill abnormal">${r.flag === 'H' ? 'High' : 'Low'}</span>` : '<span class="status-pill normal">Normal</span>'}</td>
+        </tr>`;
+      }).join('');
+
+      return `
+        <div class="tab-section">
+          <div class="tab-section-title"><i data-lucide="test-tubes"></i> ${panel.name}</div>
+          <div style="display:flex;gap:12px;margin-bottom:8px;font-size:11px;color:rgba(0,0,0,0.35);">
+            <span>${panel.date}</span><span>·</span><span>${panel.lab}</span><span>·</span><span>${panel.orderedBy}</span>
+          </div>
+          <table class="tab-table">
+            <thead><tr><th>Test</th><th>Result</th><th>Reference Range</th><th>Flag</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>`;
+    }).join('');
+  }
+
+  // ── Billing tab ──
+  function renderBillingTab(idx, ctx) {
+    const invoices = [
+      { id: 'INV-2026-0341', date: 'Mar 14, 2026', desc: 'Annual wellness exam', amount: '$145.00', status: 'unpaid' },
+      { id: 'INV-2026-0298', date: 'Feb 28, 2026', desc: 'Rabies booster vaccination', amount: '$65.00', status: 'paid' },
+      { id: 'INV-2026-0215', date: 'Jan 15, 2026', desc: 'Blood panel — routine', amount: '$210.00', status: 'paid' },
+      { id: 'INV-2025-1104', date: 'Nov 20, 2025', desc: 'Consultation — skin irritation + Apoquel Rx', amount: '$185.00', status: 'paid' },
+      { id: 'INV-2025-0901', date: 'Sep 1, 2025', desc: 'Dental cleaning + extraction (#108)', amount: '$890.00', status: 'paid' },
+      { id: 'INV-2025-0905', date: 'Sep 5, 2025', desc: 'Post-dental follow-up', amount: '$0.00', status: 'paid' },
+    ];
+
+    const totalPaid = 1350;
+    const totalUnpaid = 145;
+
+    const rows = invoices.map(inv => `
+      <tr>
+        <td style="font-family:'SF Mono',monospace;font-size:11px;color:rgba(0,0,0,0.4)">${inv.id}</td>
+        <td>${inv.date}</td>
+        <td>${inv.desc}</td>
+        <td style="font-weight:600">${inv.amount}</td>
+        <td><span class="status-pill ${inv.status}">${inv.status === 'paid' ? 'Paid' : 'Unpaid'}</span></td>
+      </tr>`).join('');
+
+    return `
+      <div class="tab-section">
+        <div class="billing-summary">
+          <div class="billing-card overdue">
+            <div class="bc-label">Outstanding</div>
+            <div class="bc-value">$${totalUnpaid.toFixed(2)}</div>
+            <div class="bc-sub">1 invoice</div>
+          </div>
+          <div class="billing-card">
+            <div class="bc-label">YTD Spend</div>
+            <div class="bc-value">$${(totalPaid + totalUnpaid).toFixed(2)}</div>
+            <div class="bc-sub">${invoices.length} invoices</div>
+          </div>
+          <div class="billing-card">
+            <div class="bc-label">Last Payment</div>
+            <div class="bc-value">$210</div>
+            <div class="bc-sub">Jan 15, 2026</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="receipt"></i> Invoice History — ${ctx.pet}</div>
+        <table class="tab-table">
+          <thead><tr><th>Invoice</th><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+
+  // ── Messages tab ──
+  function renderMessagesTab(idx, ctx) {
     if (idx === 0) {
       return `
         <div class="chat-messages">
@@ -3009,52 +4144,267 @@
         </div>`;
     }
 
-    // All other items — action card content
-    const cards = {
-      1: { h: 'Surgery Update', p: 'Daisy\'s spay surgery was completed successfully at 11:30 AM. She is recovering well in the post-op ward. Vitals are stable and she should be ready for discharge tomorrow morning.', tags: [{l:'Procedure',v:'Spay surgery'},{l:'Surgeon',v:'Dr. Mike Johnson'},{l:'Status',v:'Recovering',c:'ok'}], btns: [{l:'Notify owner',c:'primary'},{l:'Schedule follow-up',c:''},{l:'View vitals',c:''}] },
-      2: { h: 'Appointment Reschedule Request', p: 'David Turner has requested to reschedule Archie\'s dental cleaning from March 19th to a later date. He mentioned next week would work better.', tags: [{l:'Appointment',v:'Dental cleaning'},{l:'Current date',v:'Mar 19th, 10:00 AM'},{l:'Requested',v:'Next week'}], btns: [{l:'Reschedule',c:'primary'},{l:'Contact client',c:''},{l:'Cancel appointment',c:'danger'}] },
-      3: { h: 'Lab Results Available', p: 'Blood panel results are back from VetPath Diagnostics. Liver enzymes slightly elevated (ALT: 85 U/L, normal: 10-60). All other markers within normal range. Follow-up recommended.', tags: [{l:'Test',v:'Complete blood panel'},{l:'Lab',v:'VetPath Diagnostics'},{l:'ALT Level',v:'85 U/L (elevated)',c:'urgent'}], btns: [{l:'Contact pet parent',c:'primary'},{l:'View full results',c:''},{l:'Order follow-up test',c:''}] },
-      4: { h: 'Follow-up Confirmed', p: 'Olivia Zhang has confirmed Rex\'s orthopaedic follow-up for this Friday at 2:00 PM. She reports he\'s putting more weight on the leg and seems more comfortable.', tags: [{l:'Appointment',v:'Friday, 2:00 PM'},{l:'Reason',v:'Orthopaedic follow-up'},{l:'Status',v:'Confirmed',c:'ok'}], btns: [{l:'View appointment',c:'primary'},{l:'Prepare notes',c:''}] },
-      5: { h: 'Vaccination Reminder Sent', p: 'An automated reminder has been sent to Daniel Reyes for Luna\'s FVRCP booster due tomorrow. Reminder sent via email and SMS.', tags: [{l:'Vaccine',v:'FVRCP Booster'},{l:'Due',v:'Tomorrow'},{l:'Sent via',v:'Email + SMS'}], btns: [{l:'View appointment',c:'primary'},{l:'Resend reminder',c:''}] },
-      6: { h: 'Medication Progress', p: 'Daniel Reyes reports Luna is responding well to Apoquel. Itching reduced significantly and she\'s much more comfortable. He\'s asking about next steps.', tags: [{l:'Medication',v:'Apoquel 16mg'},{l:'Duration',v:'30 days'},{l:'Response',v:'Positive',c:'ok'}], btns: [{l:'Reply to owner',c:'primary'},{l:'Update treatment plan',c:''},{l:'Schedule review',c:''}] },
-      7: { h: 'Prescription Refill Request', p: 'Hannah Wells has requested a refill of Gabapentin 100mg for Pepper. Current prescription expires in 2 days. Last dispensed: March 10th (7-day supply).', tags: [{l:'Medication',v:'Gabapentin 100mg'},{l:'Dosage',v:'1 capsule twice daily'},{l:'Expiry',v:'In 2 days',c:'urgent'}], btns: [{l:'Approve refill',c:'primary'},{l:'Request consultation first',c:''},{l:'Deny refill',c:'danger'}] },
-      8: { h: 'Post-Op Follow-Up — Day 3', p: 'Review surgical site, check for signs of infection, assess pain levels, and update owner on Nala\'s recovery progress following her spay procedure.', tags: [{l:'Procedure',v:'Spay (Day 3)'},{l:'Pain level',v:'Mild — managed'},{l:'Status',v:'On track',c:'ok'}], btns: [{l:'Complete check',c:'primary'},{l:'Update owner',c:''},{l:'Flag concern',c:'danger'}] },
-      9: { h: 'Low Stock Alert', p: 'Metacam (Meloxicam) 1.5mg/mL oral suspension has reached critical stock level. Only 3 units remaining. Average weekly usage: 5 units. Estimated stockout: within 4 days.', tags: [{l:'Stock',v:'3 units remaining',c:'urgent'},{l:'Weekly usage',v:'~5 units'},{l:'Supplier',v:'Boehringer Ingelheim'}], btns: [{l:'Reorder now',c:'primary'},{l:'View stock history',c:''},{l:'Dismiss alert',c:''}] },
-      10: { h: 'Discharge Ready', p: 'Nala\'s spay procedure has been completed and she is cleared for discharge. Rebecca Young has been notified. Discharge instructions and medication are prepared.', tags: [{l:'Owner',v:'Rebecca Young'},{l:'Meds prepared',v:'Metacam 3-day supply'},{l:'Status',v:'Ready for discharge',c:'ok'}], btns: [{l:'Process discharge',c:'primary'},{l:'Print instructions',c:''},{l:'Contact owner',c:''}] },
-    };
-
-    const card = cards[idx];
-    if (!card) return '';
-
-    let tagsHtml = card.tags.map(t =>
-      `<span class="action-meta-tag${t.c ? ' ' + t.c : ''}"><strong>${t.l}:</strong> ${t.v}</span>`
-    ).join('');
-    let btnsHtml = card.btns.map(b =>
-      `<button class="inbox-action-btn${b.c ? ' ' + b.c : ''}">${b.l}</button>`
-    ).join('');
+    const clientInitials = ctx.client.split(' ').map(n => n[0]).join('');
+    const itemColor = INBOX_ITEMS[idx] ? INBOX_ITEMS[idx].color : '#cf8e3e';
+    const msgs = [
+      { sender: ctx.client, initials: clientInitials, color: itemColor, channel: 'SMS', time: 'Today 9:30 AM', text: `Hi, just checking on ${ctx.pet}'s appointment status. Is everything confirmed?` },
+      { sender: 'Dr. Sarah Smith', initials: 'SS', color: '#5e6ad2', channel: 'Internal', time: 'Today 9:15 AM', text: `${ctx.pet}'s file has been updated with the latest notes. Please review before the appointment.` },
+      { sender: 'System', initials: 'SY', color: '#986ee2', channel: 'Auto', time: 'Yesterday 4:00 PM', text: `Automated reminder sent to ${ctx.client} for upcoming appointment.` },
+      { sender: ctx.client, initials: clientInitials, color: itemColor, channel: 'Email', time: 'Mar 12', text: `Thank you for sending the lab results. We'll make sure to follow the recommended diet changes.` },
+    ];
 
     return `
-      <div class="inbox-action-card">
-        <h3>${card.h}</h3>
-        <p>${card.p}</p>
-        <div class="action-meta">${tagsHtml}</div>
-        <div class="inbox-action-btns">${btnsHtml}</div>
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="message-circle"></i> Messages — ${ctx.pet}</div>
+        ${msgs.map(m => `
+          <div class="msg-item">
+            <div class="msg-avatar" style="background:${m.color}">${m.initials}</div>
+            <div class="msg-body">
+              <div class="msg-header">
+                <span class="msg-sender">${m.sender}</span>
+                <span class="msg-channel">${m.channel}</span>
+                <span class="msg-time-sm">${m.time}</span>
+              </div>
+              <div class="msg-text">${m.text}</div>
+            </div>
+          </div>`).join('')}
       </div>`;
   }
 
-  // ═══ Inbox drawer ═══
+  // ── Tasks tab ──
+  function renderTasksTab(idx, ctx) {
+    const tasks = [
+      { title: `Review ${ctx.pet}'s lab results and update treatment plan`, assignee: 'Dr. Sarah Smith', due: 'Today', priority: 'high', done: false },
+      { title: `Call ${ctx.client} to discuss follow-up options`, assignee: 'Katie Brown', due: 'Today', priority: 'medium', done: false },
+      { title: `Schedule ${ctx.pet}'s next vaccination appointment`, assignee: 'Reception', due: 'Mar 18', priority: 'medium', done: false },
+      { title: `Order prescription refill`, assignee: 'Pharmacy', due: 'Mar 19', priority: 'low', done: false },
+      { title: `Update ${ctx.pet}'s weight in medical record`, assignee: 'Dr. Sarah Smith', due: 'Mar 14', priority: 'low', done: true },
+      { title: `Send vaccination certificate to ${ctx.client}`, assignee: 'Katie Brown', due: 'Mar 10', priority: 'medium', done: true },
+      { title: `File insurance claim for dental procedure`, assignee: 'Billing', due: 'Mar 5', priority: 'medium', done: true },
+    ];
+
+    const openCount = tasks.filter(t => !t.done).length;
+    const doneCount = tasks.filter(t => t.done).length;
+
+    return `
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="check-square"></i> Tasks — ${ctx.pet} <span style="font-weight:400;text-transform:none;letter-spacing:0;margin-left:4px">(${openCount} open, ${doneCount} completed)</span></div>
+        ${tasks.map(t => `
+          <div class="task-item${t.done ? ' done' : ''}">
+            <div class="task-check${t.done ? ' done' : ''}"></div>
+            <div class="task-body">
+              <div class="task-title">${t.title}</div>
+              <div class="task-meta">
+                <i data-lucide="user"></i> ${t.assignee}
+                <span>·</span>
+                <i data-lucide="calendar"></i> ${t.due}
+                <span class="task-priority"><span class="status-pill ${t.priority}">${t.priority.charAt(0).toUpperCase() + t.priority.slice(1)}</span></span>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>`;
+  }
+
+  // ── Forms tab ──
+  function renderFormsTab(idx, ctx) {
+    const forms = [
+      { name: 'Patient Intake Form', desc: 'New patient registration and medical history', icon: 'clipboard-list', color: 'blue', status: 'completed', date: 'Jan 8, 2024' },
+      { name: 'Surgical Consent Form', desc: 'Anaesthesia and procedure consent', icon: 'file-heart', color: 'red', status: 'completed', date: 'Sep 1, 2025' },
+      { name: 'Vaccination Consent', desc: 'Annual vaccination authorisation', icon: 'shield-check', color: 'green', status: 'completed', date: 'Feb 28, 2026' },
+      { name: 'Estimate Approval', desc: 'Treatment cost estimate — dental cleaning', icon: 'receipt', color: 'orange', status: 'completed', date: 'Aug 25, 2025' },
+      { name: 'Discharge Instructions', desc: 'Post-procedure care and medication guide', icon: 'file-text', color: 'purple', status: 'completed', date: 'Sep 1, 2025' },
+      { name: 'Annual Wellness Consent', desc: 'Wellness exam and blood panel authorisation', icon: 'heart-pulse', color: 'blue', status: 'pending', date: '' },
+      { name: 'Boarding Agreement', desc: 'Terms and conditions for overnight boarding', icon: 'home', color: 'orange', status: 'not sent', date: '' },
+    ];
+
+    return `
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="file-text"></i> Forms & Consent — ${ctx.pet}</div>
+        ${forms.map(f => {
+          const sCls = f.status === 'completed' ? 'completed' : f.status === 'pending' ? 'pending' : 'draft';
+          const sLabel = f.status === 'completed' ? 'Completed' : f.status === 'pending' ? 'Pending signature' : 'Not sent';
+          return `
+            <div class="form-item">
+              <div class="form-icon ${f.color}"><i data-lucide="${f.icon}"></i></div>
+              <div class="form-body">
+                <div class="form-name">${f.name}</div>
+                <div class="form-desc">${f.desc}${f.date ? ' · ' + f.date : ''}</div>
+              </div>
+              <div class="form-status"><span class="status-pill ${sCls}">${sLabel}</span></div>
+            </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  // ── Consultations tab ──
+  function renderConsultationsTab(idx, ctx) {
+    const consults = [
+      { date: 'Mar 14, 2026', reason: 'Annual wellness exam', vet: 'Dr. Sarah Smith', status: 'completed', notes: 'All vitals normal. Dental grade 1. Recommend dental cleaning in 6 months.' },
+      { date: 'Sep 1, 2025', reason: 'Spay procedure', vet: 'Dr. James Wilson', status: 'completed', notes: 'Routine ovariohysterectomy. No complications. Recovery uneventful.' },
+      { date: 'Aug 25, 2025', reason: 'Pre-surgical assessment', vet: 'Dr. Sarah Smith', status: 'completed', notes: 'Bloodwork within normal limits. Cleared for surgery.' },
+      { date: 'Feb 12, 2025', reason: 'Limping — right forelimb', vet: 'Dr. Sarah Smith', status: 'completed', notes: 'Mild soft-tissue injury. Prescribed 5-day rest and meloxicam.' },
+      { date: 'Jan 8, 2024', reason: 'New patient exam', vet: 'Dr. Sarah Smith', status: 'completed', notes: 'Healthy puppy. Vaccination schedule started. Weight on track.' },
+    ];
+
+    return `
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="stethoscope"></i> Consultations — ${ctx.pet}</div>
+        <table class="tab-table">
+          <thead><tr><th>Date</th><th>Reason</th><th>Veterinarian</th><th>Status</th></tr></thead>
+          <tbody>${consults.map(c => `
+            <tr>
+              <td>${c.date}</td>
+              <td>${c.reason}</td>
+              <td>${c.vet}</td>
+              <td><span class="status-pill completed">${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
+  // ── Info tab ──
+  function renderInfoTab(idx, ctx) {
+    if (ctx.pet === '\u2014') {
+      return `
+        <div class="tab-section">
+          <div class="tab-section-title"><i data-lucide="package"></i> Product Information</div>
+          <div class="info-grid">
+            <div><div class="info-label">Product</div><div class="info-value">Metacam (Meloxicam)</div></div>
+            <div><div class="info-label">Form</div><div class="info-value">1.5mg/mL oral suspension</div></div>
+            <div><div class="info-label">Supplier</div><div class="info-value">Boehringer Ingelheim</div></div>
+            <div><div class="info-label">SKU</div><div class="info-value">MET-15-100</div></div>
+            <div><div class="info-label">Category</div><div class="info-value">NSAID — Anti-inflammatory</div></div>
+            <div><div class="info-label">Controlled</div><div class="info-value">No</div></div>
+            <div><div class="info-label">Current Stock</div><div class="info-value" style="color:#e5534b;font-weight:600">3 units</div></div>
+            <div><div class="info-label">Reorder Level</div><div class="info-value">5 units</div></div>
+            <div><div class="info-label">Unit Cost</div><div class="info-value">$28.50</div></div>
+            <div><div class="info-label">Retail Price</div><div class="info-value">$45.00</div></div>
+          </div>
+        </div>`;
+    }
+
+    const email = ctx.client.toLowerCase().replace(' ','.') + '@email.com';
+
+    return `
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="paw-print"></i> Patient Details</div>
+        <div class="info-grid">
+          <div><div class="info-label">Name</div><div class="info-value">${ctx.pet}</div></div>
+          <div><div class="info-label">Patient ID</div><div class="info-value">${ctx.id}</div></div>
+          <div><div class="info-label">Species</div><div class="info-value">${ctx.species}</div></div>
+          <div><div class="info-label">Breed</div><div class="info-value">${ctx.breed}</div></div>
+          <div><div class="info-label">Sex</div><div class="info-value">${ctx.sex}</div></div>
+          <div><div class="info-label">Age</div><div class="info-value">${ctx.age}</div></div>
+          <div><div class="info-label">Weight</div><div class="info-value">${ctx.weight}</div></div>
+          <div><div class="info-label">Date of Birth</div><div class="info-value">${ctx.dob}</div></div>
+          <div><div class="info-label">Microchip</div><div class="info-value">985112003456789</div></div>
+          <div><div class="info-label">Colour</div><div class="info-value">${ctx.species === 'Feline' ? 'Seal point' : 'Golden'}</div></div>
+        </div>
+      </div>
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="heart-pulse"></i> Medical Summary</div>
+        <div class="info-grid">
+          <div><div class="info-label">Allergies</div><div class="info-value">None known</div></div>
+          <div><div class="info-label">Chronic Conditions</div><div class="info-value">None</div></div>
+          <div><div class="info-label">Last Vaccination</div><div class="info-value">Feb 28, 2026</div></div>
+          <div><div class="info-label">Last Visit</div><div class="info-value">Mar 14, 2026</div></div>
+          <div><div class="info-label">Primary Vet</div><div class="info-value">Dr. Sarah Smith</div></div>
+          <div><div class="info-label">Insurance</div><div class="info-value">PetSecure — Policy #PS-449821</div></div>
+        </div>
+      </div>
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="user"></i> Owner Information</div>
+        <div class="info-grid">
+          <div><div class="info-label">Name</div><div class="info-value">${ctx.client}</div></div>
+          <div><div class="info-label">Email</div><div class="info-value">${email}</div></div>
+          <div><div class="info-label">Phone</div><div class="info-value">+1 (555) 012-3456</div></div>
+          <div><div class="info-label">Address</div><div class="info-value">123 Main St, Toronto, ON</div></div>
+          <div><div class="info-label">Client Since</div><div class="info-value">Jan 2024</div></div>
+          <div><div class="info-label">Preferred Contact</div><div class="info-value">Email</div></div>
+        </div>
+      </div>`;
+  }
+
+  // ── Stock-specific tabs ──
+  function renderStockHistoryTab() {
+    const orders = [
+      { date: 'Mar 1, 2026', qty: '10 units', supplier: 'Boehringer Ingelheim', po: 'PO-2026-0089', cost: '$285.00' },
+      { date: 'Feb 1, 2026', qty: '10 units', supplier: 'Boehringer Ingelheim', po: 'PO-2026-0054', cost: '$285.00' },
+      { date: 'Jan 5, 2026', qty: '15 units', supplier: 'Boehringer Ingelheim', po: 'PO-2026-0012', cost: '$427.50' },
+      { date: 'Dec 2, 2025', qty: '10 units', supplier: 'Boehringer Ingelheim', po: 'PO-2025-0298', cost: '$285.00' },
+    ];
+
+    return `
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="truck"></i> Order History — Metacam</div>
+        <table class="tab-table">
+          <thead><tr><th>Date</th><th>Quantity</th><th>Supplier</th><th>PO Number</th><th>Cost</th><th>Status</th></tr></thead>
+          <tbody>${orders.map(o => `
+            <tr>
+              <td>${o.date}</td>
+              <td>${o.qty}</td>
+              <td>${o.supplier}</td>
+              <td style="font-family:'SF Mono',monospace;font-size:11px;color:rgba(0,0,0,0.4)">${o.po}</td>
+              <td style="font-weight:600">${o.cost}</td>
+              <td><span class="status-pill active">Delivered</span></td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+  }
+
+  function renderStockUsageTab() {
+    const usage = [
+      { date: 'Mar 14, 2026', patient: 'Milo (Labrador)', qty: '1 unit', vet: 'Dr. Sarah Smith' },
+      { date: 'Mar 12, 2026', patient: 'Rex (German Shepherd)', qty: '1 unit', vet: 'Dr. Mike Johnson' },
+      { date: 'Mar 10, 2026', patient: 'Nala (Mixed Breed)', qty: '1 unit', vet: 'Dr. Mike Johnson' },
+      { date: 'Mar 8, 2026', patient: 'Buddy (Golden Retriever)', qty: '1 unit', vet: 'Dr. Sarah Smith' },
+      { date: 'Mar 5, 2026', patient: 'Daisy (Beagle)', qty: '1 unit', vet: 'Dr. Katie Brown' },
+      { date: 'Mar 3, 2026', patient: 'Archie (Mixed Breed)', qty: '1 unit', vet: 'Dr. Sarah Smith' },
+      { date: 'Mar 1, 2026', patient: 'Pepper (Domestic Shorthair)', qty: '1 unit', vet: 'Dr. Mike Johnson' },
+    ];
+
+    return `
+      <div class="tab-section">
+        <div class="tab-section-title"><i data-lucide="bar-chart-3"></i> Usage Log — Metacam (Last 30 days)</div>
+        <div class="billing-summary" style="grid-template-columns:repeat(3,1fr)">
+          <div class="billing-card">
+            <div class="bc-label">Used This Month</div>
+            <div class="bc-value">7<span style="font-size:12px;font-weight:400;color:rgba(0,0,0,0.35);margin-left:2px">units</span></div>
+          </div>
+          <div class="billing-card">
+            <div class="bc-label">Avg Weekly</div>
+            <div class="bc-value">~5<span style="font-size:12px;font-weight:400;color:rgba(0,0,0,0.35);margin-left:2px">units</span></div>
+          </div>
+          <div class="billing-card overdue">
+            <div class="bc-label">Est. Stockout</div>
+            <div class="bc-value">4 days</div>
+          </div>
+        </div>
+        <table class="tab-table">
+          <thead><tr><th>Date</th><th>Patient</th><th>Quantity</th><th>Dispensed By</th></tr></thead>
+          <tbody>${usage.map(u => `
+            <tr>
+              <td>${u.date}</td>
+              <td>${u.patient}</td>
+              <td>${u.qty}</td>
+              <td>${u.vet}</td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+  }
+
+    // ═══ Inbox drawer ═══
   function wireInboxDrawer() {
     const drawer = document.getElementById('inboxDrawer');
     const toggleBtn = document.getElementById('inboxDrawerToggle');
-    const expandBtn = document.getElementById('inboxDrawerExpand');
 
     toggleBtn.addEventListener('click', () => {
-      drawer.classList.add('collapsed');
-      expandBtn.style.display = 'flex';
-    });
-    expandBtn.addEventListener('click', () => {
-      drawer.classList.remove('collapsed');
-      expandBtn.style.display = 'none';
+      const isCollapsed = drawer.classList.toggle('collapsed');
+      // Swap icon
+      const iconName = isCollapsed ? 'panel-right-open' : 'panel-right-close';
+      toggleBtn.innerHTML = '<i data-lucide="' + iconName + '"></i>';
+      lucide.createIcons({ nodes: toggleBtn.querySelectorAll('i') });
     });
 
     // Tabs
@@ -3149,51 +4499,315 @@
   // ═══ Search ═══
   const searchOverlay = document.getElementById('searchOverlay');
   const searchInput = document.getElementById('searchInput');
-  const searchBody = document.getElementById('searchBody');
-  const ALL_SEARCHABLE = Object.entries(NAV_PAGES).map(([k, v]) => ({ key: k, title: v.title, icon: v.icon }));
+  const searchList = document.getElementById('searchList');
+  const searchPreview = document.getElementById('searchPreview');
+
+  const SEARCH_RECORDS = [
+    { type: 'client', name: 'Amy Collins', initials: 'AC', color: '#cf8e3e', email: 'amy.collins@email.com', phone: '+1 (555) 012-3456', pets: ['Milo'], since: 'Jan 2024', address: '45 Maple Ave, Toronto' },
+    { type: 'client', name: 'David Turner', initials: 'DT', color: '#5e6ad2', email: 'david.turner@email.com', phone: '+1 (555) 234-5678', pets: ['Archie'], since: 'Mar 2024', address: '12 Oak St, Toronto' },
+    { type: 'client', name: 'Emma Patel', initials: 'EP', color: '#cf8e3e', email: 'emma.patel@email.com', phone: '+1 (555) 345-6789', pets: ['Nala', 'Daisy'], since: 'Jun 2023', address: '88 Birch Rd, Toronto' },
+    { type: 'client', name: 'Daniel Reyes', initials: 'DR', color: '#539bf5', email: 'daniel.reyes@email.com', phone: '+1 (555) 456-7890', pets: ['Luna'], since: 'Sep 2023', address: '201 Pine Cres, Toronto' },
+    { type: 'client', name: 'Olivia Zhang', initials: 'OZ', color: '#4dab9a', email: 'olivia.zhang@email.com', phone: '+1 (555) 567-8901', pets: ['Rex'], since: 'Nov 2023', address: '77 Cedar Ln, Toronto' },
+    { type: 'client', name: 'Hannah Wells', initials: 'HW', color: '#e5534b', email: 'hannah.wells@email.com', phone: '+1 (555) 678-9012', pets: ['Pepper'], since: 'Feb 2024', address: '33 Elm Way, Toronto' },
+    { type: 'client', name: 'Rebecca Young', initials: 'RY', color: '#986ee2', email: 'rebecca.young@email.com', phone: '+1 (555) 789-0123', pets: ['Nala'], since: 'May 2024', address: '15 Spruce Dr, Toronto' },
+    { type: 'client', name: 'Sarah Smith', initials: 'SS', color: '#986ee2', email: 'sarah.smith@email.com', phone: '+1 (555) 890-1234', pets: ['Buddy'], since: 'Apr 2023', address: '62 Willow Ct, Toronto' },
+    { type: 'patient', name: 'Milo', initials: 'MI', color: '#cf8e3e', species: 'Canine', breed: 'Labrador Retriever', age: '7 years', weight: '32 kg', sex: 'Male (Neutered)', owner: 'Amy Collins', id: '30041' },
+    { type: 'patient', name: 'Archie', initials: 'AR', color: '#5e6ad2', species: 'Canine', breed: 'Mixed Breed', age: '8 months', weight: '6 kg', sex: 'Male', owner: 'David Turner', id: '30062' },
+    { type: 'patient', name: 'Nala', initials: 'NA', color: '#c96198', species: 'Canine', breed: 'Mixed Breed', age: '2 years', weight: '14 kg', sex: 'Female', owner: 'Emma Patel', id: '30079' },
+    { type: 'patient', name: 'Luna', initials: 'LU', color: '#539bf5', species: 'Feline', breed: 'Siamese', age: '4 years', weight: '4.2 kg', sex: 'Female (Spayed)', owner: 'Daniel Reyes', id: '30034' },
+    { type: 'patient', name: 'Rex', initials: 'RE', color: '#4dab9a', species: 'Canine', breed: 'German Shepherd', age: '6 years', weight: '38 kg', sex: 'Male', owner: 'Olivia Zhang', id: '30027' },
+    { type: 'patient', name: 'Pepper', initials: 'PE', color: '#e5534b', species: 'Feline', breed: 'Domestic Shorthair', age: '9 years', weight: '4.8 kg', sex: 'Female', owner: 'Hannah Wells', id: '30071' },
+    { type: 'patient', name: 'Daisy', initials: 'DA', color: '#57ab5a', species: 'Canine', breed: 'Beagle', age: '3 years', weight: '11 kg', sex: 'Female', owner: 'Emma Patel', id: '30055' },
+    { type: 'patient', name: 'Buddy', initials: 'BU', color: '#986ee2', species: 'Canine', breed: 'Golden Retriever', age: '5 years', weight: '29 kg', sex: 'Male (Neutered)', owner: 'Sarah Smith', id: '30018' },
+  ];
+
+  let searchFocusedIdx = 0;
+  let searchFilteredResults = [];
 
   function openSearch() { searchOverlay.classList.add('open'); searchInput.value = ''; searchInput.focus(); renderSearchResults(''); }
   function closeSearch() { searchOverlay.classList.remove('open'); }
 
   function renderSearchResults(q) {
-    searchBody.innerHTML = '';
+    searchList.innerHTML = '';
     q = q.toLowerCase().trim();
-    let results = q ? ALL_SEARCHABLE.filter(r => r.title.toLowerCase().includes(q)) : ALL_SEARCHABLE;
-    if (!results.length) { searchBody.innerHTML = '<div class="search-empty">No results</div>'; return; }
+    searchFilteredResults = q ? SEARCH_RECORDS.filter(r => r.name.toLowerCase().includes(q) || (r.owner && r.owner.toLowerCase().includes(q)) || (r.breed && r.breed.toLowerCase().includes(q))) : SEARCH_RECORDS;
 
-    const label = document.createElement('div');
-    label.className = 'search-section-label';
-    label.textContent = q ? 'Results' : 'Pages';
-    searchBody.appendChild(label);
+    if (!searchFilteredResults.length) {
+      searchList.innerHTML = '<div class="search-empty">No results</div>';
+      searchPreview.innerHTML = '<div class="search-preview-empty">No record selected</div>';
+      return;
+    }
 
-    results.forEach((r, i) => {
-      const el = document.createElement('div');
-      el.className = 'search-result' + (i === 0 ? ' focused' : '');
-      el.dataset.nav = r.key;
-      el.innerHTML = `<span class="r-icon"><i data-lucide="${r.icon}"></i></span><span>${r.title}</span><span class="r-hint">\u21B5</span>`;
-      el.addEventListener('click', () => { closeSearch(); navigateTo(r.key); });
-      searchBody.appendChild(el);
+    // Group by type
+    const clients = searchFilteredResults.filter(r => r.type === 'client');
+    const patients = searchFilteredResults.filter(r => r.type === 'patient');
+    searchFocusedIdx = 0;
+
+    if (clients.length) {
+      const label = document.createElement('div');
+      label.className = 'search-section-label';
+      label.textContent = 'Clients';
+      searchList.appendChild(label);
+      clients.forEach(r => searchList.appendChild(createSearchResultEl(r)));
+    }
+    if (patients.length) {
+      const label = document.createElement('div');
+      label.className = 'search-section-label';
+      label.textContent = 'Patients';
+      searchList.appendChild(label);
+      patients.forEach(r => searchList.appendChild(createSearchResultEl(r)));
+    }
+
+    // Focus first
+    const allResults = searchList.querySelectorAll('.search-result');
+    if (allResults[0]) allResults[0].classList.add('focused');
+    updateSearchPreview(searchFilteredResults[0]);
+    lucide.createIcons({ nodes: searchList.querySelectorAll('i') });
+  }
+
+  function createSearchResultEl(r) {
+    const idx = searchFilteredResults.indexOf(r);
+    const el = document.createElement('div');
+    el.className = 'search-result';
+    el.dataset.idx = idx;
+    const sub = r.type === 'client' ? r.email : (r.breed + ' · ' + r.owner);
+    const badge = r.type === 'client' ? '<span class="r-badge client">Client</span>' : '<span class="r-badge patient">Patient</span>';
+    el.innerHTML = `<div class="r-avatar" style="background:${r.color}">${r.initials}</div><span class="r-name">${r.name}</span><span class="r-sub">${sub}</span>${badge}`;
+    el.addEventListener('click', () => {
+      searchList.querySelectorAll('.search-result').forEach(e => e.classList.remove('focused'));
+      el.classList.add('focused');
+      searchFocusedIdx = idx;
+      updateSearchPreview(r);
     });
-    lucide.createIcons({ nodes: searchBody.querySelectorAll('i') });
+    el.addEventListener('dblclick', () => { closeSearch(); });
+    return el;
+  }
+
+  function updateSearchPreview(r) {
+    if (!r) { searchPreview.innerHTML = '<div class="search-preview-empty">Select a record to preview</div>'; return; }
+
+    if (r.type === 'client') {
+      searchPreview.innerHTML = `
+        <div class="search-preview-header">
+          <div class="search-preview-avatar" style="background:${r.color}">${r.initials}</div>
+          <span class="search-preview-name">${r.name}</span>
+          <span class="search-preview-badge" style="background:rgba(94,106,210,0.08);color:#5e6ad2;">Client</span>
+        </div>
+        <div class="search-preview-section">Details</div>
+        <div class="search-preview-field"><span class="spf-icon"><i data-lucide="mail"></i></span><span class="spf-value">${r.email}</span></div>
+        <div class="search-preview-field"><span class="spf-icon"><i data-lucide="phone"></i></span><span class="spf-value">${r.phone}</span></div>
+        <div class="search-preview-field"><span class="spf-icon"><i data-lucide="map-pin"></i></span><span class="spf-value">${r.address}</span></div>
+        <div class="search-preview-field"><span class="spf-icon"><i data-lucide="calendar"></i></span><span class="spf-value">Client since ${r.since}</span></div>
+        <div class="search-preview-field"><span class="spf-icon"><i data-lucide="paw-print"></i></span><span class="spf-value">${r.pets.join(', ')}</span></div>
+      `;
+    } else {
+      searchPreview.innerHTML = `
+        <div class="search-preview-header">
+          <div class="search-preview-avatar" style="background:${r.color}">${r.initials}</div>
+          <span class="search-preview-name">${r.name}</span>
+          <span class="search-preview-badge" style="background:rgba(87,171,90,0.08);color:#57ab5a;">Patient</span>
+        </div>
+        <div class="search-preview-section">Details</div>
+        <div class="search-preview-field"><span class="spf-icon"><i data-lucide="user"></i></span><span class="spf-value">${r.owner}</span></div>
+        <div class="search-preview-field"><span class="spf-icon"><i data-lucide="info"></i></span><span class="spf-value">${r.species} · ${r.breed}</span></div>
+        <div class="search-preview-field"><span class="spf-icon"><i data-lucide="clock"></i></span><span class="spf-value">${r.age} · ${r.sex}</span></div>
+        <div class="search-preview-field"><span class="spf-icon"><i data-lucide="scale"></i></span><span class="spf-value">${r.weight}</span></div>
+        <div class="search-preview-field"><span class="spf-icon"><i data-lucide="hash"></i></span><span class="spf-value">ID: ${r.id}</span></div>
+        <div class="search-preview-section">Tags</div>
+        <div class="search-preview-tags">
+          <span class="search-preview-tag">${r.species}</span>
+          <span class="search-preview-tag">${r.breed}</span>
+          <span class="search-preview-tag">${r.sex.split(' ')[0]}</span>
+        </div>
+      `;
+    }
+    lucide.createIcons({ nodes: searchPreview.querySelectorAll('i') });
   }
 
   searchInput.addEventListener('input', () => renderSearchResults(searchInput.value));
 
   searchInput.addEventListener('keydown', (e) => {
-    const results = searchBody.querySelectorAll('.search-result');
-    const cur = searchBody.querySelector('.search-result.focused');
-    let idx = Array.from(results).indexOf(cur);
-    if (e.key === 'ArrowDown') { e.preventDefault(); if (idx < results.length - 1) { cur && cur.classList.remove('focused'); results[idx + 1].classList.add('focused'); results[idx + 1].scrollIntoView({ block: 'nearest' }); } }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); if (idx > 0) { cur && cur.classList.remove('focused'); results[idx - 1].classList.add('focused'); results[idx - 1].scrollIntoView({ block: 'nearest' }); } }
-    else if (e.key === 'Enter') { e.preventDefault(); if (cur) { closeSearch(); navigateTo(cur.dataset.nav); } }
+    const results = searchList.querySelectorAll('.search-result');
+    const cur = searchList.querySelector('.search-result.focused');
+    let idx = cur ? Array.from(results).indexOf(cur) : -1;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (idx < results.length - 1) { cur && cur.classList.remove('focused'); results[idx + 1].classList.add('focused'); results[idx + 1].scrollIntoView({ block: 'nearest' }); searchFocusedIdx = parseInt(results[idx + 1].dataset.idx); updateSearchPreview(searchFilteredResults[searchFocusedIdx]); }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (idx > 0) { cur && cur.classList.remove('focused'); results[idx - 1].classList.add('focused'); results[idx - 1].scrollIntoView({ block: 'nearest' }); searchFocusedIdx = parseInt(results[idx - 1].dataset.idx); updateSearchPreview(searchFilteredResults[searchFocusedIdx]); }
+    } else if (e.key === 'Enter') { e.preventDefault(); openSearchRecord(); }
   });
 
+  function openSearchRecord() {
+    const r = searchFilteredResults[searchFocusedIdx];
+    closeSearch();
+    if (r) openRecordView(r);
+  }
+
+  document.getElementById('searchOpenBtn').addEventListener('click', openSearchRecord);
   document.getElementById('searchBtn').addEventListener('click', openSearch);
   searchOverlay.addEventListener('click', (e) => { if (e.target === searchOverlay) closeSearch(); });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && searchOverlay.classList.contains('open')) closeSearch();
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); searchOverlay.classList.contains('open') ? closeSearch() : openSearch(); }
   });
+
+  // ═══ Record view ═══
+  let recordDrawerTab = 'client';
+
+  function openRecordView(record) {
+    if (inSettingsMode) { inSettingsMode = false; document.getElementById('sidebar').classList.remove('settings-mode'); document.getElementById('settingsSidebarNav').innerHTML = ''; }
+    activeNav = null;
+    updateActiveStates();
+    document.getElementById('welcomeScreen').style.display = 'none';
+    document.getElementById('inboxPanel').classList.remove('active');
+    const pageView = document.getElementById('pageView');
+    pageView.style.display = 'flex';
+    pageView.style.overflow = 'hidden';
+    const c = document.getElementById('pageViewContent');
+
+    const isPatient = record.type === 'patient';
+
+    let detailHeader = `<div class="inbox-detail-header">
+      <button class="record-back-btn" id="recordBackBtn"><i data-lucide="arrow-left"></i> Back</button>
+      <div class="inbox-detail-avatar" style="background:${record.color}">${record.initials}</div>
+      <div class="inbox-detail-title">${isPatient ? record.owner + ' \u203A ' + record.name : record.name}</div>
+      <div class="inbox-detail-time"></div>
+    </div>`;
+
+    const tabList = isPatient ? ['Chart','Medications','Immunizations','Labs','Billing','Messages','Tasks','Forms','Info'] : ['Overview','Pets','Billing','Messages','Tasks','Forms','Info'];
+    let detailTabs = '<div class="inbox-detail-tabs">' + tabList.map((t,i) => '<div class="inbox-detail-tab' + (i===0?' active':'') + '">' + t + '</div>').join('') + '</div>';
+
+    let detailBody = isPatient ? renderRecordChart(record) : renderClientOverview(record);
+
+    const drawerTabs = `<div class="inbox-drawer-tabs" id="recordDrawerTabs">
+      <div class="inbox-drawer-tab${recordDrawerTab==='client'?' active':''}" data-drawer-tab="client">Client</div>
+      <div class="inbox-drawer-tab${recordDrawerTab==='patient'?' active':''}" data-drawer-tab="patient">Patient</div>
+      <div class="inbox-drawer-tab${recordDrawerTab==='ask-ai'?' active':''}" data-drawer-tab="ask-ai">Ask AI</div>
+    </div>`;
+
+    c.innerHTML = `<div class="record-page">
+      <div class="record-main">${detailHeader}${detailTabs}<div class="inbox-detail-body">${detailBody}</div></div>
+      <div class="record-drawer" id="recordDrawer">${drawerTabs}<div class="inbox-drawer-body" id="recordDrawerBody"></div></div>
+    </div>`;
+
+    lucide.createIcons({ nodes: c.querySelectorAll('i') });
+
+    document.getElementById('recordBackBtn').addEventListener('click', () => {
+      pageView.style.display = 'none';
+      document.getElementById('welcomeScreen').style.display = 'flex';
+    });
+
+    renderRecordDrawer(record);
+    c.querySelectorAll('#recordDrawerTabs .inbox-drawer-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        recordDrawerTab = tab.dataset.drawerTab;
+        c.querySelectorAll('#recordDrawerTabs .inbox-drawer-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderRecordDrawer(record);
+      });
+    });
+
+    // Wire pet clicks in client overview
+    c.querySelectorAll('[data-pet-name]').forEach(el => {
+      el.addEventListener('click', () => {
+        const pet = SEARCH_RECORDS.find(sr => sr.type === 'patient' && sr.name === el.dataset.petName);
+        if (pet) openRecordView(pet);
+      });
+    });
+  }
+
+  function renderRecordChart(r) {
+    return `
+      <div class="tab-section-title"><i data-lucide="activity"></i> LATEST VITALS — ${r.name.toUpperCase()}</div>
+      <div class="vitals-row">
+        <div class="vital-card"><div class="vital-label">WEIGHT</div><div class="vital-value">${r.weight.replace(' kg','')}<span class="vital-unit">kg</span></div><div class="vital-note">Stable</div></div>
+        <div class="vital-card"><div class="vital-label">TEMP</div><div class="vital-value">38.5<span class="vital-unit">&deg;C</span></div><div class="vital-note">Normal</div></div>
+        <div class="vital-card"><div class="vital-label">HEART RATE</div><div class="vital-value">90<span class="vital-unit">bpm</span></div><div class="vital-note">Normal</div></div>
+        <div class="vital-card"><div class="vital-label">RESP RATE</div><div class="vital-value">18<span class="vital-unit">/min</span></div><div class="vital-note">Normal</div></div>
+      </div>
+      <div class="tab-section-title"><i data-lucide="clock"></i> MEDICAL TIMELINE</div>
+      <div class="chart-timeline">
+        <div class="chart-entry consultation"><div class="entry-date">MAR 14, 2026</div><div class="entry-title">Annual wellness exam</div><div class="entry-note">${r.name} appears healthy overall. Weight stable. Heart and lungs clear. Dental grade 1 — mild tartar on upper premolars. Recommend dental cleaning within 6 months.</div><div class="entry-vet"><i data-lucide="user"></i> Dr. Sarah Smith</div></div>
+        <div class="chart-entry vaccination"><div class="entry-date">FEB 28, 2026</div><div class="entry-title">Rabies booster administered</div><div class="entry-note">3-year rabies vaccine administered in right rear leg. No adverse reaction observed. Next due: Feb 2029.</div><div class="entry-vet"><i data-lucide="user"></i> Dr. Katie Brown</div></div>
+        <div class="chart-entry lab"><div class="entry-date">JAN 15, 2026</div><div class="entry-title">Blood panel — routine</div><div class="entry-note">CBC and chemistry panel within normal limits. BUN 18, creatinine 1.1, ALT 42. Glucose 95. All values WNL.</div><div class="entry-vet"><i data-lucide="user"></i> Dr. Sarah Smith</div></div>
+        <div class="chart-entry consultation"><div class="entry-date">NOV 20, 2025</div><div class="entry-title">Skin irritation — left flank</div><div class="entry-note">Owner reports intermittent scratching for 2 weeks. Mild erythema on left flank. No parasites on skin scraping. Prescribed Apoquel 16mg daily for 14 days.</div><div class="entry-vet"><i data-lucide="user"></i> Dr. Mike Johnson</div></div>
+        <div class="chart-entry followup"><div class="entry-date">SEP 5, 2025</div><div class="entry-title">Post-dental follow-up</div><div class="entry-note">Dental cleaning performed Sep 1. Healing well, no signs of infection. Owner reports eating normally. Suture site clean.</div><div class="entry-vet"><i data-lucide="user"></i> Dr. Sarah Smith</div></div>
+      </div>`;
+  }
+
+  function renderClientOverview(r) {
+    const petList = r.pets.map(p => {
+      const pr = SEARCH_RECORDS.find(sr => sr.type === 'patient' && sr.name === p);
+      if (!pr) return '';
+      return `<div class="form-item" style="cursor:pointer;" data-pet-name="${p}">
+        <div class="form-icon green"><i data-lucide="paw-print"></i></div>
+        <div class="form-body"><div class="form-name">${p}</div><div class="form-desc">${pr.species} · ${pr.breed} · ${pr.age}</div></div>
+        <span class="status-pill active dot">${pr.sex.split(' ')[0]}</span>
+      </div>`;
+    }).join('');
+    return `
+      <div class="tab-section-title"><i data-lucide="user"></i> CLIENT DETAILS</div>
+      <div class="info-grid">
+        <div><div class="info-label">EMAIL</div><div class="info-value">${r.email}</div></div>
+        <div><div class="info-label">PHONE</div><div class="info-value">${r.phone}</div></div>
+        <div><div class="info-label">ADDRESS</div><div class="info-value">${r.address}</div></div>
+        <div><div class="info-label">CLIENT SINCE</div><div class="info-value">${r.since}</div></div>
+      </div>
+      <div class="tab-section-title"><i data-lucide="paw-print"></i> PETS (${r.pets.length})</div>
+      ${petList}`;
+  }
+
+  function renderRecordDrawer(record) {
+    const body = document.getElementById('recordDrawerBody');
+    if (!body) return;
+    const isClient = record.type === 'client';
+
+    if (recordDrawerTab === 'client') {
+      const client = isClient ? record : SEARCH_RECORDS.find(r => r.type === 'client' && r.name === record.owner);
+      if (!client) { body.innerHTML = '<div style="padding:24px;text-align:center;color:rgba(0,0,0,0.3);font-size:13px;">No client data</div>'; return; }
+      body.innerHTML = `
+        <div class="inbox-drawer-avatar-row"><div class="inbox-drawer-avatar" style="background:${client.color}">${client.initials}</div><div><div class="inbox-drawer-name">${client.name}</div><div class="inbox-drawer-sub">Client</div></div></div>
+        <div class="inbox-drawer-section"><div class="inbox-drawer-section-title">Contact</div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Email</div><div class="inbox-drawer-value">${client.email}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Phone</div><div class="inbox-drawer-value">${client.phone}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Address</div><div class="inbox-drawer-value">${client.address}</div></div>
+        </div>
+        <div class="inbox-drawer-section"><div class="inbox-drawer-section-title">Account</div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Client since</div><div class="inbox-drawer-value">${client.since}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Outstanding balance</div><div class="inbox-drawer-value">$0.00</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Pets</div><div class="inbox-drawer-value">${client.pets.join(', ')}</div></div>
+        </div>`;
+    } else if (recordDrawerTab === 'patient') {
+      const patient = !isClient ? record : (record.pets?.[0] ? SEARCH_RECORDS.find(r => r.type === 'patient' && r.name === record.pets[0]) : null);
+      if (!patient) { body.innerHTML = '<div style="padding:24px;text-align:center;color:rgba(0,0,0,0.3);font-size:13px;">No patient data</div>'; return; }
+      body.innerHTML = `
+        <div class="inbox-drawer-avatar-row"><div class="inbox-drawer-avatar" style="background:${patient.color}"><i data-lucide="paw-print" style="width:16px;height:16px;stroke-width:2;color:#fff;"></i></div><div><div class="inbox-drawer-name">${patient.name}</div><div class="inbox-drawer-sub">${patient.breed}</div></div></div>
+        <div class="inbox-drawer-section"><div class="inbox-drawer-section-title">Details</div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Species</div><div class="inbox-drawer-value">${patient.species}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Breed</div><div class="inbox-drawer-value">${patient.breed}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Sex</div><div class="inbox-drawer-value">${patient.sex}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Age</div><div class="inbox-drawer-value">${patient.age}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Weight</div><div class="inbox-drawer-value">${patient.weight}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Patient ID</div><div class="inbox-drawer-value">${patient.id}</div></div>
+        </div>
+        <div class="inbox-drawer-section"><div class="inbox-drawer-section-title">Medical</div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Allergies</div><div class="inbox-drawer-value">None known</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Last vaccination</div><div class="inbox-drawer-value">Feb 28, 2026</div></div>
+        </div>`;
+    } else {
+      body.innerHTML = `
+        <div style="margin-bottom:12px;"><textarea class="ask-ai-input" placeholder="Ask AI about this record..."></textarea><div class="ask-ai-hint">Press Enter to ask</div></div>
+        <div class="ask-ai-suggestions"><div class="inbox-drawer-section-title">Suggestions</div>
+          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Summarize patient history</div>
+          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Draft a message to the client</div>
+          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Check for drug interactions</div>
+          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Suggest next steps</div>
+        </div>`;
+    }
+    lucide.createIcons({ nodes: body.querySelectorAll('i') });
+  }
 
   // ═══ Keyboard nav ═══
   function getAllFocusable() {
