@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendar — Provet</title>
+  <meta name="description" content="Provet's drag-and-drop scheduling calendar. Manage appointments across staff with an intuitive day view." />
+
+  <!-- Nord Design System -->
+  <link rel="stylesheet" href="https://nordcdn.net/ds/fonts/3.0.4/fonts.css" />
+  <link rel="stylesheet" href="https://nordcdn.net/ds/css/5.0.3/nord.min.css" />
+  <link rel="stylesheet" href="https://nordcdn.net/ds/themes/9.0.0/nord.css" />
+  <script type="module" src="https://nordcdn.net/ds/components/4.14.0/index.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; -webkit-font-smoothing: antialiased; }
+
+    /* ── Toolbar ── */
+    .cal-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 16px; height: 48px; border-bottom: 1px solid rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+    .cal-toolbar-left { display: flex; align-items: center; gap: 8px; }
+    .cal-toolbar-right { display: flex; align-items: center; gap: 6px; }
+
+    .cal-tb-btn {
+      padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.12);
+      background: #fff; font-size: 12px; font-weight: 500; color: #444;
+      cursor: pointer; font-family: inherit; transition: background 0.1s, border-color 0.1s;
+    }
+    .cal-tb-btn:hover { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.2); }
+    .cal-tb-icon { padding: 5px 8px; font-size: 16px; line-height: 1; color: #666; }
+
+    .cal-tb-primary {
+      background: #1a73e8; color: #fff; border-color: #1a73e8; font-weight: 600;
+    }
+    .cal-tb-primary:hover { background: #1557b0; border-color: #1557b0; }
+
+    .cal-tb-seg {
+      display: flex; border: 1px solid rgba(0,0,0,0.12); border-radius: 6px; overflow: hidden;
+    }
+    .cal-tb-seg-item {
+      padding: 5px 10px; border: none; background: #fff; font-size: 12px;
+      font-weight: 500; color: #666; cursor: pointer; font-family: inherit;
+      border-right: 1px solid rgba(0,0,0,0.08); transition: background 0.1s;
+    }
+    .cal-tb-seg-item:last-child { border-right: none; }
+    .cal-tb-seg-item:hover { background: rgba(0,0,0,0.03); }
+    .cal-tb-seg-item.active { background: rgba(26,115,232,0.08); color: #1a73e8; font-weight: 600; }
+
+    /* ── Main layout ── */
+    .cal-layout {
+      display: flex;
+      overflow: hidden;
+      height: calc(100vh - 49px);
+    }
+
+    /* ── Left sidebar ── */
+    .cal-sidebar {
+      width: 210px;
+      min-width: 210px;
+      border-right: 1px solid rgba(0,0,0,0.06);
+      padding: 12px;
+      overflow-y: auto;
+      flex-shrink: 0;
+      background: #fff;
+    }
+
+    .cal-sidebar nord-calendar {
+      --n-calendar-box-shadow: none;
+      --n-calendar-border-radius: 4px;
+      width: 100%;
+      transform: scale(0.75);
+      transform-origin: top left;
+      margin-bottom: -60px;
+      margin-left: -4px;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(55,53,47,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    /* Staff list - Notion style with eye icon */
+    .staff-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.1s;
+      user-select: none;
+    }
+    .staff-row:hover { background: rgba(55,53,47,0.04); }
+    .staff-row.inactive { opacity: 0.4; }
+    .staff-row .staff-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .staff-row .staff-name {
+      font-size: 13px;
+      color: rgb(55,53,47);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .staff-row .staff-eye {
+      width: 16px;
+      height: 16px;
+      opacity: 0;
+      transition: opacity 0.1s;
+      color: rgba(55,53,47,0.4);
+      flex-shrink: 0;
+    }
+    .staff-row:hover .staff-eye { opacity: 1; }
+    .staff-row.inactive .staff-eye { opacity: 1; }
+
+    .sidebar-divider {
+      height: 1px;
+      background: rgba(55,53,47,0.09);
+      margin: 10px 0;
+    }
+
+    /* ── Calendar grid area ── */
+    .cal-main {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: auto;
+      position: relative;
+      background: #fff;
+    }
+
+    .cal-columns-header {
+      display: flex;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #fff;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .cal-time-gutter-header {
+      width: 56px;
+      min-width: 56px;
+      flex-shrink: 0;
+    }
+    .cal-staff-header {
+      flex: 1;
+      min-width: 180px;
+      padding: 8px 12px;
+      border-left: 1px solid rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cal-staff-header .staff-info .name {
+      font-weight: 500;
+      font-size: 13px;
+      color: rgb(55,53,47);
+    }
+    .cal-staff-header .staff-info .hours {
+      font-size: 11px;
+      color: rgba(55,53,47,0.5);
+    }
+
+    .cal-body {
+      display: flex;
+      position: relative;
+    }
+
+    /* Time gutter */
+    .cal-time-gutter {
+      width: 56px;
+      min-width: 56px;
+      flex-shrink: 0;
+    }
+    .cal-time-slot-label {
+      height: 56px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding-right: 8px;
+      font-size: 10px;
+      color: rgba(55,53,47,0.45);
+      font-weight: 500;
+      position: relative;
+      top: -6px;
+    }
+
+    /* Staff columns */
+    .cal-staff-column {
+      flex: 1;
+      min-width: 180px;
+      border-left: 1px solid rgba(0,0,0,0.06);
+      position: relative;
+    }
+    .cal-hour-row {
+      height: 56px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      position: relative;
+    }
+    .cal-hour-row::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      border-bottom: 1px dashed rgba(0,0,0,0.04);
+    }
+
+    /* Current time indicator */
+    .time-indicator {
+      position: absolute;
+      left: 0;
+      right: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+    }
+    .time-indicator .label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #eb5757;
+      white-space: nowrap;
+      background: #fff;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .time-indicator .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #eb5757;
+      flex-shrink: 0;
+    }
+    .time-indicator .line {
+      flex: 1;
+      height: 2px;
+      background: #eb5757;
+    }
+
+    /* ── Appointment blocks (Notion-style) ── */
+    .appointment {
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      overflow: hidden;
+      cursor: grab;
+      z-index: 3;
+      transition: box-shadow 0.12s ease, filter 0.12s ease;
+      border: none;
+      line-height: 1.3;
+      box-sizing: border-box;
+    }
+    .appointment:hover {
+      filter: brightness(0.95);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      z-index: 4;
+    }
+    .appointment:active { cursor: grabbing; }
+    .appointment .appt-header {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .appointment .appt-title {
+      font-weight: 600;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+    .appointment .appt-patient {
+      font-size: 11px;
+      opacity: 0.75;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-top: 1px;
+    }
+    .appointment .appt-time {
+      font-size: 10px;
+      opacity: 0.65;
+      margin-top: 1px;
+      font-weight: 500;
+    }
+
+    /* Notion-style appointment colors — soft fills, no left border */
+    .appt-consultation { background: #d3e5ef; color: #2c5a7c; }
+    .appt-vaccination  { background: #dbeddb; color: #2b593f; }
+    .appt-surgery      { background: #f5d0e0; color: #7c2d5a; }
+    .appt-followup     { background: #e8deee; color: #523d6e; }
+    .appt-emergency    { background: #ffe2dd; color: #93291e; }
+    .appt-diagnostics  { background: #fdecc8; color: #7c5b1e; }
+    .appt-dental       { background: #eee0da; color: #5c3d2e; }
+    .appt-grooming     { background: #d8f0d3; color: #2b593f; }
+    .appt-break {
+      background: rgba(55,53,47,0.04);
+      color: rgba(55,53,47,0.5);
+      border: 1px dashed rgba(55,53,47,0.12);
+    }
+
+    .appointment .appt-type-label {
+      font-size: 10px;
+      font-weight: 500;
+      opacity: 0.65;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    /* Drop target highlight */
+    .cal-hour-row.drop-target {
+      background: rgba(35,131,226,0.06);
+    }
+
+    /* Drag ghost */
+    .appointment.dragging {
+      opacity: 0.4;
+    }
+
+    /* ── Right panel (edit appointment) ── */
+    .edit-panel {
+      width: 360px;
+      min-width: 360px;
+      border-left: 1px solid rgba(0,0,0,0.06);
+      background: #fff;
+      overflow-y: auto;
+      padding: 20px;
+      display: none;
+      flex-shrink: 0;
+      box-shadow: -4px 0 12px rgba(0, 0, 0, 0.04);
+    }
+    .edit-panel.open { display: block; }
+
+    .client-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: rgba(55,53,47,0.03);
+      border-radius: 6px;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    /* Reason type grid */
+    .reason-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+    .reason-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.1s ease;
+    }
+    .reason-option:hover { background: rgba(55,53,47,0.03); border-color: rgba(0,0,0,0.15); }
+    .reason-option.selected { border-color: #2383e2; background: rgba(35,131,226,0.04); }
+    .reason-option .color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .reason-option .reason-info { line-height: 1.3; }
+    .reason-option .reason-name { font-weight: 500; font-size: 12px; }
+    .reason-option .reason-dur { font-size: 10px; color: rgba(55,53,47,0.5); }
+
+    .panel-link {
+      font-size: 12px;
+      color: #2383e2;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 4px;
+    }
+    .panel-link:hover { text-decoration: underline; }
+
+    .sidebar-section-title-panel {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(55,53,47,0.65);
+      margin: 0;
+    }
+
+    /* Staff color palette (Notion-inspired) */
+    .staff-color-1 { --staff-color: #2383e2; --n-avatar-color: #2383e2; }
+    .staff-color-2 { --staff-color: #4dab9a; --n-avatar-color: #4dab9a; }
+    .staff-color-3 { --staff-color: #cf8e3e; --n-avatar-color: #cf8e3e; }
+    .staff-color-4 { --staff-color: #c14c8a; --n-avatar-color: #c14c8a; }
+    .staff-color-5 { --staff-color: #6b57c4; --n-avatar-color: #6b57c4; }
+
+    /* ── Dark mode ── */
+    body.dark { background: #1a1a1a; color: #d4d4d4; }
+    body.dark .cal-toolbar { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .cal-toolbar-left h1 { color: #d4d4d4; }
+    body.dark #todayBadge { background: rgba(94,106,210,0.15); color: #7c8aff; }
+    body.dark .cal-tb-btn { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: #ccc; }
+    body.dark .cal-tb-btn:hover { background: #333; border-color: rgba(255,255,255,0.15); }
+    body.dark .cal-tb-icon { color: #999; }
+    body.dark .cal-tb-primary { background: #5e6ad2; border-color: #5e6ad2; color: #fff; }
+    body.dark .cal-tb-primary:hover { background: #4f5bc0; border-color: #4f5bc0; }
+    body.dark .cal-tb-seg { border-color: rgba(255,255,255,0.1); }
+    body.dark .cal-tb-seg-item { background: #2a2a2a; color: #999; border-right-color: rgba(255,255,255,0.06); }
+    body.dark .cal-tb-seg-item:hover { background: #333; }
+    body.dark .cal-tb-seg-item.active { background: rgba(94,106,210,0.15); color: #7c8aff; }
+
+    body.dark .cal-sidebar { background: #1e1e1e; border-right-color: rgba(255,255,255,0.06); }
+    body.dark .sidebar-section-title { color: rgba(255,255,255,0.4); }
+    body.dark .staff-row:hover { background: rgba(255,255,255,0.04); }
+    body.dark .staff-row .staff-name { color: #d4d4d4; }
+    body.dark .staff-row .staff-eye { color: rgba(255,255,255,0.3); }
+    body.dark .sidebar-divider { background: rgba(255,255,255,0.06); }
+
+    body.dark .cal-main { background: #1a1a1a; }
+    body.dark .cal-columns-header { background: #1a1a1a; border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .cal-staff-header { border-left-color: rgba(255,255,255,0.06); }
+    body.dark .cal-staff-header .staff-info .name { color: #d4d4d4; }
+    body.dark .cal-staff-header .staff-info .hours { color: rgba(255,255,255,0.35); }
+    body.dark .cal-time-slot-label { color: rgba(255,255,255,0.3); }
+    body.dark .cal-staff-column { border-left-color: rgba(255,255,255,0.06); }
+    body.dark .cal-hour-row { border-bottom-color: rgba(255,255,255,0.04); }
+    body.dark .cal-hour-row::after { border-bottom-color: rgba(255,255,255,0.03); }
+
+    body.dark .appointment { opacity: 0.9; }
+    body.dark .appt-consultation { background: #2a4a5e; color: #a3d4f7; }
+    body.dark .appt-vaccination { background: #2a4a3a; color: #a3d4b7; }
+    body.dark .appt-surgery { background: #4a2a3e; color: #f7a3c7; }
+    body.dark .appt-followup { background: #3a2a4e; color: #c7a3f7; }
+    body.dark .appt-emergency { background: #4e2a2a; color: #f7a3a3; }
+    body.dark .appt-diagnostics { background: #4a3e2a; color: #f7d7a3; }
+    body.dark .appt-dental { background: #3e332a; color: #d4b8a3; }
+    body.dark .appt-grooming { background: #2a4a2a; color: #a3d4a3; }
+    body.dark .appt-break { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.35); border-color: rgba(255,255,255,0.08); }
+
+    body.dark .edit-panel { background: #1e1e1e; border-left-color: rgba(255,255,255,0.06); box-shadow: -4px 0 12px rgba(0,0,0,0.3); }
+    body.dark .client-info { background: rgba(255,255,255,0.04); color: #d4d4d4; }
+    body.dark .reason-option { border-color: rgba(255,255,255,0.08); color: #d4d4d4; }
+    body.dark .reason-option:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12); }
+    body.dark .sidebar-section-title-panel { color: rgba(255,255,255,0.5); }
+    body.dark .time-indicator .label { background: #1a1a1a; }
+    body.dark .cal-hour-row.drop-target { background: rgba(94,106,210,0.08); }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .cal-sidebar { display: none; }
+      .edit-panel { width: 300px; min-width: 300px; }
+    }
+    @media (max-width: 600px) {
+      .edit-panel { width: 100%; min-width: 100%; position: absolute; top: 0; right: 0; z-index: 20; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cal-toolbar">
+    <div class="cal-toolbar-left">
+      <h1 id="toolbarDate" style="margin:0; font-size:16px; font-weight:600; color:#222; white-space:nowrap;"></h1>
+      <span id="todayBadge" style="background:#e8f0fe; color:#1a73e8; font-size:10px; font-weight:600; padding:2px 6px; border-radius:4px;">Today</span>
+    </div>
+    <div class="cal-toolbar-right">
+      <button class="cal-tb-btn" id="todayBtn">Today</button>
+      <button class="cal-tb-btn cal-tb-icon" id="prevDay">‹</button>
+      <button class="cal-tb-btn cal-tb-icon" id="nextDay">›</button>
+      <div class="cal-tb-seg">
+        <button class="cal-tb-seg-item active">Day</button>
+        <button class="cal-tb-seg-item">Week</button>
+        <button class="cal-tb-seg-item">Month</button>
+      </div>
+      <button class="cal-tb-btn cal-tb-primary" id="newApptBtn">+ New appointment</button>
+    </div>
+  </div>
+
+    <!-- Main area -->
+    <div class="cal-layout">
+
+      <!-- Left sidebar -->
+      <div class="cal-sidebar">
+        <!-- Nord calendar component -->
+        <nord-calendar id="nordCalendar" expand></nord-calendar>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Staff filter -->
+        <div id="staffList"></div>
+      </div>
+
+      <!-- Calendar grid -->
+      <div class="cal-main" id="calMain">
+        <div class="cal-columns-header" id="colHeaders"></div>
+        <div class="cal-body" id="calBody"></div>
+      </div>
+
+      <!-- Edit appointment panel -->
+      <div class="edit-panel" id="editPanel">
+        <nord-stack gap="m">
+          <nord-stack direction="horizontal" align-items="center" justify-content="space-between">
+            <h3 class="n-typescale-m" id="panelTitle" style="margin: 0;">Edit appointment</h3>
+            <nord-button size="s" variant="plain" square id="closePanel">
+              <nord-icon name="interface-close" label="Close panel"></nord-icon>
+            </nord-button>
+          </nord-stack>
+
+          <nord-divider></nord-divider>
+
+          <nord-stack gap="xs">
+            <nord-stack direction="horizontal" align-items="center" justify-content="space-between">
+              <span class="sidebar-section-title-panel">Client &amp; patient</span>
+              <nord-button size="s" variant="plain" id="clearClient">Clear</nord-button>
+            </nord-stack>
+            <div id="clientInfo"></div>
+          </nord-stack>
+
+          <nord-divider></nord-divider>
+
+          <nord-stack gap="xs">
+            <span class="sidebar-section-title-panel">Reason type</span>
+            <div class="reason-grid" id="reasonGrid"></div>
+            <a class="panel-link">View all reason types</a>
+          </nord-stack>
+
+          <nord-divider></nord-divider>
+
+          <nord-input label="Reason for visit" id="panelReason" placeholder="E.g. Annual check-up" expand></nord-input>
+
+          <nord-input type="date" label="Date" id="panelDate" expand></nord-input>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--n-space-s);">
+            <nord-input type="time" label="Start time" id="panelStart" expand></nord-input>
+            <nord-input type="time" label="End time" id="panelEnd" expand></nord-input>
+          </div>
+
+          <nord-divider></nord-divider>
+
+          <nord-button-group variant="spaced">
+            <nord-button id="discardAppt">Discard</nord-button>
+            <nord-button variant="primary" id="createAppt">Create</nord-button>
+          </nord-button-group>
+        </nord-stack>
+      </div>
+
+    </div>
+
+  <!-- Tooltips for appointments (shared, content set dynamically) -->
+  <nord-tooltip id="apptTooltip" position="block-start"></nord-tooltip>
+
+  <script>
+    // ── Dark mode from parent ──
+    if (new URLSearchParams(window.location.search).get('dark') === '1') {
+      document.body.classList.add('dark');
+    }
+
+    // ── DATA ──
+    const STAFF = [
+      { id: 1, name: 'Sarah Smith', initials: 'SS', hours: '10:00 AM - 5:00 PM', checked: true, colorClass: 'staff-color-1' },
+      { id: 2, name: 'Katie Brown', initials: 'KB', hours: '10:00 AM - 3:00 PM', checked: true, colorClass: 'staff-color-2' },
+      { id: 3, name: 'Mike Johnson', initials: 'MJ', hours: '10:00 AM - 5:00 PM', checked: true, colorClass: 'staff-color-3' },
+      { id: 4, name: 'Jordan Nguyen', initials: 'JN', hours: '9:00 AM - 4:00 PM', checked: false, colorClass: 'staff-color-4' },
+      { id: 5, name: 'Emily Carter', initials: 'EC', hours: '11:00 AM - 6:00 PM', checked: false, colorClass: 'staff-color-5' },
+    ];
+
+    const REASON_TYPES = [
+      { name: 'Consultation', dur: '1 hour', color: '#529cca', key: 'consultation' },
+      { name: 'Vaccination', dur: '15 min', color: '#4dab9a', key: 'vaccination' },
+      { name: 'Surgery', dur: '1 hour', color: '#c14c8a', key: 'surgery' },
+      { name: 'Follow-up', dur: '30 min', color: '#9065b0', key: 'followup' },
+      { name: 'Diagnostics', dur: '2 hours', color: '#cf8e3e', key: 'diagnostics' },
+      { name: 'Emergency', dur: '30 min', color: '#e06a5c', key: 'emergency' },
+      { name: 'Dental cleaning', dur: '30 min', color: '#a87e6f', key: 'dental' },
+      { name: 'Grooming', dur: '30 min', color: '#6aab73', key: 'grooming' },
+    ];
+
+    const SAMPLE_APPOINTMENTS = [
+      { id: 1, staffId: 1, title: 'Annual check-up', type: 'consultation', patient: 'Milo', owner: 'Amy Collins', startHour: 10, startMin: 0, endHour: 11, endMin: 0 },
+      { id: 2, staffId: 1, title: 'Puppy vaccinations', type: 'vaccination', patient: 'Archie', owner: 'David Turner', startHour: 11, startMin: 30, endHour: 12, endMin: 30 },
+      { id: 3, staffId: 1, title: 'Break', type: 'break', patient: '', owner: '', startHour: 13, startMin: 0, endHour: 14, endMin: 0 },
+      { id: 4, staffId: 2, title: 'Limping', type: 'consultation', patient: 'Rex', owner: 'Olivia Zhang', startHour: 10, startMin: 0, endHour: 11, endMin: 0 },
+      { id: 5, staffId: 2, title: 'Booster shots', type: 'vaccination', patient: 'Luna', owner: 'Daniel Reyes', startHour: 11, startMin: 0, endHour: 12, endMin: 0 },
+      { id: 6, staffId: 2, title: 'Break', type: 'break', patient: '', owner: '', startHour: 13, startMin: 0, endHour: 14, endMin: 0 },
+      { id: 7, staffId: 2, title: 'Lethargy and loss of appetite', type: 'consultation', patient: 'Pepper', owner: 'Hannah Wells', startHour: 14, startMin: 0, endHour: 15, endMin: 0 },
+      { id: 8, staffId: 3, title: 'Post-op check', type: 'followup', patient: 'Tigger', owner: 'Michael Green', startHour: 11, startMin: 0, endHour: 12, endMin: 0 },
+      { id: 9, staffId: 3, title: 'Lump removal', type: 'surgery', patient: 'Daisy', owner: 'Emma Patel', startHour: 12, startMin: 0, endHour: 13, endMin: 0 },
+      { id: 10, staffId: 3, title: 'Break', type: 'break', patient: '', owner: '', startHour: 13, startMin: 0, endHour: 14, endMin: 0 },
+      { id: 11, staffId: 3, title: 'Spay procedure', type: 'surgery', patient: 'Nala', owner: 'Rebecca Young', startHour: 16, startMin: 0, endHour: 17, endMin: 0 },
+    ];
+
+    let appointments = [...SAMPLE_APPOINTMENTS];
+    let nextId = 100;
+
+    // Current date
+    let currentDate = new Date();
+
+    const HOURS_START = 9;
+    const HOURS_END = 18;
+    const HOUR_HEIGHT = 56;
+
+    // ── TOOLBAR ──
+    function updateToolbar() {
+      const suffix = getOrdinalSuffix(currentDate.getDate());
+      const dayName = currentDate.toLocaleDateString('en-US', { weekday: 'long' });
+      const monthName = currentDate.toLocaleDateString('en-US', { month: 'long' });
+      document.getElementById('toolbarDate').textContent =
+        `${dayName}, ${monthName} ${currentDate.getDate()}${suffix} ${currentDate.getFullYear()}`;
+
+      const today = new Date();
+      const isToday = currentDate.toDateString() === today.toDateString();
+      document.getElementById('todayBadge').style.display = isToday ? '' : 'none';
+    }
+
+    function getOrdinalSuffix(d) {
+      if (d > 3 && d < 21) return 'th';
+      switch (d % 10) {
+        case 1: return 'st';
+        case 2: return 'nd';
+        case 3: return 'rd';
+        default: return 'th';
+      }
+    }
+
+    document.getElementById('todayBtn').addEventListener('click', () => {
+      currentDate = new Date();
+      syncCalendarToDate();
+      renderAll();
+    });
+    document.getElementById('prevDay').addEventListener('click', () => {
+      currentDate.setDate(currentDate.getDate() - 1);
+      syncCalendarToDate();
+      renderAll();
+    });
+    document.getElementById('nextDay').addEventListener('click', () => {
+      currentDate.setDate(currentDate.getDate() + 1);
+      syncCalendarToDate();
+      renderAll();
+    });
+
+    // ── NORD CALENDAR ──
+    function syncCalendarToDate() {
+      const cal = document.getElementById('nordCalendar');
+      cal.value = formatDateISO(currentDate);
+    }
+
+    // Listen for date selection from nord-calendar
+    document.getElementById('nordCalendar').addEventListener('change', (e) => {
+      if (e.target.value) {
+        const parts = e.target.value.split('-');
+        currentDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        renderAll();
+      }
+    });
+
+    // ── STAFF FILTER (Notion-style compact rows) ──
+    const STAFF_COLORS = {
+      'staff-color-1': '#2383e2',
+      'staff-color-2': '#4dab9a',
+      'staff-color-3': '#cf8e3e',
+      'staff-color-4': '#c14c8a',
+      'staff-color-5': '#6b57c4',
+    };
+
+    function renderStaffToggles() {
+      const container = document.getElementById('staffList');
+      container.innerHTML = '';
+      STAFF.forEach(s => {
+        const row = document.createElement('div');
+        row.className = 'staff-row' + (s.checked ? '' : ' inactive');
+
+        const dot = document.createElement('span');
+        dot.className = 'staff-dot';
+        dot.style.background = STAFF_COLORS[s.colorClass] || '#999';
+
+        const name = document.createElement('span');
+        name.className = 'staff-name';
+        name.textContent = s.name;
+
+        const eye = document.createElement('span');
+        eye.className = 'staff-eye';
+        eye.innerHTML = s.checked
+          ? '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 3C4.5 3 1.7 5.1 0.5 8c1.2 2.9 4 5 7.5 5s6.3-2.1 7.5-5c-1.2-2.9-4-5-7.5-5zm0 8.3c-1.8 0-3.3-1.5-3.3-3.3S6.2 4.7 8 4.7s3.3 1.5 3.3 3.3S9.8 11.3 8 11.3zm0-5.3C6.9 6 6 6.9 6 8s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>'
+          : '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 3C4.5 3 1.7 5.1.5 8c.4 1 1.1 2 1.9 2.7l1.1-1.1C2.8 9 2.2 8.1 1.8 7.2 2.9 5.3 5.3 4 8 4c.8 0 1.5.1 2.2.3l1.2-1.2C10.4 3.1 9.2 3 8 3zm6.6 1.3l-1.1 1.1c.7.6 1.3 1.5 1.7 2.4C14.1 10 11.7 12 9 12c-.8 0-1.5-.1-2.2-.3L5.6 12.9c.9.4 1.8.6 2.9.6 3.5 0 6.3-2.1 7.5-5-.5-1.2-1.3-2.3-2.3-3.2zM8 11.3c-1.8 0-3.3-1.5-3.3-3.3 0-.5.1-1 .3-1.4L6.4 5.2c-.3.5-.4 1.1-.4 1.8 0 1.1.9 2 2 2 .7 0 1.3-.3 1.8-.8l1.4-1.4c-.4-.2-.9-.3-1.4-.3z"/><line x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="1.2"/></svg>';
+
+        row.addEventListener('click', () => {
+          s.checked = !s.checked;
+          renderStaffToggles();
+          renderCalendar();
+        });
+
+        row.appendChild(dot);
+        row.appendChild(name);
+        row.appendChild(eye);
+        container.appendChild(row);
+      });
+    }
+
+    // ── CALENDAR GRID ──
+    function renderCalendar() {
+      const visibleStaff = STAFF.filter(s => s.checked);
+      const headers = document.getElementById('colHeaders');
+      const body = document.getElementById('calBody');
+      headers.innerHTML = '';
+      body.innerHTML = '';
+
+      // Time gutter header
+      const gutterH = document.createElement('div');
+      gutterH.className = 'cal-time-gutter-header';
+      headers.appendChild(gutterH);
+
+      // Staff headers with avatar
+      visibleStaff.forEach(s => {
+        const h = document.createElement('div');
+        h.className = 'cal-staff-header';
+        h.innerHTML = `
+          <nord-avatar name="${s.name}" size="s" class="${s.colorClass}">${s.initials}</nord-avatar>
+          <div class="staff-info">
+            <div class="name">${s.name}</div>
+            <div class="hours">${s.hours}</div>
+          </div>
+        `;
+        headers.appendChild(h);
+      });
+
+      // Time gutter
+      const gutter = document.createElement('div');
+      gutter.className = 'cal-time-gutter';
+      for (let h = HOURS_START; h <= HOURS_END; h++) {
+        const slot = document.createElement('div');
+        slot.className = 'cal-time-slot-label';
+        slot.textContent = formatHour(h);
+        gutter.appendChild(slot);
+      }
+      body.appendChild(gutter);
+
+      // Staff columns
+      visibleStaff.forEach(staff => {
+        const col = document.createElement('div');
+        col.className = 'cal-staff-column';
+        col.dataset.staffId = staff.id;
+
+        // Hour rows
+        for (let h = HOURS_START; h < HOURS_END; h++) {
+          const row = document.createElement('div');
+          row.className = 'cal-hour-row';
+          row.dataset.hour = h;
+          row.dataset.staffId = staff.id;
+
+          // Click to create
+          row.addEventListener('click', (e) => {
+            if (e.target.closest('.appointment')) return;
+            openNewAppointment(staff.id, h);
+          });
+
+          // Drop target
+          row.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            row.classList.add('drop-target');
+          });
+          row.addEventListener('dragleave', () => {
+            row.classList.remove('drop-target');
+          });
+          row.addEventListener('drop', (e) => {
+            e.preventDefault();
+            row.classList.remove('drop-target');
+            const apptId = parseInt(e.dataTransfer.getData('text/plain'));
+            const appt = appointments.find(a => a.id === apptId);
+            if (!appt) return;
+            const duration = (appt.endHour * 60 + appt.endMin) - (appt.startHour * 60 + appt.startMin);
+            appt.staffId = staff.id;
+            appt.startHour = h;
+            appt.startMin = 0;
+            const endTotal = h * 60 + duration;
+            appt.endHour = Math.floor(endTotal / 60);
+            appt.endMin = endTotal % 60;
+            renderCalendar();
+          });
+
+          col.appendChild(row);
+        }
+
+        // Render appointments for this staff (with overlap handling)
+        const staffAppts = appointments.filter(a => a.staffId === staff.id);
+        // Sort by start time
+        staffAppts.sort((a, b) => (a.startHour * 60 + a.startMin) - (b.startHour * 60 + b.startMin));
+        // Find overlapping groups
+        const groups = [];
+        staffAppts.forEach(appt => {
+          const aStart = appt.startHour * 60 + appt.startMin;
+          const aEnd = appt.endHour * 60 + appt.endMin;
+          let placed = false;
+          for (const group of groups) {
+            const overlaps = group.some(g => {
+              const gStart = g.startHour * 60 + g.startMin;
+              const gEnd = g.endHour * 60 + g.endMin;
+              return aStart < gEnd && aEnd > gStart;
+            });
+            if (overlaps) { group.push(appt); placed = true; break; }
+          }
+          if (!placed) groups.push([appt]);
+        });
+        groups.forEach(group => {
+          group.forEach((appt, idx) => {
+            const el = createAppointmentEl(appt);
+            if (group.length > 1) {
+              const width = `calc((100% - 8px) / ${group.length})`;
+              el.style.width = width;
+              el.style.left = `calc(4px + (100% - 8px) / ${group.length} * ${idx})`;
+              el.style.right = 'auto';
+            }
+            col.appendChild(el);
+          });
+        });
+
+        body.appendChild(col);
+      });
+
+      // Time indicator
+      renderTimeIndicator();
+    }
+
+    let tooltipCounter = 0;
+
+    function createAppointmentEl(appt) {
+      const el = document.createElement('div');
+      const cssType = appt.type === 'followup' ? 'followup' : appt.type;
+      el.className = `appointment appt-${cssType}`;
+      el.dataset.id = appt.id;
+
+      const topOffset = ((appt.startHour - HOURS_START) * 60 + appt.startMin) * (HOUR_HEIGHT / 60);
+      const duration = ((appt.endHour - HOURS_START) * 60 + appt.endMin) - ((appt.startHour - HOURS_START) * 60 + appt.startMin);
+      const height = duration * (HOUR_HEIGHT / 60);
+
+      el.style.top = topOffset + 'px';
+      el.style.height = Math.max(height - 2, 20) + 'px';
+
+      const typeLabel = REASON_TYPES.find(r => r.key === appt.type);
+      const typeName = typeLabel ? typeLabel.name : appt.type;
+      const staff = STAFF.find(s => s.id === appt.staffId);
+
+      // Tooltip setup
+      const tooltipId = `tt-${appt.id}`;
+      el.setAttribute('aria-describedby', 'apptTooltip');
+
+      if (appt.type === 'break') {
+        el.innerHTML = `
+          <div class="appt-header">
+            <span class="appt-title">Break</span>
+          </div>
+          <div class="appt-time">${formatTime(appt.startHour, appt.startMin)} - ${formatTime(appt.endHour, appt.endMin)}</div>
+        `;
+      } else {
+        el.innerHTML = `
+          <div class="appt-header">
+            <span class="appt-title">${appt.title}</span>
+            <span class="appt-type-label">${typeName}</span>
+          </div>
+          <div class="appt-patient">
+            ${appt.patient ? `<nord-avatar name="${appt.patient}" size="xs"></nord-avatar> ${appt.patient} - ${appt.owner}` : ''}
+          </div>
+          <div class="appt-time">${formatTime(appt.startHour, appt.startMin)} - ${formatTime(appt.endHour, appt.endMin)}</div>
+        `;
+      }
+
+      // Tooltip on hover
+      el.addEventListener('mouseenter', () => {
+        const tooltip = document.getElementById('apptTooltip');
+        if (appt.type === 'break') {
+          tooltip.textContent = `Break: ${formatTime(appt.startHour, appt.startMin)} - ${formatTime(appt.endHour, appt.endMin)}`;
+        } else {
+          tooltip.textContent = `${appt.title} (${typeName}) - ${appt.patient || 'No patient'} - ${formatTime(appt.startHour, appt.startMin)} to ${formatTime(appt.endHour, appt.endMin)}`;
+        }
+      });
+
+      // Draggable
+      el.draggable = true;
+      el.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', appt.id.toString());
+        el.classList.add('dragging');
+      });
+      el.addEventListener('dragend', () => {
+        el.classList.remove('dragging');
+        document.querySelectorAll('.drop-target').forEach(r => r.classList.remove('drop-target'));
+      });
+
+      // Click to edit
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openEditPanel(appt);
+      });
+
+      return el;
+    }
+
+    function renderTimeIndicator() {
+      // Remove existing
+      document.querySelectorAll('.time-indicator').forEach(el => el.remove());
+
+      const now = new Date();
+      if (now.toDateString() !== currentDate.toDateString()) return;
+
+      const hour = now.getHours();
+      const min = now.getMinutes();
+      if (hour < HOURS_START || hour >= HOURS_END) return;
+
+      const top = ((hour - HOURS_START) * 60 + min) * (HOUR_HEIGHT / 60);
+
+      // Add to gutter area
+      const gutter = document.querySelector('.cal-time-gutter');
+      if (!gutter) return;
+
+      const indicator = document.createElement('div');
+      indicator.className = 'time-indicator';
+      indicator.style.top = top + 'px';
+
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+      const displayMin = min.toString().padStart(2, '0');
+
+      indicator.innerHTML = `
+        <span class="label">${displayHour}:${displayMin} ${ampm}</span>
+        <span class="dot"></span>
+      `;
+
+      gutter.style.position = 'relative';
+      gutter.appendChild(indicator);
+
+      // Lines across columns
+      document.querySelectorAll('.cal-staff-column').forEach(col => {
+        const line = document.createElement('div');
+        line.className = 'time-indicator';
+        line.style.top = top + 'px';
+        line.innerHTML = '<span class="line"></span>';
+        col.appendChild(line);
+      });
+    }
+
+    // ── EDIT PANEL ──
+    let editingAppt = null;
+
+    function openEditPanel(appt) {
+      editingAppt = appt;
+      const panel = document.getElementById('editPanel');
+      panel.classList.add('open');
+      document.getElementById('panelTitle').textContent = 'Edit appointment';
+      document.getElementById('createAppt').textContent = 'Save';
+
+      // Client info
+      const clientDiv = document.getElementById('clientInfo');
+      if (appt.owner && appt.patient) {
+        const initials = appt.owner.split(' ').map(n => n[0]).join('');
+        clientDiv.innerHTML = `
+          <div class="client-info">
+            <nord-avatar name="${appt.owner}" size="s">${initials}</nord-avatar>
+            <div><strong>${appt.owner}</strong></div>
+          </div>
+          <div class="client-info">
+            <nord-avatar name="${appt.patient}" size="s" icon="generic-pet-paw"></nord-avatar>
+            <div><strong>${appt.patient}</strong></div>
+          </div>
+        `;
+      } else {
+        clientDiv.innerHTML = '<p class="n-color-text-weak n-font-size-s">No client assigned</p>';
+      }
+
+      // Reason type
+      renderReasonGrid(appt.type);
+
+      // Fields
+      const reasonInput = document.getElementById('panelReason');
+      reasonInput.value = appt.title || '';
+
+      const dateInput = document.getElementById('panelDate');
+      dateInput.value = formatDateISO(currentDate);
+
+      const startInput = document.getElementById('panelStart');
+      startInput.value = `${String(appt.startHour).padStart(2,'0')}:${String(appt.startMin).padStart(2,'0')}`;
+
+      const endInput = document.getElementById('panelEnd');
+      endInput.value = `${String(appt.endHour).padStart(2,'0')}:${String(appt.endMin).padStart(2,'0')}`;
+    }
+
+    function openNewAppointment(staffId, hour) {
+      const appt = {
+        id: nextId++,
+        staffId,
+        title: '',
+        type: 'consultation',
+        patient: '',
+        owner: '',
+        startHour: hour,
+        startMin: 0,
+        endHour: hour + 1,
+        endMin: 0,
+      };
+      editingAppt = appt;
+
+      const panel = document.getElementById('editPanel');
+      panel.classList.add('open');
+      document.getElementById('panelTitle').textContent = 'New appointment';
+      document.getElementById('createAppt').textContent = 'Create';
+
+      document.getElementById('clientInfo').innerHTML = '<p class="n-color-text-weak n-font-size-s">Click to add client &amp; patient</p>';
+      renderReasonGrid('consultation');
+
+      document.getElementById('panelReason').value = '';
+      document.getElementById('panelDate').value = formatDateISO(currentDate);
+      document.getElementById('panelStart').value = `${String(hour).padStart(2,'0')}:00`;
+      document.getElementById('panelEnd').value = `${String(hour + 1).padStart(2,'0')}:00`;
+    }
+
+    function renderReasonGrid(selectedKey) {
+      const grid = document.getElementById('reasonGrid');
+      grid.innerHTML = '';
+      REASON_TYPES.forEach(r => {
+        const el = document.createElement('div');
+        el.className = 'reason-option' + (r.key === selectedKey ? ' selected' : '');
+        el.innerHTML = `
+          <div class="color-dot" style="background: ${r.color};"></div>
+          <div class="reason-info">
+            <div class="reason-name">${r.name}</div>
+            <div class="reason-dur">${r.dur}</div>
+          </div>
+        `;
+        el.addEventListener('click', () => {
+          if (editingAppt) editingAppt.type = r.key;
+          grid.querySelectorAll('.reason-option').forEach(o => o.classList.remove('selected'));
+          el.classList.add('selected');
+        });
+        grid.appendChild(el);
+      });
+    }
+
+    document.getElementById('closePanel').addEventListener('click', () => {
+      document.getElementById('editPanel').classList.remove('open');
+      editingAppt = null;
+    });
+
+    document.getElementById('discardAppt').addEventListener('click', () => {
+      document.getElementById('editPanel').classList.remove('open');
+      editingAppt = null;
+    });
+
+    document.getElementById('createAppt').addEventListener('click', () => {
+      if (!editingAppt) return;
+
+      editingAppt.title = document.getElementById('panelReason').value || 'Appointment';
+      const startParts = document.getElementById('panelStart').value.split(':');
+      const endParts = document.getElementById('panelEnd').value.split(':');
+      editingAppt.startHour = parseInt(startParts[0]);
+      editingAppt.startMin = parseInt(startParts[1]);
+      editingAppt.endHour = parseInt(endParts[0]);
+      editingAppt.endMin = parseInt(endParts[1]);
+
+      // Add if new
+      if (!appointments.find(a => a.id === editingAppt.id)) {
+        appointments.push(editingAppt);
+      }
+
+      document.getElementById('editPanel').classList.remove('open');
+      editingAppt = null;
+      renderCalendar();
+    });
+
+    document.getElementById('newApptBtn').addEventListener('click', () => {
+      const firstVisible = STAFF.find(s => s.checked);
+      if (firstVisible) {
+        openNewAppointment(firstVisible.id, 10);
+      }
+    });
+
+    document.getElementById('clearClient').addEventListener('click', () => {
+      if (editingAppt) {
+        editingAppt.owner = '';
+        editingAppt.patient = '';
+        document.getElementById('clientInfo').innerHTML = '<p class="n-color-text-weak n-font-size-s">Click to add client &amp; patient</p>';
+      }
+    });
+
+    // ── HELPERS ──
+    function formatHour(h) {
+      if (h === 0) return '12 AM';
+      if (h < 12) return h + ' AM';
+      if (h === 12) return '12 PM';
+      return (h - 12) + ' PM';
+    }
+
+    function formatTime(h, m) {
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const hour = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+      return `${hour}:${String(m).padStart(2, '0')} ${ampm}`;
+    }
+
+    function formatDateISO(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
+    // ── RENDER ALL ──
+    function renderAll() {
+      updateToolbar();
+      renderStaffToggles();
+      renderCalendar();
+    }
+
+    // Initialize calendar value and render
+    syncCalendarToDate();
+    renderAll();
+  </script>
+
+</body>
+</html>

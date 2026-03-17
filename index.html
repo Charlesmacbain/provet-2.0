@@ -1,0 +1,3215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Provet Cloud</title>
+
+  <!-- Nord Design System (for content area components) -->
+  <link rel="stylesheet" href="https://nordcdn.net/ds/fonts/3.0.4/fonts.css" />
+  <link rel="stylesheet" href="https://nordcdn.net/ds/css/5.0.3/nord.min.css" />
+  <link rel="stylesheet" href="https://nordcdn.net/ds/themes/9.0.0/nord.css" />
+  <script type="module" src="https://nordcdn.net/ds/components/4.14.0/index.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #fff;
+      color: #222;
+      font-size: 13px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ═══ Layout ═══ */
+    .app-layout {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* ═══ Sidebar ═══ */
+    .sidebar {
+      width: 200px;
+      min-width: 200px;
+      height: 100vh;
+      background: #f9f8f8;
+      border-right: 1px solid #e8e8e6;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 20;
+      user-select: none;
+      overflow: hidden;
+      transition: width 0.2s ease, min-width 0.2s ease;
+    }
+
+    .sidebar.collapsed {
+      width: 44px;
+      min-width: 44px;
+    }
+
+    /* ─── Top bar: Org name + search + create ─── */
+    .sidebar-topbar {
+      display: flex;
+      align-items: center;
+      padding: 10px 10px 6px;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .org-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      cursor: pointer;
+      flex: 1;
+      min-width: 0;
+      border: none;
+      background: none;
+      font: inherit;
+      color: inherit;
+    }
+    .org-btn:hover { background: rgba(0,0,0,0.04); }
+
+    .org-logo-img {
+      height: 18px;
+      flex-shrink: 0;
+      object-fit: contain;
+    }
+
+    .org-chevron {
+      width: 12px;
+      height: 12px;
+      color: rgba(0,0,0,0.35);
+      flex-shrink: 0;
+    }
+    .org-chevron svg { width: 12px; height: 12px; stroke-width: 2; }
+
+    .topbar-icon-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 4px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(0,0,0,0.4);
+      flex-shrink: 0;
+      transition: background 0.1s, color 0.1s;
+    }
+    .topbar-icon-btn:hover {
+      background: rgba(0,0,0,0.06);
+      color: rgba(0,0,0,0.65);
+    }
+    .topbar-icon-btn svg { width: 15px; height: 15px; stroke-width: 1.8; }
+
+    .sidebar.collapsed .org-logo-img,
+    .sidebar.collapsed .org-chevron { display: none; }
+    .sidebar.collapsed .sidebar-topbar { padding: 10px 6px 6px; justify-content: center; }
+    .sidebar.collapsed .org-btn { flex: 0; padding: 2px; }
+    .sidebar.collapsed .topbar-icon-btn:not(#sidebarToggle) { display: none; }
+
+    /* ─── Org dropdown ─── */
+    .org-dropdown-wrapper { position: relative; flex: 1; min-width: 0; }
+
+    .org-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 220px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+      z-index: 50;
+      padding: 4px;
+      display: none;
+      animation: dropIn 0.12s ease;
+    }
+    .org-dropdown.open { display: block; }
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .org-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      color: rgba(0,0,0,0.7);
+      transition: background 0.08s;
+      white-space: nowrap;
+    }
+    .org-dropdown-item:hover {
+      background: rgba(0,0,0,0.04);
+      color: rgba(0,0,0,0.9);
+    }
+    .org-dropdown-item .dd-icon {
+      width: 16px; height: 16px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(0,0,0,0.35);
+      flex-shrink: 0;
+    }
+    .org-dropdown-item .dd-icon svg { width: 15px; height: 15px; stroke-width: 1.7; }
+    .org-dropdown-item .dd-label { flex: 1; }
+    .org-dropdown-item .dd-hint {
+      font-size: 10px; font-family: 'SF Mono', monospace;
+      color: rgba(0,0,0,0.25);
+    }
+
+    .org-dropdown-divider {
+      height: 1px;
+      background: rgba(0,0,0,0.06);
+      margin: 3px 6px;
+    }
+
+    .sidebar.collapsed .org-dropdown { display: none !important; }
+
+    /* ─── Nav scroll area ─── */
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 2px 6px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.06) transparent;
+    }
+    .sidebar-nav::-webkit-scrollbar { width: 3px; }
+    .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 3px; }
+
+    /* ─── Section label headers (Workspace, Favourites) ─── */
+    .section-label-header {
+      padding: 6px 8px;
+      margin-top: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(0,0,0,0.4);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.08s, color 0.08s;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .section-label-header:hover {
+      background: rgba(0,0,0,0.03);
+      color: rgba(0,0,0,0.55);
+    }
+    .section-label-header .section-arrow {
+      font-size: 8px;
+      color: rgba(0,0,0,0.3);
+    }
+
+    /* ─── Toggle arrow on nav items ─── */
+    .nav-item .section-arrow {
+      font-size: 9px;
+      color: rgba(0,0,0,0.3);
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    /* ═══ Nav Items ═══ */
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(0,0,0,0.6);
+      transition: background 0.08s;
+      position: relative;
+      white-space: nowrap;
+      text-decoration: none;
+      height: 28px;
+    }
+
+    .nav-item:hover {
+      background: rgba(0,0,0,0.04);
+      color: rgba(0,0,0,0.8);
+    }
+
+    .nav-item.active {
+      background: rgba(0,0,0,0.06);
+      color: rgba(0,0,0,0.9);
+      font-weight: 500;
+    }
+
+    .nav-item .nav-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(0,0,0,0.4);
+    }
+    .nav-item .nav-icon svg { width: 16px; height: 16px; stroke-width: 1.7; }
+    .nav-item.active .nav-icon { color: rgba(0,0,0,0.6); }
+
+    .nav-item .nav-label {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Count badge (right-aligned, like Linear) */
+    .nav-badge {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(0,0,0,0.4);
+      padding: 0 4px;
+      min-width: 14px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ═══ Section Headers ═══ */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      margin-top: 10px;
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(0,0,0,0.4);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.08s, color 0.08s;
+      position: relative;
+      white-space: nowrap;
+      height: 24px;
+    }
+
+    .section-header:hover {
+      background: rgba(0,0,0,0.03);
+      color: rgba(0,0,0,0.55);
+    }
+
+    .section-header .section-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .section-header .section-arrow {
+      font-size: 9px;
+      color: rgba(0,0,0,0.35);
+      transition: transform 0.12s;
+      display: inline-block;
+    }
+
+    /* Sub-items container */
+    .nav-subitems {
+      overflow: hidden;
+    }
+    .nav-subitems.hidden {
+      display: none;
+    }
+
+    /* Sub-items */
+    .nav-subitem {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px 4px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(0,0,0,0.6);
+      transition: background 0.08s;
+      position: relative;
+      white-space: nowrap;
+      height: 28px;
+    }
+
+    .nav-subitem:hover {
+      background: rgba(0,0,0,0.04);
+      color: rgba(0,0,0,0.8);
+    }
+
+    .nav-subitem.active {
+      background: rgba(0,0,0,0.06);
+      color: rgba(0,0,0,0.9);
+      font-weight: 500;
+    }
+
+    .nav-subitem .sub-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(0,0,0,0.35);
+    }
+    .nav-subitem .sub-icon svg { width: 15px; height: 15px; stroke-width: 1.7; }
+
+    .nav-subitem .sub-label {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Star toggle */
+    .star-toggle {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.1s;
+      color: rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .star-toggle svg { width: 12px; height: 12px; stroke-width: 2; }
+
+    .nav-subitem:hover .star-toggle { opacity: 1; }
+    .star-toggle.starred { opacity: 0.7; color: #cf8e3e; }
+    .star-toggle.starred svg { fill: #cf8e3e; }
+    .nav-subitem:hover .star-toggle.starred { opacity: 1; }
+
+    /* ═══ Favourites ═══ */
+    .favourites-section { display: none; }
+    .favourites-section.visible { display: block; }
+
+    .fav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px 4px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(0,0,0,0.6);
+      transition: background 0.08s;
+      white-space: nowrap;
+      height: 28px;
+    }
+    .fav-item:hover {
+      background: rgba(0,0,0,0.04);
+      color: rgba(0,0,0,0.8);
+    }
+    .fav-item.active {
+      background: rgba(0,0,0,0.06);
+      color: rgba(0,0,0,0.9);
+      font-weight: 500;
+    }
+    .fav-item .fav-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .fav-item .fav-label {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ═══ Footer (Settings) ═══ */
+    .sidebar-footer {
+      padding: 4px 6px 8px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+
+    /* ═══ Collapsed sidebar ═══ */
+    .sidebar.collapsed .nav-label,
+    .sidebar.collapsed .nav-badge,
+    .sidebar.collapsed .section-header .section-label,
+    .sidebar.collapsed .star-toggle,
+    .sidebar.collapsed .sub-label,
+    .sidebar.collapsed .fav-label,
+    .sidebar.collapsed .nav-subitems,
+    .sidebar.collapsed .favourites-section,
+    .sidebar.collapsed .fav-dot { display: none; }
+
+    .sidebar.collapsed .nav-item,
+    .sidebar.collapsed .nav-subitem {
+      justify-content: center;
+      padding: 4px;
+    }
+    .sidebar.collapsed .section-header {
+      justify-content: center;
+      padding: 4px;
+    }
+
+    /* Tooltips for collapsed */
+    .sidebar.collapsed .nav-item[data-tooltip]:hover::after,
+    .sidebar.collapsed .section-header[data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: calc(100% + 6px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 5px;
+      white-space: nowrap;
+      z-index: 100;
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* ═══ Search Modal ═══ */
+    .search-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 100;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 14vh;
+    }
+    .search-overlay.open { display: flex; }
+
+    .search-modal {
+      width: 540px;
+      max-width: 90vw;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 16px 60px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.06);
+      overflow: hidden;
+      animation: searchIn 0.15s ease;
+    }
+    @keyframes searchIn {
+      from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .search-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #eee;
+    }
+    .search-input-row .s-icon { width: 16px; height: 16px; color: rgba(0,0,0,0.35); flex-shrink: 0; }
+    .search-input-row .s-icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
+    .search-input-row input {
+      flex: 1; border: none; outline: none; font-size: 14px; font-family: inherit;
+      color: #222; background: transparent;
+    }
+    .search-input-row input::placeholder { color: rgba(0,0,0,0.3); }
+    .search-esc {
+      font-size: 10px; font-family: 'SF Mono', 'Fira Code', monospace;
+      color: rgba(0,0,0,0.3); background: rgba(0,0,0,0.05);
+      padding: 2px 5px; border-radius: 3px; flex-shrink: 0;
+    }
+
+    .search-body { padding: 6px; max-height: 340px; overflow-y: auto; }
+
+    .search-section-label {
+      font-size: 10px; font-weight: 600; color: rgba(0,0,0,0.35);
+      text-transform: uppercase; letter-spacing: 0.4px; padding: 6px 8px 3px;
+    }
+
+    .search-result {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 8px; border-radius: 5px; cursor: pointer;
+      font-size: 13px; color: rgba(0,0,0,0.7); transition: background 0.08s;
+    }
+    .search-result:hover, .search-result.focused { background: rgba(0,0,0,0.04); }
+    .search-result .r-icon { width: 16px; height: 16px; color: rgba(0,0,0,0.35); flex-shrink: 0; }
+    .search-result .r-icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
+    .search-result .r-hint { font-size: 11px; color: rgba(0,0,0,0.25); margin-left: auto; }
+    .search-empty { padding: 20px; text-align: center; font-size: 13px; color: rgba(0,0,0,0.3); }
+
+    /* ═══ Content area ═══ */
+    .content-area {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+
+    .content-area iframe { flex: 1; width: 100%; border: none; }
+
+    /* Welcome */
+    .welcome-screen {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      color: rgba(0,0,0,0.4);
+    }
+    .welcome-screen .w-icon { width: 40px; height: 40px; color: rgba(0,0,0,0.1); }
+    .welcome-screen .w-icon svg { width: 40px; height: 40px; stroke-width: 1; }
+    .welcome-screen h2 { font-size: 17px; font-weight: 600; color: rgba(0,0,0,0.6); }
+    .welcome-screen p { font-size: 13px; max-width: 280px; text-align: center; line-height: 1.5; }
+
+    /* ═══ Inbox panel (three-column) ═══ */
+    .inbox-panel { flex: 1; display: none; flex-direction: row; background: #fff; overflow: hidden; }
+    .inbox-panel.active { display: flex; }
+
+    /* Left: notification list */
+    .inbox-left {
+      width: 336px; min-width: 260px; max-width: 336px;
+      border-right: 1px solid rgba(0,0,0,0.06);
+      display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
+    }
+
+    .inbox-topbar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 16px; flex-shrink: 0;
+    }
+    .inbox-topbar h2 { font-size: 14px; font-weight: 600; color: #222; }
+    .inbox-topbar .inbox-dots {
+      font-size: 14px; color: rgba(0,0,0,0.3); cursor: pointer; letter-spacing: 1px;
+    }
+    .inbox-topbar-icons { margin-left: auto; display: flex; gap: 2px; }
+    .inbox-topbar-icons button {
+      width: 26px; height: 26px; border-radius: 4px; border: none;
+      background: none; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; color: rgba(0,0,0,0.35);
+    }
+    .inbox-topbar-icons button:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
+    .inbox-topbar-icons button svg { width: 15px; height: 15px; stroke-width: 1.7; }
+
+    .inbox-list { flex: 1; overflow-y: auto; }
+
+    .inbox-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px; cursor: pointer; transition: background 0.08s;
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+    }
+    .inbox-item:hover { background: rgba(0,0,0,0.02); }
+    .inbox-item.selected { background: rgba(94,106,210,0.06); }
+
+    .inbox-avatar-wrap { position: relative; flex-shrink: 0; }
+    .inbox-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .inbox-avatar-badge {
+      position: absolute; bottom: -1px; right: -1px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 8px; border: 1.5px solid #fff;
+    }
+    .inbox-avatar-badge svg { width: 10px; height: 10px; stroke-width: 2; }
+
+    .inbox-content { flex: 1; min-width: 0; }
+    .inbox-title-row { display: flex; align-items: center; gap: 6px; }
+    .inbox-unread-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #5e6ad2; flex-shrink: 0;
+    }
+    .inbox-title {
+      font-size: 13px; font-weight: 500; color: #222;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .inbox-item.unread .inbox-title { font-weight: 600; }
+    .inbox-subtitle {
+      font-size: 12px; color: rgba(0,0,0,0.4);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .inbox-subtitle-icon { color: rgba(0,0,0,0.3); flex-shrink: 0; }
+    .inbox-subtitle-icon svg { width: 11px; height: 11px; stroke-width: 2; }
+
+    .inbox-meta {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+      flex-shrink: 0; min-width: 32px;
+    }
+    .inbox-type-icon { color: rgba(0,0,0,0.25); }
+    .inbox-type-icon svg { width: 14px; height: 14px; stroke-width: 1.7; }
+    .inbox-time { font-size: 11px; color: rgba(0,0,0,0.25); white-space: nowrap; }
+
+    /* Middle: main content */
+    .inbox-middle {
+      flex: 1; display: flex; flex-direction: column; overflow: hidden;
+      min-width: 0;
+    }
+    .inbox-middle-empty {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      color: rgba(0,0,0,0.35);
+    }
+    .inbox-middle-empty .inbox-empty-icon { color: rgba(0,0,0,0.1); }
+    .inbox-middle-empty .inbox-empty-icon svg { width: 64px; height: 64px; stroke-width: 0.8; }
+    .inbox-middle-empty .inbox-empty-text { font-size: 13px; color: rgba(0,0,0,0.35); }
+
+    .inbox-detail { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* Patient header bar */
+    .inbox-patient-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; background: #2d3250; flex-shrink: 0;
+      color: #fff; min-height: 52px;
+    }
+    .inbox-patient-bar-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+      background: rgba(255,255,255,0.15);
+    }
+    .inbox-patient-bar-info { flex: 1; min-width: 0; }
+    .inbox-patient-bar-names {
+      font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px;
+    }
+    .inbox-patient-bar-names .client-name { color: rgba(255,255,255,0.7); font-weight: 400; }
+    .inbox-patient-bar-names .sep { color: rgba(255,255,255,0.3); }
+    .inbox-patient-bar-names .pet-name { color: #fff; font-weight: 700; }
+    .inbox-patient-bar-meta {
+      font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .inbox-patient-bar-meta span { margin-right: 4px; }
+    .inbox-patient-bar-meta .dot { color: rgba(255,255,255,0.2); }
+    .inbox-patient-bar-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .inbox-patient-bar-actions button {
+      padding: 5px 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.15);
+      background: none; color: rgba(255,255,255,0.75); font-size: 11px; font-weight: 500;
+      cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 4px;
+    }
+    .inbox-patient-bar-actions button:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .inbox-patient-bar-actions button svg { width: 13px; height: 13px; stroke-width: 2; }
+
+    /* Detail tabs */
+    .inbox-detail-tabs {
+      display: flex; gap: 0; padding: 0 20px; border-bottom: 1px solid rgba(0,0,0,0.06);
+      flex-shrink: 0; background: #fff;
+    }
+    .inbox-detail-tab {
+      padding: 10px 14px; font-size: 12px; font-weight: 500; color: rgba(0,0,0,0.4);
+      cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.1s;
+      white-space: nowrap;
+    }
+    .inbox-detail-tab:hover { color: rgba(0,0,0,0.7); }
+    .inbox-detail-tab.active { color: #222; border-bottom-color: #5e6ad2; }
+    .inbox-detail-tab .tab-badge {
+      display: inline-block; padding: 1px 6px; border-radius: 8px;
+      font-size: 10px; font-weight: 600; margin-left: 4px;
+      background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.4);
+    }
+    .inbox-detail-tab .tab-badge.due {
+      background: #e5934b; color: #fff;
+    }
+
+    .inbox-detail-body { flex: 1; overflow-y: auto; padding: 20px; }
+
+    /* Chat bubbles */
+    .chat-messages { display: flex; flex-direction: column; gap: 16px; }
+    .chat-msg { display: flex; gap: 10px; max-width: 85%; }
+    .chat-msg.outgoing { margin-left: auto; flex-direction: row-reverse; }
+    .chat-msg-avatar {
+      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; color: #fff;
+    }
+    .chat-msg-bubble {
+      padding: 10px 14px; border-radius: 12px;
+      font-size: 13px; line-height: 1.5; color: #222;
+      background: rgba(0,0,0,0.04);
+    }
+    .chat-msg.outgoing .chat-msg-bubble {
+      background: #5e6ad2; color: #fff;
+    }
+    .chat-msg-time { font-size: 10px; color: rgba(0,0,0,0.25); margin-top: 4px; }
+    .chat-msg.outgoing .chat-msg-time { text-align: right; }
+
+    .chat-input-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 20px; border-top: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
+    }
+    .chat-input {
+      flex: 1; padding: 8px 12px; border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.1); font-size: 13px;
+      font-family: inherit; outline: none; background: #fff;
+    }
+    .chat-input:focus { border-color: rgba(94,106,210,0.4); }
+    .chat-send-btn {
+      width: 32px; height: 32px; border-radius: 6px; border: none;
+      background: #5e6ad2; color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .chat-send-btn:hover { background: #4f5bc4; }
+    .chat-send-btn svg { width: 15px; height: 15px; stroke-width: 2; }
+
+    /* Action cards (non-chat inbox items) */
+    .inbox-action-card {
+      background: #fff; border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 10px; padding: 20px; margin-bottom: 16px;
+    }
+    .inbox-action-card h3 { font-size: 14px; font-weight: 600; color: #222; margin-bottom: 4px; }
+    .inbox-action-card p { font-size: 13px; color: rgba(0,0,0,0.5); line-height: 1.5; margin-bottom: 12px; }
+    .inbox-action-card .action-meta {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+    }
+    .action-meta-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 500;
+      background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55);
+    }
+    .action-meta-tag svg { width: 12px; height: 12px; stroke-width: 2; }
+    .action-meta-tag.urgent { background: rgba(229,83,75,0.08); color: #e5534b; }
+    .action-meta-tag.ok { background: rgba(87,171,90,0.08); color: #57ab5a; }
+    .inbox-action-btns { display: flex; gap: 8px; }
+    .inbox-action-btn {
+      padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 500;
+      font-family: inherit; cursor: pointer; border: 1px solid rgba(0,0,0,0.1);
+      background: #fff; color: #222; transition: background 0.1s;
+    }
+    .inbox-action-btn:hover { background: rgba(0,0,0,0.03); }
+    .inbox-action-btn.primary {
+      background: #5e6ad2; color: #fff; border-color: #5e6ad2;
+    }
+    .inbox-action-btn.primary:hover { background: #4f5bc4; }
+    .inbox-action-btn.danger {
+      background: #fff; color: #e5534b; border-color: rgba(229,83,75,0.3);
+    }
+    .inbox-action-btn.danger:hover { background: rgba(229,83,75,0.04); }
+
+    /* Right drawer */
+    .inbox-drawer {
+      width: 280px; min-width: 280px; border-left: 1px solid rgba(0,0,0,0.06);
+      display: flex; flex-direction: column; overflow: hidden;
+      flex-shrink: 0; transition: width 0.15s, min-width 0.15s;
+    }
+    .inbox-drawer.collapsed { width: 0; min-width: 0; border-left: none; }
+    .inbox-drawer-tabs {
+      display: flex; border-bottom: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
+    }
+    .inbox-drawer-tab {
+      flex: 1; padding: 10px 0; text-align: center; font-size: 12px; font-weight: 500;
+      color: rgba(0,0,0,0.4); cursor: pointer; border-bottom: 2px solid transparent;
+      transition: color 0.1s;
+    }
+    .inbox-drawer-tab:hover { color: rgba(0,0,0,0.7); }
+    .inbox-drawer-tab.active { color: #222; border-bottom-color: #222; }
+    .inbox-drawer-toggle {
+      position: absolute; top: 10px; right: 10px; width: 22px; height: 22px;
+      border-radius: 4px; border: none; background: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(0,0,0,0.3);
+    }
+    .inbox-drawer-toggle:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
+    .inbox-drawer-toggle svg { width: 14px; height: 14px; stroke-width: 2; }
+    .inbox-drawer-body { flex: 1; overflow-y: auto; padding: 16px; }
+    .inbox-drawer-section { margin-bottom: 16px; }
+    .inbox-drawer-section-title {
+      font-size: 10px; font-weight: 700; color: rgba(0,0,0,0.3);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+    }
+    .inbox-drawer-field { margin-bottom: 10px; }
+    .inbox-drawer-label { font-size: 11px; color: rgba(0,0,0,0.35); margin-bottom: 2px; }
+    .inbox-drawer-value { font-size: 13px; color: #222; }
+    .inbox-drawer-avatar-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .inbox-drawer-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .inbox-drawer-name { font-size: 14px; font-weight: 600; color: #222; }
+    .inbox-drawer-sub { font-size: 12px; color: rgba(0,0,0,0.4); }
+
+    /* Ask AI tab */
+    .ask-ai-input {
+      width: 100%; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.1); font-size: 13px;
+      font-family: inherit; outline: none; resize: none; min-height: 60px;
+    }
+    .ask-ai-input:focus { border-color: rgba(94,106,210,0.4); }
+    .ask-ai-hint { font-size: 11px; color: rgba(0,0,0,0.3); margin-top: 6px; }
+    .ask-ai-suggestions { margin-top: 16px; }
+    .ask-ai-suggestion {
+      padding: 8px 10px; border-radius: 6px; font-size: 12px; color: rgba(0,0,0,0.55);
+      cursor: pointer; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;
+    }
+    .ask-ai-suggestion:hover { background: rgba(0,0,0,0.03); }
+    .ask-ai-suggestion svg { width: 14px; height: 14px; stroke-width: 1.7; color: rgba(94,106,210,0.5); flex-shrink: 0; }
+
+    /* Expand drawer button (shown when collapsed) */
+    .inbox-drawer-expand {
+      position: absolute; top: 10px; right: 10px;
+      width: 28px; height: 28px; border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.08); background: #fff;
+      cursor: pointer; display: none; align-items: center; justify-content: center;
+      color: rgba(0,0,0,0.35); z-index: 2;
+    }
+    .inbox-drawer-expand:hover { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.6); }
+    .inbox-drawer-expand svg { width: 14px; height: 14px; stroke-width: 2; }
+    .inbox-panel .inbox-drawer.collapsed ~ .inbox-drawer-expand,
+    .inbox-drawer.collapsed + .inbox-drawer-expand { display: flex; }
+
+    /* ═══ Unified page topbar ═══ */
+    .page-topbar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 20px; flex-shrink: 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      min-height: 44px;
+    }
+    .page-topbar-title {
+      font-size: 15px; font-weight: 600; color: #222;
+      white-space: nowrap;
+    }
+    .page-topbar-count {
+      font-size: 12px; font-weight: 500; color: rgba(0,0,0,0.35);
+    }
+    .page-topbar-dots {
+      font-size: 14px; color: rgba(0,0,0,0.25); cursor: pointer;
+      letter-spacing: 1px; line-height: 1;
+    }
+    .page-topbar-right {
+      margin-left: auto; display: flex; align-items: center; gap: 2px;
+    }
+    .page-topbar-right button {
+      width: 26px; height: 26px; border-radius: 4px; border: none;
+      background: none; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; color: rgba(0,0,0,0.3); font-family: inherit;
+    }
+    .page-topbar-right button:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55); }
+    .page-topbar-right button svg { width: 15px; height: 15px; stroke-width: 1.7; }
+    .page-topbar-right .ptb-add {
+      background: none; border: 1px solid rgba(0,0,0,0.1); color: rgba(0,0,0,0.4);
+    }
+    .page-topbar-right .ptb-add:hover { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.18); }
+
+    /* Dark */
+    body.dark .page-topbar { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .page-topbar-title { color: #d4d4d4; }
+    body.dark .page-topbar-count { color: rgba(255,255,255,0.35); }
+    body.dark .page-topbar-dots { color: rgba(255,255,255,0.2); }
+    body.dark .page-topbar-right button { color: rgba(255,255,255,0.25); }
+    body.dark .page-topbar-right button:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
+    body.dark .page-topbar-right .ptb-add { border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.35); }
+
+    /* Page view */
+    #pageView { flex: 1; display: none; flex-direction: column; overflow: hidden; min-height: 0; }
+    #pageViewContent { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    #pageViewContent iframe { flex: 1; width: 100%; border: none; min-height: 0; }
+
+    /* ═══ Views page ═══ */
+    .views-page { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+
+    .vp-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px 0; flex-shrink: 0;
+    }
+    .vp-title { font-size: 17px; font-weight: 700; color: #222; }
+    .vp-add-btn {
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.08);
+      background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: rgba(0,0,0,0.4); transition: background 0.1s, border-color 0.1s;
+    }
+    .vp-add-btn:hover { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.15); }
+    .vp-add-btn svg { width: 14px; height: 14px; stroke-width: 2; }
+
+    .vp-tabs {
+      display: flex; gap: 0; padding: 12px 24px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+    .vp-tab {
+      padding: 6px 12px; font-size: 12px; font-weight: 500; color: rgba(0,0,0,0.4);
+      cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.1s;
+    }
+    .vp-tab:hover { color: rgba(0,0,0,0.7); }
+    .vp-tab.active { color: #222; border-bottom-color: #222; }
+
+    .vp-scroll { flex: 1; overflow-y: auto; }
+
+    .vp-table-header {
+      display: flex; align-items: center; padding: 8px 24px;
+      font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.35);
+      border-bottom: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
+    }
+    .vp-col-name { flex: 1; }
+    .vp-col-owner { width: 140px; text-align: right; }
+
+    .vp-section-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 24px; background: rgba(0,0,0,0.015);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      font-size: 13px; color: rgba(0,0,0,0.7); flex-shrink: 0;
+    }
+    .vp-section-avatar {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #e5534b; color: #fff; font-size: 9px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .vp-section-label { font-weight: 600; font-size: 13px; }
+    .vp-section-hint { color: rgba(0,0,0,0.35); font-size: 12px; }
+    .vp-section-add {
+      margin-left: auto; width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(0,0,0,0.25); cursor: pointer; border-radius: 4px;
+    }
+    .vp-section-add:hover { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.5); }
+    .vp-section-add svg { width: 14px; height: 14px; stroke-width: 2; }
+
+    .vp-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 24px; border-bottom: 1px solid rgba(0,0,0,0.04);
+      cursor: pointer; transition: background 0.08s;
+    }
+    .vp-row:hover { background: rgba(0,0,0,0.02); }
+
+    .vp-row-icon {
+      width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .vp-row-icon svg { width: 18px; height: 18px; stroke-width: 1.7; }
+
+    .vp-row-content { flex: 1; min-width: 0; }
+    .vp-row-name { font-size: 13px; font-weight: 500; color: #222; }
+    .vp-row-desc { font-size: 12px; color: rgba(0,0,0,0.4); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .vp-row-owner {
+      width: 140px; display: flex; align-items: center; gap: 6px;
+      justify-content: flex-end; font-size: 12px; color: rgba(0,0,0,0.45);
+      flex-shrink: 0;
+    }
+    .vp-avatar {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #e5534b; color: #fff; font-size: 8px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    .vp-workspace-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 24px; background: rgba(0,0,0,0.015);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      font-size: 13px; color: rgba(0,0,0,0.5);
+    }
+    .vp-ws-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.35); }
+    .vp-ws-icon svg { width: 16px; height: 16px; stroke-width: 1.7; }
+    .vp-ws-label { font-weight: 500; }
+
+    /* ═══ Table view (Linear project table) ═══ */
+    .table-page { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+
+    .tp-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 24px; flex-shrink: 0;
+    }
+    .tp-header-icon { color: rgba(0,0,0,0.35); }
+    .tp-header-icon svg { width: 16px; height: 16px; stroke-width: 1.7; }
+    .tp-header h1 { font-size: 14px; font-weight: 600; color: #222; }
+    .tp-header .tp-star { color: rgba(0,0,0,0.2); cursor: pointer; }
+    .tp-header .tp-star svg { width: 14px; height: 14px; stroke-width: 2; }
+    .tp-header .tp-dots { color: rgba(0,0,0,0.3); font-size: 14px; letter-spacing: 1px; cursor: pointer; }
+    .tp-header-right { margin-left: auto; display: flex; gap: 2px; }
+    .tp-header-right button {
+      width: 26px; height: 26px; border-radius: 4px; border: none;
+      background: none; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; color: rgba(0,0,0,0.3);
+    }
+    .tp-header-right button:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55); }
+    .tp-header-right button svg { width: 15px; height: 15px; stroke-width: 1.7; }
+
+    .tp-count { padding: 0 24px 6px; font-size: 12px; color: rgba(0,0,0,0.4); flex-shrink: 0; }
+
+    .tp-scroll { flex: 1; overflow-y: auto; }
+
+    .tp-table-head {
+      display: flex; align-items: center; padding: 6px 24px;
+      font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.35);
+      border-bottom: 1px solid rgba(0,0,0,0.06); position: sticky; top: 0;
+      background: #fff; z-index: 1;
+    }
+    .tp-col-name { flex: 1; min-width: 0; }
+    .tp-col-health { width: 110px; text-align: left; }
+    .tp-col-priority { width: 60px; text-align: center; }
+    .tp-col-lead { width: 50px; text-align: center; }
+    .tp-col-date { width: 90px; text-align: right; }
+    .tp-col-status { width: 70px; text-align: right; }
+
+    .tp-row {
+      display: flex; align-items: center; padding: 10px 24px;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      cursor: pointer; transition: background 0.06s;
+      font-size: 13px;
+    }
+    .tp-row:hover { background: rgba(0,0,0,0.015); }
+
+    .tp-row .tp-col-name {
+      display: flex; align-items: center; gap: 8px;
+      min-width: 0; flex: 1;
+    }
+    .tp-row-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tp-row-icon svg { width: 16px; height: 16px; stroke-width: 1.5; }
+    .tp-row-title {
+      font-weight: 500; color: #222; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .tp-row-sub {
+      font-size: 12px; color: rgba(0,0,0,0.35); white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; margin-left: 4px;
+    }
+
+    .tp-health {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 500; white-space: nowrap;
+    }
+    .tp-health-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .tp-health-text { color: rgba(0,0,0,0.5); }
+    .tp-health-time { color: rgba(0,0,0,0.25); font-size: 10px; }
+
+    .tp-priority { display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.3); }
+    .tp-priority svg { width: 14px; height: 14px; stroke-width: 1.7; }
+
+    .tp-lead {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; color: #fff; margin: 0 auto;
+    }
+
+    .tp-date { font-size: 12px; color: rgba(0,0,0,0.4); display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
+    .tp-date svg { width: 12px; height: 12px; stroke-width: 1.7; color: rgba(0,0,0,0.25); }
+
+    .tp-status-val { font-size: 12px; color: rgba(0,0,0,0.4); display: flex; align-items: center; gap: 3px; justify-content: flex-end; }
+    .tp-status-val svg { width: 12px; height: 12px; stroke-width: 1.7; color: rgba(0,0,0,0.25); }
+    .tp-trend { color: rgba(0,0,0,0.2); }
+    .tp-trend svg { width: 12px; height: 12px; stroke-width: 2; }
+    .tp-trend.up { color: #57ab5a; }
+    .tp-trend.down { color: #e5534b; }
+
+    /* Keyboard focus */
+    .nav-item:focus-visible, .nav-subitem:focus-visible, .section-header:focus-visible, .fav-item:focus-visible {
+      outline: 2px solid #5e6ad2; outline-offset: -1px; border-radius: 5px;
+    }
+    /* ═══ Customers page ═══ */
+    .cust-page { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+    .cust-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 24px; flex-shrink: 0;
+    }
+    .cust-header h1 { font-size: 14px; font-weight: 600; color: #222; }
+    .cust-header .cust-count {
+      font-size: 12px; font-weight: 500; color: rgba(0,0,0,0.35);
+      background: rgba(0,0,0,0.05); padding: 1px 6px; border-radius: 4px;
+    }
+    .cust-header-right { margin-left: auto; display: flex; gap: 2px; }
+    .cust-header-right button {
+      width: 26px; height: 26px; border-radius: 4px; border: none;
+      background: none; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; color: rgba(0,0,0,0.3);
+    }
+    .cust-header-right button:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55); }
+    .cust-header-right button svg { width: 15px; height: 15px; stroke-width: 1.7; }
+
+    .cust-search-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 4px 20px 8px; flex-shrink: 0;
+    }
+    .cust-search-input {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 10px; border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 6px; width: 240px;
+    }
+    .cust-search-input i, .cust-search-input svg { width: 14px; height: 14px; color: rgba(0,0,0,0.3); stroke-width: 1.8; flex-shrink: 0; }
+    .cust-search-input input {
+      border: none; outline: none; font-size: 12px; font-family: inherit;
+      color: #222; background: transparent; flex: 1;
+    }
+    .cust-search-input input::placeholder { color: rgba(0,0,0,0.3); }
+    .cust-search-actions {
+      display: flex; align-items: center; gap: 2px;
+    }
+    .cust-search-actions button {
+      width: 26px; height: 26px; border-radius: 4px; border: none;
+      background: none; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; color: rgba(0,0,0,0.3);
+    }
+    .cust-search-actions button:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55); }
+    .cust-search-actions button svg { width: 15px; height: 15px; stroke-width: 1.7; }
+
+    .cust-scroll { flex: 1; overflow-y: auto; }
+
+    .cust-table-head {
+      display: flex; align-items: center; padding: 6px 24px;
+      font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.35);
+      border-bottom: 1px solid rgba(0,0,0,0.06); position: sticky; top: 0;
+      background: #fff; z-index: 1;
+    }
+    .cust-col-name { flex: 1; min-width: 0; }
+    .cust-col-visits { width: 70px; text-align: right; }
+    .cust-col-spend { width: 110px; text-align: right; }
+    .cust-col-pets { width: 50px; text-align: right; }
+    .cust-col-status { width: 80px; text-align: left; }
+    .cust-col-plan { width: 80px; text-align: left; }
+    .cust-col-vet { width: 50px; text-align: center; }
+    .cust-col-phone { width: 130px; text-align: left; }
+    .cust-col-reg { width: 90px; text-align: left; }
+
+    .cust-row {
+      display: flex; align-items: center; padding: 10px 24px;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      cursor: pointer; transition: background 0.06s; font-size: 13px;
+    }
+    .cust-row:hover { background: rgba(0,0,0,0.015); }
+
+    .cust-row .cust-col-name {
+      display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;
+    }
+    .cust-row-avatar {
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .cust-row-name { font-weight: 500; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cust-row .cust-col-visits { font-size: 12px; color: rgba(0,0,0,0.5); }
+    .cust-row .cust-col-spend { font-size: 13px; color: rgba(0,0,0,0.7); font-weight: 500; }
+    .cust-row .cust-col-pets { font-size: 12px; color: rgba(0,0,0,0.5); }
+
+    .cust-status-badge {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 11px; font-weight: 500; padding: 1px 6px; border-radius: 3px;
+    }
+    .cust-status-badge.active { background: rgba(87,171,90,0.1); color: #57ab5a; }
+    .cust-status-badge.inactive { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.4); }
+
+    .cust-row .cust-col-plan { font-size: 12px; color: rgba(0,0,0,0.5); }
+    .cust-row .cust-col-vet { display: flex; justify-content: center; }
+    .cust-owner-avatar {
+      width: 20px; height: 20px; color: rgba(0,0,0,0.25);
+    }
+    .cust-owner-avatar svg { width: 16px; height: 16px; stroke-width: 1.7; }
+    .cust-row .cust-col-phone { font-size: 12px; color: rgba(0,0,0,0.4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cust-row .cust-col-reg { font-size: 11px; color: rgba(0,0,0,0.4); }
+
+    /* Customers dark */
+    body.dark .cust-header h1 { color: #d4d4d4; }
+    body.dark .cust-header .cust-count { color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.06); }
+    body.dark .cust-header-right button { color: rgba(255,255,255,0.25); }
+    body.dark .cust-header-right button:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
+    body.dark .cust-search-input { border-color: rgba(255,255,255,0.08); }
+    body.dark .cust-search-input input { color: #d4d4d4; }
+    body.dark .cust-search-input input::placeholder { color: rgba(255,255,255,0.25); }
+    body.dark .cust-search-input svg { color: rgba(255,255,255,0.25); }
+    body.dark .cust-search-actions button { color: rgba(255,255,255,0.25); }
+    body.dark .cust-search-actions button:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
+    body.dark .cust-table-head { color: rgba(255,255,255,0.3); border-bottom-color: rgba(255,255,255,0.06); background: #1a1a1a; }
+    body.dark .cust-row { border-bottom-color: rgba(255,255,255,0.04); }
+    body.dark .cust-row:hover { background: rgba(255,255,255,0.03); }
+    body.dark .cust-row-name { color: #d4d4d4; }
+    body.dark .cust-row .cust-col-visits,
+    body.dark .cust-row .cust-col-spend,
+    body.dark .cust-row .cust-col-pets,
+    body.dark .cust-row .cust-col-plan,
+    body.dark .cust-row .cust-col-phone,
+    body.dark .cust-row .cust-col-reg { color: rgba(255,255,255,0.35); }
+    body.dark .cust-status-badge.active { background: rgba(87,171,90,0.15); }
+    body.dark .cust-status-badge.inactive { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.35); }
+
+    /* ═══ Placeholder pages ═══ */
+    .ph-page { padding: 32px 36px; }
+    .ph-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .ph-icon { width: 18px; height: 18px; color: rgba(0,0,0,0.35); }
+    .ph-title { font-size: 18px; font-weight: 700; color: #222; }
+    .ph-desc { color: rgba(0,0,0,0.4); font-size: 13px; }
+    .ph-box { margin-top: 20px; padding: 40px; background: #fafafa; border: 1px dashed #e5e5e3; border-radius: 6px; text-align: center; color: rgba(0,0,0,0.2); font-size: 12px; }
+
+    /* ═══ DARK MODE ═══ */
+    body.dark { background: #1a1a1a; color: #d4d4d4; }
+
+    body.dark .sidebar { background: #1e1e1e; border-right-color: rgba(255,255,255,0.06); }
+    body.dark .org-btn:hover { background: rgba(255,255,255,0.06); }
+    body.dark .org-logo-img { filter: brightness(10); }
+    body.dark .org-chevron { color: rgba(255,255,255,0.3); }
+    body.dark .topbar-icon-btn { color: rgba(255,255,255,0.35); }
+    body.dark .topbar-icon-btn:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+
+    body.dark .org-dropdown { background: #2a2a2a; box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06); }
+    body.dark .org-dropdown-item { color: rgba(255,255,255,0.7); }
+    body.dark .org-dropdown-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+    body.dark .org-dropdown-item .dd-icon { color: rgba(255,255,255,0.35); }
+    body.dark .org-dropdown-divider { background: rgba(255,255,255,0.06); }
+
+    body.dark .nav-item { color: rgba(255,255,255,0.55); }
+    body.dark .nav-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+    body.dark .nav-item.active { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.95); }
+    body.dark .nav-item .nav-icon { color: rgba(255,255,255,0.35); }
+    body.dark .nav-item.active .nav-icon { color: rgba(255,255,255,0.6); }
+    body.dark .nav-badge { color: rgba(255,255,255,0.4); }
+
+    body.dark .section-label-header { color: rgba(255,255,255,0.35); }
+    body.dark .section-label-header:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); }
+    body.dark .section-label-header .section-arrow { color: rgba(255,255,255,0.25); }
+    body.dark .nav-item .section-arrow { color: rgba(255,255,255,0.25); }
+
+    body.dark .nav-subitem { color: rgba(255,255,255,0.5); }
+    body.dark .nav-subitem:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+    body.dark .nav-subitem.active { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.95); }
+    body.dark .nav-subitem .sub-icon { color: rgba(255,255,255,0.3); }
+    body.dark .star-toggle { color: rgba(255,255,255,0.2); }
+
+    body.dark .fav-item { color: rgba(255,255,255,0.5); }
+    body.dark .fav-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+    body.dark .fav-item.active { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.95); }
+
+    body.dark .sidebar-footer { border-top-color: rgba(255,255,255,0.06); }
+    body.dark .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); }
+
+    /* Content area */
+    body.dark .content-area { background: #1a1a1a; }
+    body.dark .welcome-screen { color: rgba(255,255,255,0.3); }
+    body.dark .welcome-screen h2 { color: rgba(255,255,255,0.5); }
+    body.dark .welcome-screen .w-icon { color: rgba(255,255,255,0.08); }
+
+    /* Inbox dark */
+    body.dark .inbox-left { border-right-color: rgba(255,255,255,0.06); }
+    body.dark .inbox-topbar h2 { color: #d4d4d4; }
+    body.dark .inbox-topbar .inbox-dots { color: rgba(255,255,255,0.3); }
+    body.dark .inbox-topbar-icons button { color: rgba(255,255,255,0.3); }
+    body.dark .inbox-topbar-icons button:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+    body.dark .inbox-item { border-bottom-color: rgba(255,255,255,0.04); }
+    body.dark .inbox-item:hover { background: rgba(255,255,255,0.03); }
+    body.dark .inbox-title { color: #d4d4d4; }
+    body.dark .inbox-subtitle { color: rgba(255,255,255,0.35); }
+    body.dark .inbox-time { color: rgba(255,255,255,0.25); }
+    body.dark .inbox-middle-empty { color: rgba(255,255,255,0.25); }
+    body.dark .inbox-middle-empty .inbox-empty-icon { color: rgba(255,255,255,0.06); }
+    body.dark .inbox-middle-empty .inbox-empty-text { color: rgba(255,255,255,0.25); }
+    body.dark .inbox-patient-bar { background: #1a1d33; }
+    body.dark .inbox-detail-tabs { background: #1a1a1a; border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .inbox-detail-tab { color: rgba(255,255,255,0.35); }
+    body.dark .inbox-detail-tab:hover { color: rgba(255,255,255,0.65); }
+    body.dark .inbox-detail-tab.active { color: #d4d4d4; }
+    body.dark .inbox-detail-tab .tab-badge { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); }
+    body.dark .chat-msg-bubble { background: rgba(255,255,255,0.06); color: #d4d4d4; }
+    body.dark .chat-msg.outgoing .chat-msg-bubble { background: #5e6ad2; color: #fff; }
+    body.dark .chat-msg-time { color: rgba(255,255,255,0.2); }
+    body.dark .chat-input-row { border-top-color: rgba(255,255,255,0.06); }
+    body.dark .chat-input { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+    body.dark .inbox-action-card { background: #1e1e1e; border-color: rgba(255,255,255,0.08); }
+    body.dark .inbox-action-card h3 { color: #d4d4d4; }
+    body.dark .inbox-action-card p { color: rgba(255,255,255,0.45); }
+    body.dark .action-meta-tag { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
+    body.dark .inbox-action-btn { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+    body.dark .inbox-action-btn:hover { background: rgba(255,255,255,0.06); }
+    body.dark .inbox-drawer { border-left-color: rgba(255,255,255,0.06); }
+    body.dark .inbox-drawer-tabs { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .inbox-drawer-tab { color: rgba(255,255,255,0.35); }
+    body.dark .inbox-drawer-tab:hover { color: rgba(255,255,255,0.6); }
+    body.dark .inbox-drawer-tab.active { color: #d4d4d4; border-bottom-color: #d4d4d4; }
+    body.dark .inbox-drawer-section-title { color: rgba(255,255,255,0.25); }
+    body.dark .inbox-drawer-label { color: rgba(255,255,255,0.3); }
+    body.dark .inbox-drawer-value { color: #d4d4d4; }
+    body.dark .inbox-drawer-name { color: #d4d4d4; }
+    body.dark .inbox-drawer-sub { color: rgba(255,255,255,0.35); }
+    body.dark .ask-ai-input { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+    body.dark .ask-ai-hint { color: rgba(255,255,255,0.25); }
+    body.dark .ask-ai-suggestion { color: rgba(255,255,255,0.45); }
+    body.dark .ask-ai-suggestion:hover { background: rgba(255,255,255,0.04); }
+    body.dark .inbox-drawer-expand { background: #2a2a2a; border-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); }
+
+    /* Views page dark */
+    body.dark .vp-title { color: #d4d4d4; }
+    body.dark .vp-add-btn { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
+    body.dark .vp-tabs { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .vp-tab { color: rgba(255,255,255,0.35); }
+    body.dark .vp-tab:hover { color: rgba(255,255,255,0.6); }
+    body.dark .vp-tab.active { color: #d4d4d4; border-bottom-color: #d4d4d4; }
+    body.dark .vp-table-header { color: rgba(255,255,255,0.3); border-bottom-color: rgba(255,255,255,0.06); background: #1a1a1a; }
+    body.dark .vp-section-row { background: rgba(255,255,255,0.02); border-bottom-color: rgba(255,255,255,0.04); color: rgba(255,255,255,0.6); }
+    body.dark .vp-section-hint { color: rgba(255,255,255,0.25); }
+    body.dark .vp-section-add { color: rgba(255,255,255,0.2); }
+    body.dark .vp-section-add:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
+    body.dark .vp-row { border-bottom-color: rgba(255,255,255,0.04); }
+    body.dark .vp-row:hover { background: rgba(255,255,255,0.03); }
+    body.dark .vp-row-name { color: #d4d4d4; }
+    body.dark .vp-row-desc { color: rgba(255,255,255,0.3); }
+    body.dark .vp-row-owner { color: rgba(255,255,255,0.35); }
+    body.dark .vp-workspace-row { background: rgba(255,255,255,0.02); border-bottom-color: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); }
+    body.dark .vp-ws-icon { color: rgba(255,255,255,0.25); }
+
+    /* Table page dark */
+    body.dark .tp-header h1 { color: #d4d4d4; }
+    body.dark .tp-header-icon { color: rgba(255,255,255,0.3); }
+    body.dark .tp-header .tp-star { color: rgba(255,255,255,0.2); }
+    body.dark .tp-header .tp-dots { color: rgba(255,255,255,0.25); }
+    body.dark .tp-header-right button { color: rgba(255,255,255,0.25); }
+    body.dark .tp-header-right button:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
+    body.dark .tp-count { color: rgba(255,255,255,0.3); }
+    body.dark .tp-table-head { color: rgba(255,255,255,0.3); border-bottom-color: rgba(255,255,255,0.06); background: #1a1a1a; }
+    body.dark .tp-row { border-bottom-color: rgba(255,255,255,0.04); }
+    body.dark .tp-row:hover { background: rgba(255,255,255,0.03); }
+    body.dark .tp-row-title { color: #d4d4d4; }
+    body.dark .tp-row-sub { color: rgba(255,255,255,0.25); }
+    body.dark .tp-health-text { color: rgba(255,255,255,0.45); }
+    body.dark .tp-health-time { color: rgba(255,255,255,0.2); }
+    body.dark .tp-priority { color: rgba(255,255,255,0.25); }
+    body.dark .tp-date { color: rgba(255,255,255,0.35); }
+    body.dark .tp-date svg { color: rgba(255,255,255,0.2); }
+    body.dark .tp-status-val { color: rgba(255,255,255,0.35); }
+    body.dark .tp-status-val svg { color: rgba(255,255,255,0.2); }
+
+    /* Search modal dark */
+    body.dark .search-overlay { background: rgba(0,0,0,0.6); }
+    body.dark .search-modal { background: #2a2a2a; box-shadow: 0 16px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06); }
+    body.dark .search-input-row { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .search-input-row .s-icon { color: rgba(255,255,255,0.3); }
+    body.dark .search-input-row input { color: #d4d4d4; }
+    body.dark .search-input-row input::placeholder { color: rgba(255,255,255,0.25); }
+    body.dark .search-esc { color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); }
+    body.dark .search-section-label { color: rgba(255,255,255,0.3); }
+    body.dark .search-result { color: rgba(255,255,255,0.6); }
+    body.dark .search-result:hover, body.dark .search-result.focused { background: rgba(255,255,255,0.06); }
+    body.dark .search-result .r-icon { color: rgba(255,255,255,0.3); }
+    body.dark .search-result .r-hint { color: rgba(255,255,255,0.2); }
+    body.dark .search-empty { color: rgba(255,255,255,0.25); }
+
+    /* Collapsed tooltips dark */
+    body.dark .sidebar.collapsed .nav-item[data-tooltip]:hover::after,
+    body.dark .sidebar.collapsed .section-header[data-tooltip]:hover::after {
+      background: #333; color: #d4d4d4;
+    }
+
+    /* Placeholder dark */
+    body.dark .ph-icon { color: rgba(255,255,255,0.3); }
+    body.dark .ph-title { color: #d4d4d4; }
+    body.dark .ph-desc { color: rgba(255,255,255,0.35); }
+    body.dark .ph-box { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.06); color: rgba(255,255,255,0.15); }
+
+    /* ═══ Settings mode (sidebar takeover) ═══ */
+    .sidebar.settings-mode {
+      width: 240px; min-width: 240px;
+    }
+    .sidebar.settings-mode .sidebar-topbar,
+    .sidebar.settings-mode .sidebar-nav { display: none; }
+    .sidebar.settings-mode.collapsed { width: 240px; min-width: 240px; }
+
+    .settings-sidebar-nav {
+      display: none; flex-direction: column;
+      overflow-y: auto; padding: 12px 0 24px; flex: 1;
+    }
+    .sidebar.settings-mode .settings-sidebar-nav { display: flex; }
+
+    .settings-sidebar-back {
+      display: flex; align-items: center; gap: 6px; padding: 6px 16px 14px;
+      font-size: 13px; color: rgba(0,0,0,0.5); cursor: pointer; text-decoration: none;
+      border: none; background: none; font-family: inherit;
+    }
+    .settings-sidebar-back:hover { color: rgba(0,0,0,0.8); }
+    .settings-sidebar-back svg { width: 14px; height: 14px; stroke-width: 2; }
+
+    /* Top-level section headers (My account, Workspace, Location, Lists & templates) */
+    .settings-nav-section {
+      padding: 18px 16px 5px; font-size: 10px; font-weight: 700;
+      color: rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 0.6px;
+    }
+
+    /* Sub-group headers (Organization, Billing & payments, Clinical, etc.) */
+    .settings-nav-subgroup {
+      padding: 12px 16px 3px; font-size: 13px; font-weight: 600;
+      color: rgba(0,0,0,0.7);
+    }
+
+    /* Clickable nav links */
+    .settings-nav-item {
+      display: block; padding: 4px 16px 4px 16px;
+      font-size: 13px; color: rgba(0,0,0,0.55);
+      cursor: pointer; transition: background 0.08s; line-height: 1.5;
+    }
+    .settings-nav-item:hover { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.7); }
+    .settings-nav-item.active {
+      background: rgba(94,106,210,0.07); color: #222; font-weight: 500;
+    }
+
+    /* Location picker */
+    .settings-location-picker {
+      margin: 4px 16px 8px; padding: 6px 10px;
+      border: 1px solid rgba(0,0,0,0.1); border-radius: 6px;
+      font-size: 12px; font-family: inherit; color: #222;
+      background: #fff; cursor: pointer; display: flex; align-items: center;
+      gap: 6px; width: calc(100% - 32px);
+    }
+    .settings-location-picker:hover { border-color: rgba(0,0,0,0.2); }
+    .settings-location-picker svg { width: 13px; height: 13px; stroke-width: 1.8; color: rgba(0,0,0,0.35); flex-shrink: 0; }
+    .settings-location-picker span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .settings-location-picker .chevron { width: 12px; height: 12px; color: rgba(0,0,0,0.3); flex-shrink: 0; }
+
+    /* Settings content area */
+    .settings-content {
+      flex: 1; overflow-y: auto; padding: 32px 48px 48px;
+      max-width: 720px;
+    }
+    .settings-title {
+      font-size: 22px; font-weight: 700; color: #222; margin-bottom: 28px;
+    }
+    .settings-section-label {
+      font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.35);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      padding-bottom: 12px; margin-bottom: 4px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .settings-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.04);
+      gap: 16px;
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-row-info { flex: 1; min-width: 0; }
+    .settings-row-label { font-size: 13px; font-weight: 500; color: #222; }
+    .settings-row-desc { font-size: 12px; color: rgba(0,0,0,0.4); margin-top: 2px; }
+    .settings-row-action { flex-shrink: 0; }
+    .settings-select {
+      appearance: none; -webkit-appearance: none;
+      padding: 5px 28px 5px 10px; border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.12); background: #fff;
+      font-size: 12px; font-family: inherit; color: #222; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 8px center;
+    }
+    .settings-select:hover { border-color: rgba(0,0,0,0.2); }
+    .settings-toggle {
+      width: 36px; height: 20px; border-radius: 10px;
+      background: rgba(0,0,0,0.12); border: none; cursor: pointer;
+      position: relative; transition: background 0.15s; flex-shrink: 0;
+    }
+    .settings-toggle::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #fff; transition: transform 0.15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .settings-toggle.on { background: #5e6ad2; }
+    .settings-toggle.on::after { transform: translateX(16px); }
+    .settings-btn {
+      padding: 5px 12px; border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.12); background: #fff;
+      font-size: 12px; font-family: inherit; color: #222; cursor: pointer;
+    }
+    .settings-btn:hover { border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.02); }
+
+    .settings-theme-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .settings-theme-row:last-child { border-bottom: none; }
+    .settings-theme-icon {
+      width: 28px; height: 28px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; flex-shrink: 0;
+    }
+    .settings-theme-icon.light { background: #f5f5f5; color: rgba(0,0,0,0.5); border: 1px solid rgba(0,0,0,0.08); }
+    .settings-theme-icon.dark { background: #2a2a2a; color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.08); }
+    .settings-theme-info { flex: 1; }
+    .settings-theme-name { font-size: 13px; font-weight: 500; color: #222; }
+    .settings-theme-desc { font-size: 12px; color: rgba(0,0,0,0.4); margin-top: 1px; }
+
+    .settings-section-gap { height: 28px; }
+
+    /* Settings dark mode */
+    body.dark .settings-sidebar-back { color: rgba(255,255,255,0.4); }
+    body.dark .settings-sidebar-back:hover { color: rgba(255,255,255,0.7); }
+    body.dark .settings-nav-section { color: rgba(255,255,255,0.25); }
+    body.dark .settings-nav-subgroup { color: rgba(255,255,255,0.6); }
+    body.dark .settings-nav-item { color: rgba(255,255,255,0.45); }
+    body.dark .settings-nav-item:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.65); }
+    body.dark .settings-nav-item.active { background: rgba(94,106,210,0.12); color: #d4d4d4; }
+    body.dark .settings-location-picker { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+    body.dark .settings-location-picker:hover { border-color: rgba(255,255,255,0.2); }
+    body.dark .settings-location-picker svg { color: rgba(255,255,255,0.3); }
+    body.dark .settings-title { color: #d4d4d4; }
+    body.dark .settings-section-label { color: rgba(255,255,255,0.3); border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .settings-row { border-bottom-color: rgba(255,255,255,0.04); }
+    body.dark .settings-row-label { color: #d4d4d4; }
+    body.dark .settings-row-desc { color: rgba(255,255,255,0.35); }
+    body.dark .settings-select { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: #d4d4d4; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); }
+    body.dark .settings-select:hover { border-color: rgba(255,255,255,0.2); }
+    body.dark .settings-toggle { background: rgba(255,255,255,0.12); }
+    body.dark .settings-toggle.on { background: #5e6ad2; }
+    body.dark .settings-btn { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+    body.dark .settings-btn:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); }
+    body.dark .settings-theme-name { color: #d4d4d4; }
+    body.dark .settings-theme-desc { color: rgba(255,255,255,0.35); }
+    body.dark .settings-theme-icon.light { background: #333; color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.08); }
+    body.dark .settings-theme-row { border-bottom-color: rgba(255,255,255,0.04); }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+  <!-- ═══ Sidebar ═══ -->
+  <nav class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+
+    <!-- Top bar: org + icons -->
+    <div class="sidebar-topbar">
+      <div class="org-dropdown-wrapper">
+        <button class="org-btn" id="orgBtn">
+          <img src="provet-logo.svg" alt="Provet" class="org-logo-img" />
+          <span class="org-chevron"><i data-lucide="chevron-down"></i></span>
+        </button>
+        <div class="org-dropdown" id="orgDropdown">
+          <div class="org-dropdown-item" data-action="settings">
+            <span class="dd-icon"><i data-lucide="settings"></i></span>
+            <span class="dd-label">Settings</span>
+          </div>
+          <div class="org-dropdown-item" data-action="switch-location">
+            <span class="dd-icon"><i data-lucide="map-pin"></i></span>
+            <span class="dd-label">Switch locations</span>
+          </div>
+          <div class="org-dropdown-divider"></div>
+          <div class="org-dropdown-item" data-action="search-help">
+            <span class="dd-icon"><i data-lucide="circle-help"></i></span>
+            <span class="dd-label">Search for help</span>
+          </div>
+          <div class="org-dropdown-item" data-action="contact-us">
+            <span class="dd-icon"><i data-lucide="mail"></i></span>
+            <span class="dd-label">Contact us</span>
+          </div>
+          <div class="org-dropdown-item" data-action="dark-mode">
+            <span class="dd-icon"><i data-lucide="moon"></i></span>
+            <span class="dd-label" id="darkModeLabel">Dark mode</span>
+          </div>
+          <div class="org-dropdown-divider"></div>
+          <div class="org-dropdown-item" data-action="logout">
+            <span class="dd-icon"><i data-lucide="log-out"></i></span>
+            <span class="dd-label">Log out</span>
+          </div>
+        </div>
+      </div>
+      <button class="topbar-icon-btn" id="sidebarToggle" aria-label="Toggle sidebar"><i data-lucide="panel-left-close"></i></button>
+    </div>
+
+    <!-- Scrollable nav -->
+    <div class="sidebar-nav" id="sidebarNav">
+
+      <!-- Search -->
+      <div class="nav-item" id="searchBtn" data-tooltip="Search" tabindex="0" role="button">
+        <span class="nav-icon"><i data-lucide="search"></i></span>
+        <span class="nav-label">Search</span>
+      </div>
+
+      <!-- Top-level items -->
+      <div class="nav-item" data-nav="inbox" data-tooltip="Inbox" tabindex="0">
+        <span class="nav-icon"><i data-lucide="inbox"></i></span>
+        <span class="nav-label">Inbox</span>
+        <span class="nav-badge" id="inboxBadge">12</span>
+      </div>
+      <div class="nav-item" data-nav="calendar" data-tooltip="Calendar" tabindex="0">
+        <span class="nav-icon"><i data-lucide="calendar"></i></span>
+        <span class="nav-label">Calendar</span>
+      </div>
+      <div class="nav-item" data-nav="customers" data-tooltip="Customers" tabindex="0">
+        <span class="nav-icon"><i data-lucide="users"></i></span>
+        <span class="nav-label">Customers</span>
+      </div>
+      <div class="nav-item" data-nav="billing-page" data-tooltip="Billing" tabindex="0">
+        <span class="nav-icon"><i data-lucide="receipt"></i></span>
+        <span class="nav-label">Billing</span>
+      </div>
+      <div class="nav-item" data-nav="care-page" data-tooltip="Care" tabindex="0">
+        <span class="nav-icon"><i data-lucide="heart-pulse"></i></span>
+        <span class="nav-label">Care</span>
+      </div>
+      <div class="nav-item" data-nav="inventory-page" data-tooltip="Inventory" tabindex="0">
+        <span class="nav-icon"><i data-lucide="package"></i></span>
+        <span class="nav-label">Inventory</span>
+      </div>
+      <div class="nav-item" data-nav="reports" data-tooltip="Reports" tabindex="0">
+        <span class="nav-icon"><i data-lucide="bar-chart-3"></i></span>
+        <span class="nav-label">Reports</span>
+      </div>
+
+      <!-- Favourites section -->
+      <div class="favourites-section" id="favouritesSection">
+        <div class="section-label-header" id="favouritesHeader" tabindex="0" role="button">
+          Favourites <span class="section-arrow">&#9660;</span>
+        </div>
+        <div id="favouritesList"></div>
+      </div>
+
+    </div>
+
+    <!-- Footer removed — settings now in org dropdown -->
+
+    <!-- Settings sidebar nav (hidden until settings mode) -->
+    <div class="settings-sidebar-nav" id="settingsSidebarNav"></div>
+  </nav>
+
+  <!-- ═══ Content area ═══ -->
+  <div class="content-area" id="contentArea">
+    <!-- Welcome -->
+    <div class="welcome-screen" id="welcomeScreen">
+      <span class="w-icon"><i data-lucide="stethoscope"></i></span>
+      <h2>Welcome to Provet Cloud</h2>
+      <p>Select a page from the sidebar, or press <kbd style="font-family:'SF Mono',monospace;font-size:10px;background:rgba(0,0,0,0.05);padding:1px 4px;border-radius:3px;" id="welcomeKbd"></kbd> to search.</p>
+    </div>
+
+    <!-- Inbox -->
+    <div class="inbox-panel" id="inboxPanel">
+      <div class="inbox-left">
+        <div class="page-topbar" style="border-bottom:none; padding-bottom:0;">
+          <span class="page-topbar-title">Inbox</span>
+          <span class="page-topbar-dots">···</span>
+          <div class="page-topbar-right">
+            <button><i data-lucide="filter"></i></button>
+            <button><i data-lucide="sliders-horizontal"></i></button>
+          </div>
+        </div>
+        <div class="inbox-list" id="inboxList"></div>
+      </div>
+      <div class="inbox-middle" id="inboxMiddle">
+        <div class="inbox-middle-empty" id="inboxMiddleEmpty">
+          <span class="inbox-empty-icon"><i data-lucide="inbox"></i></span>
+          <span class="inbox-empty-text" id="inboxEmptyText">7 unread notifications</span>
+        </div>
+        <div class="inbox-detail" id="inboxDetail" style="display:none;"></div>
+      </div>
+      <div class="inbox-drawer" id="inboxDrawer" style="position:relative;">
+        <button class="inbox-drawer-toggle" id="inboxDrawerToggle" title="Collapse panel"><i data-lucide="panel-right-close"></i></button>
+        <div class="inbox-drawer-tabs" id="inboxDrawerTabs">
+          <div class="inbox-drawer-tab active" data-drawer-tab="client">Client</div>
+          <div class="inbox-drawer-tab" data-drawer-tab="patient">Patient</div>
+          <div class="inbox-drawer-tab" data-drawer-tab="ask-ai">Ask AI</div>
+        </div>
+        <div class="inbox-drawer-body" id="inboxDrawerBody"></div>
+      </div>
+      <button class="inbox-drawer-expand" id="inboxDrawerExpand" title="Open panel" style="position:absolute;top:10px;right:10px;display:none;"><i data-lucide="panel-right-open"></i></button>
+    </div>
+
+    <!-- Page view -->
+    <div id="pageView"><div id="pageViewContent"></div></div>
+  </div>
+</div>
+
+<!-- ═══ Search Modal ═══ -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-modal" role="dialog" aria-label="Search" id="searchModal">
+    <div class="search-input-row">
+      <span class="s-icon"><i data-lucide="search"></i></span>
+      <input type="text" id="searchInput" placeholder="Search..." autocomplete="off" />
+      <span class="search-esc">Esc</span>
+    </div>
+    <div class="search-body" id="searchBody"></div>
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  // ═══ Dark mode init ═══
+  if (localStorage.getItem('provet-dark') === 'true') {
+    document.body.classList.add('dark');
+    var dmLabel = document.getElementById('darkModeLabel');
+    if (dmLabel) dmLabel.textContent = 'Light mode';
+    var dmIcon = document.querySelector('[data-action="dark-mode"] .dd-icon');
+    if (dmIcon) { dmIcon.innerHTML = '<i data-lucide="sun"></i>'; lucide.createIcons({ nodes: dmIcon.querySelectorAll('i') }); }
+  }
+
+  // ═══ Platform ═══
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const modKey = isMac ? '\u2318' : 'Ctrl';
+  document.getElementById('welcomeKbd').textContent = modKey + 'K';
+
+  // ═══ State ═══
+  let favourites = JSON.parse(localStorage.getItem('provet-favourites') || '[]');
+  let collapsedSections = JSON.parse(localStorage.getItem('provet-collapsed') || '{}');
+  let sidebarCollapsed = localStorage.getItem('provet-sidebar-collapsed') === 'true';
+  let activeNav = null;
+
+  // Fav colors for dots
+  const FAV_COLORS = ['#e5534b','#cf8e3e','#57ab5a','#539bf5','#986ee2','#c96198','#6cb6ff','#4dab9a'];
+
+  // ═══ Org dropdown ═══
+  const orgBtn = document.getElementById('orgBtn');
+  const orgDropdown = document.getElementById('orgDropdown');
+
+  orgBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    orgDropdown.classList.toggle('open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!orgDropdown.contains(e.target) && e.target !== orgBtn) {
+      orgDropdown.classList.remove('open');
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') orgDropdown.classList.remove('open');
+  });
+
+  // Dropdown item actions
+  orgDropdown.querySelectorAll('.org-dropdown-item').forEach(item => {
+    item.addEventListener('click', () => {
+      orgDropdown.classList.remove('open');
+      const action = item.dataset.action;
+      if (action === 'settings') navigateTo('settings');
+      if (action === 'dark-mode') {
+        document.body.classList.toggle('dark');
+        const isDark = document.body.classList.contains('dark');
+        localStorage.setItem('provet-dark', isDark);
+        document.getElementById('darkModeLabel').textContent = isDark ? 'Light mode' : 'Dark mode';
+        // Update icon
+        const iconEl = item.querySelector('.dd-icon');
+        iconEl.innerHTML = '<i data-lucide="' + (isDark ? 'sun' : 'moon') + '"></i>';
+        lucide.createIcons({ nodes: iconEl.querySelectorAll('i') });
+        // Toggle calendar iframe if present
+        var calFrame = document.getElementById('calFrame');
+        if (calFrame && calFrame.contentDocument) {
+          calFrame.contentDocument.body.classList.toggle('dark', isDark);
+        }
+      }
+    });
+  });
+
+  // ═══ Sidebar collapse ═══
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('sidebarToggle');
+
+  function applySidebarState() {
+    sidebar.classList.toggle('collapsed', sidebarCollapsed);
+    // Replace the icon inside the toggle button
+    const iconName = sidebarCollapsed ? 'panel-left-open' : 'panel-left-close';
+    toggleBtn.innerHTML = '<i data-lucide="' + iconName + '"></i>';
+    lucide.createIcons({ nodes: toggleBtn.querySelectorAll('i') });
+  }
+  toggleBtn.addEventListener('click', () => {
+    sidebarCollapsed = !sidebarCollapsed;
+    localStorage.setItem('provet-sidebar-collapsed', sidebarCollapsed);
+    applySidebarState();
+  });
+  applySidebarState();
+
+  // ═══ Collapsible sections ═══
+  function toggleSection(headerId, itemsId, key) {
+    var header = document.getElementById(headerId);
+    var items = document.getElementById(itemsId);
+    if (!header || !items) return;
+
+    var arrow = header.querySelector('.section-arrow');
+
+    function setCollapsed(collapsed) {
+      if (collapsed) {
+        items.style.display = 'none';
+        if (arrow) arrow.textContent = '\u25B6';
+      } else {
+        items.style.display = '';
+        if (arrow) arrow.textContent = '\u25BC';
+      }
+      collapsedSections[key] = collapsed;
+      localStorage.setItem('provet-collapsed', JSON.stringify(collapsedSections));
+    }
+
+    // Apply initial state
+    if (collapsedSections[key]) setCollapsed(true);
+
+    // Use onclick for maximum reliability
+    header.onclick = function(e) {
+      e.stopPropagation();
+      var isCurrentlyHidden = items.style.display === 'none';
+      setCollapsed(!isCurrentlyHidden);
+    };
+  }
+
+  toggleSection('favouritesHeader', 'favouritesList', 'favourites');
+
+  // ═══ Starring ═══
+  function saveFavourites() { localStorage.setItem('provet-favourites', JSON.stringify(favourites)); }
+
+  function toggleStar(key) {
+    const idx = favourites.indexOf(key);
+    if (idx >= 0) favourites.splice(idx, 1);
+    else favourites.push(key);
+    saveFavourites();
+    renderStars();
+    renderFavourites();
+  }
+
+  function renderStars() {
+    document.querySelectorAll('.star-toggle').forEach(el => {
+      const key = el.dataset.star;
+      const starred = favourites.includes(key);
+      el.classList.toggle('starred', starred);
+      const icon = el.querySelector('i');
+      icon.setAttribute('data-lucide', 'star');
+      lucide.createIcons({ nodes: [icon] });
+      if (starred) el.querySelector('svg').style.fill = '#cf8e3e';
+    });
+  }
+
+  function renderFavourites() {
+    const section = document.getElementById('favouritesSection');
+    const list = document.getElementById('favouritesList');
+    list.innerHTML = '';
+    if (favourites.length === 0) { section.classList.remove('visible'); return; }
+    section.classList.add('visible');
+
+    favourites.forEach((key, i) => {
+      const original = document.querySelector(`.star-toggle[data-star="${key}"]`);
+      if (!original) return;
+      const subitem = original.closest('.nav-subitem');
+      if (!subitem) return;
+
+      const el = document.createElement('div');
+      el.className = 'fav-item' + (activeNav === subitem.dataset.nav ? ' active' : '');
+      el.dataset.nav = subitem.dataset.nav;
+      el.tabIndex = 0;
+
+      const dot = document.createElement('span');
+      dot.className = 'fav-dot';
+      dot.style.background = FAV_COLORS[i % FAV_COLORS.length];
+
+      const label = document.createElement('span');
+      label.className = 'fav-label';
+      label.textContent = subitem.dataset.label;
+
+      el.appendChild(dot);
+      el.appendChild(label);
+      el.addEventListener('click', () => navigateTo(subitem.dataset.nav));
+      list.appendChild(el);
+    });
+  }
+
+  document.querySelectorAll('.star-toggle').forEach(el => {
+    el.addEventListener('click', (e) => { e.stopPropagation(); toggleStar(el.dataset.star); });
+  });
+  renderStars();
+  renderFavourites();
+
+  // ═══ Navigation ═══
+  const NAV_PAGES = {
+    'calendar': { title: 'Calendar', icon: 'calendar', type: 'page' },
+    'inbox': { title: 'Inbox', icon: 'inbox', type: 'inbox' },
+    'customers': { title: 'Customers', icon: 'users', type: 'customers' },
+    'reports': { title: 'Reports', icon: 'bar-chart-3', type: 'placeholder' },
+    'views-page': { title: 'Views', icon: 'layout-grid', type: 'views' },
+    'billing-page': { title: 'Billing', icon: 'receipt', type: 'billing' },
+    'care-page': { title: 'Care', icon: 'heart-pulse', type: 'care' },
+    'inventory-page': { title: 'Inventory', icon: 'package', type: 'placeholder' },
+    'settings': { title: 'Settings', icon: 'settings', type: 'settings' },
+    'diagnostic-imaging': { title: 'Diagnostic imaging', icon: 'scan', type: 'table' },
+    'estimates': { title: 'Estimates', icon: 'file-text', type: 'table' },
+    'invoices': { title: 'Invoices', icon: 'receipt', type: 'table' },
+    'written-prescriptions': { title: 'Written prescriptions', icon: 'pill', type: 'table' },
+    'health-plans': { title: 'Health plans', icon: 'heart-pulse', type: 'table' },
+    'patient-referrals': { title: 'Patient referrals', icon: 'send', type: 'table' },
+    'reminders': { title: 'Reminders', icon: 'bell', type: 'table' },
+    'items': { title: 'Items', icon: 'box', type: 'placeholder' },
+    'bundles': { title: 'Bundles', icon: 'boxes', type: 'placeholder' },
+    'catalogue-management': { title: 'Catalogue management', icon: 'book-open', type: 'placeholder' },
+    'stock': { title: 'Stock', icon: 'warehouse', type: 'placeholder' },
+    'orders': { title: 'Orders', icon: 'shopping-cart', type: 'placeholder' },
+    'stock-locations': { title: 'Stock locations', icon: 'map-pin', type: 'placeholder' },
+    'wholesalers': { title: 'Wholesalers', icon: 'truck', type: 'placeholder' },
+  };
+
+  function navigateTo(navKey) {
+    // Exit settings mode if navigating away from settings
+    if (inSettingsMode && navKey !== 'settings') {
+      inSettingsMode = false;
+      document.getElementById('sidebar').classList.remove('settings-mode');
+      document.getElementById('settingsSidebarNav').innerHTML = '';
+    }
+
+    activeNav = navKey;
+    updateActiveStates();
+    const welcome = document.getElementById('welcomeScreen');
+    const inbox = document.getElementById('inboxPanel');
+    const pageView = document.getElementById('pageView');
+
+    welcome.style.display = 'none';
+    inbox.classList.remove('active');
+    pageView.style.display = 'none';
+
+    const page = NAV_PAGES[navKey];
+    if (!page) { welcome.style.display = 'flex'; return; }
+
+    if (page.type === 'inbox') { inbox.classList.add('active'); renderInbox(); return; }
+
+    if (page.type === 'page') {
+      pageView.style.display = 'flex';
+      pageView.style.overflow = 'hidden';
+      const c = document.getElementById('pageViewContent');
+      var darkParam = document.body.classList.contains('dark') ? '?dark=1' : '';
+      c.innerHTML = '<iframe id="calFrame" src="calendar.html' + darkParam + '" style="width:100%;flex:1;border:none;"></iframe>';
+      return;
+    }
+
+    // Views page
+    if (page.type === 'views') {
+      pageView.style.display = 'flex';
+      pageView.style.overflow = 'hidden';
+      const c = document.getElementById('pageViewContent');
+      c.innerHTML = renderViewsPage();
+      lucide.createIcons({ nodes: c.querySelectorAll('i') });
+      // Wire up view tabs
+      c.querySelectorAll('.vp-tab').forEach(tab => {
+        tab.onclick = function() {
+          c.querySelectorAll('.vp-tab').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+        };
+      });
+      // Wire up view rows to navigate
+      c.querySelectorAll('.vp-row[data-nav]').forEach(row => {
+        row.onclick = function() { navigateTo(this.dataset.nav); };
+      });
+      return;
+    }
+
+    // Billing page
+    if (page.type === 'billing') {
+      pageView.style.display = 'flex';
+      pageView.style.overflow = 'hidden';
+      const c = document.getElementById('pageViewContent');
+      c.innerHTML = renderBillingPage();
+      lucide.createIcons({ nodes: c.querySelectorAll('i') });
+      c.querySelectorAll('.vp-row[data-nav]').forEach(row => {
+        row.onclick = function() { navigateTo(this.dataset.nav); };
+      });
+      return;
+    }
+
+    // Care page
+    if (page.type === 'care') {
+      pageView.style.display = 'flex';
+      pageView.style.overflow = 'hidden';
+      const c = document.getElementById('pageViewContent');
+      c.innerHTML = renderCarePage();
+      lucide.createIcons({ nodes: c.querySelectorAll('i') });
+      c.querySelectorAll('.vp-row[data-nav]').forEach(row => {
+        row.onclick = function() { navigateTo(this.dataset.nav); };
+      });
+      return;
+    }
+
+    // Settings page — takes over the sidebar
+    if (page.type === 'settings') {
+      enterSettingsMode();
+      return;
+    }
+
+    // Table view
+    // Customers page
+    if (page.type === 'customers') {
+      pageView.style.display = 'flex';
+      pageView.style.overflow = 'hidden';
+      const c = document.getElementById('pageViewContent');
+      c.innerHTML = renderCustomersPage();
+      lucide.createIcons({ nodes: c.querySelectorAll('i') });
+      return;
+    }
+
+    if (page.type === 'table') {
+      pageView.style.display = 'flex';
+      pageView.style.overflow = 'hidden';
+      const c = document.getElementById('pageViewContent');
+      c.innerHTML = renderTablePage(navKey, page);
+      lucide.createIcons({ nodes: c.querySelectorAll('i') });
+      return;
+    }
+
+    // Placeholder
+    pageView.style.display = 'flex';
+    const c = document.getElementById('pageViewContent');
+    c.innerHTML = `
+      <div class="page-topbar">
+        <span class="page-topbar-title">${page.title}</span>
+      </div>
+      <div class="ph-page">
+        <p class="ph-desc">This view is under development.</p>
+        <div class="ph-box">Content area</div>
+      </div>`;
+    lucide.createIcons({ nodes: c.querySelectorAll('i') });
+  }
+
+  // ═══ Views page renderer ═══
+  function renderViewsPage() {
+    const views = [
+      { nav: 'diagnostic-imaging', icon: 'scan', name: 'Diagnostic imaging', desc: 'Radiology, ultrasound, and other imaging requests', owner: 'Provet Cloud', color: '#cf8e3e' },
+      { nav: 'estimates', icon: 'file-text', name: 'Estimates', desc: 'Pending and approved treatment estimates', owner: 'Provet Cloud', color: '#5e6ad2' },
+      { nav: 'invoices', icon: 'receipt', name: 'Invoices', desc: 'All invoices across clients and patients', owner: 'Provet Cloud', color: '#57ab5a' },
+      { nav: 'written-prescriptions', icon: 'pill', name: 'Written prescriptions', desc: 'Prescriptions issued to patients', owner: 'Provet Cloud', color: '#e5534b' },
+      { nav: 'health-plans', icon: 'heart-pulse', name: 'Health plans', desc: 'Wellness and preventive care plans', owner: 'Provet Cloud', color: '#c96198' },
+      { nav: 'patient-referrals', icon: 'send', name: 'Patient referrals', desc: 'Referrals to specialists and external clinics', owner: 'Provet Cloud', color: '#986ee2' },
+      { nav: 'reminders', icon: 'bell', name: 'Reminders', desc: 'Vaccination, check-up, and follow-up reminders', owner: 'Provet Cloud', color: '#539bf5' },
+    ];
+
+    let rows = views.map(v => `
+      <div class="vp-row" data-nav="${v.nav}">
+        <div class="vp-row-icon" style="color:${v.color}"><i data-lucide="${v.icon}"></i></div>
+        <div class="vp-row-content">
+          <div class="vp-row-name">${v.name}</div>
+          <div class="vp-row-desc">${v.desc}</div>
+        </div>
+        <div class="vp-row-owner">
+          <span class="vp-avatar">PC</span>
+          ${v.owner}
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="views-page">
+        <div class="page-topbar" style="border-bottom:none; padding-bottom:4px;">
+          <span class="page-topbar-title">Views</span>
+          <span class="page-topbar-count">${views.length}</span>
+          <div class="page-topbar-right">
+            <button class="ptb-add"><i data-lucide="plus"></i></button>
+          </div>
+        </div>
+        <div class="cust-search-row">
+          <div class="cust-search-input">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Find by name..." />
+          </div>
+          <div class="cust-search-actions">
+            <button><i data-lucide="filter"></i></button>
+            <button><i data-lucide="sliders-horizontal"></i></button>
+          </div>
+        </div>
+        <div class="vp-scroll">
+          <div class="vp-table-header">
+            <div class="vp-col-name">Name <span style="font-size:10px;color:rgba(0,0,0,0.3);">↓</span></div>
+            <div class="vp-col-owner">Owner</div>
+          </div>
+          ${rows}
+        </div>
+      </div>
+    `;
+  }
+
+  // ═══ Billing page renderer ═══
+  function renderBillingPage() {
+    const views = [
+      { nav: 'invoices', icon: 'receipt', name: 'Invoices', desc: 'All invoices across clients and patients', owner: 'Provet Cloud', color: '#57ab5a' },
+      { nav: 'estimates', icon: 'file-text', name: 'Estimates', desc: 'Pending and approved treatment estimates', owner: 'Provet Cloud', color: '#5e6ad2' },
+      { nav: 'health-plans', icon: 'heart-pulse', name: 'Health plans', desc: 'Wellness and preventive care plans', owner: 'Provet Cloud', color: '#c96198' },
+    ];
+
+    let rows = views.map(v => `
+      <div class="vp-row" data-nav="${v.nav}">
+        <div class="vp-row-icon" style="color:${v.color}"><i data-lucide="${v.icon}"></i></div>
+        <div class="vp-row-content">
+          <div class="vp-row-name">${v.name}</div>
+          <div class="vp-row-desc">${v.desc}</div>
+        </div>
+        <div class="vp-row-owner">
+          <span class="vp-avatar">PC</span>
+          ${v.owner}
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="views-page">
+        <div class="page-topbar" style="border-bottom:none; padding-bottom:4px;">
+          <span class="page-topbar-title">Billing</span>
+          <span class="page-topbar-count">${views.length}</span>
+          <div class="page-topbar-right">
+            <button class="ptb-add"><i data-lucide="plus"></i></button>
+          </div>
+        </div>
+        <div class="cust-search-row">
+          <div class="cust-search-input">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Find by name..." />
+          </div>
+          <div class="cust-search-actions">
+            <button><i data-lucide="filter"></i></button>
+            <button><i data-lucide="sliders-horizontal"></i></button>
+          </div>
+        </div>
+        <div class="vp-scroll">
+          <div class="vp-table-header">
+            <div class="vp-col-name">Name <span style="font-size:10px;color:rgba(0,0,0,0.3);">↓</span></div>
+            <div class="vp-col-owner">Owner</div>
+          </div>
+          ${rows}
+        </div>
+      </div>
+    `;
+  }
+
+  // ═══ Care page renderer ═══
+  function renderCarePage() {
+    const views = [
+      { nav: 'diagnostic-imaging', icon: 'scan', name: 'Diagnostic imaging', desc: 'Radiology, ultrasound, and other imaging requests', owner: 'Provet Cloud', color: '#cf8e3e' },
+      { nav: 'written-prescriptions', icon: 'pill', name: 'Written prescriptions', desc: 'Prescriptions issued to patients', owner: 'Provet Cloud', color: '#e5534b' },
+      { nav: 'patient-referrals', icon: 'send', name: 'Patient referrals', desc: 'Referrals to specialists and external clinics', owner: 'Provet Cloud', color: '#986ee2' },
+      { nav: 'reminders', icon: 'bell', name: 'Reminders', desc: 'Vaccination, check-up, and follow-up reminders', owner: 'Provet Cloud', color: '#539bf5' },
+    ];
+
+    let rows = views.map(v => `
+      <div class="vp-row" data-nav="${v.nav}">
+        <div class="vp-row-icon" style="color:${v.color}"><i data-lucide="${v.icon}"></i></div>
+        <div class="vp-row-content">
+          <div class="vp-row-name">${v.name}</div>
+          <div class="vp-row-desc">${v.desc}</div>
+        </div>
+        <div class="vp-row-owner">
+          <span class="vp-avatar">PC</span>
+          ${v.owner}
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="views-page">
+        <div class="page-topbar" style="border-bottom:none; padding-bottom:4px;">
+          <span class="page-topbar-title">Care</span>
+          <span class="page-topbar-count">${views.length}</span>
+          <div class="page-topbar-right">
+            <button class="ptb-add"><i data-lucide="plus"></i></button>
+          </div>
+        </div>
+        <div class="cust-search-row">
+          <div class="cust-search-input">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Find by name..." />
+          </div>
+          <div class="cust-search-actions">
+            <button><i data-lucide="filter"></i></button>
+            <button><i data-lucide="sliders-horizontal"></i></button>
+          </div>
+        </div>
+        <div class="vp-scroll">
+          <div class="vp-table-header">
+            <div class="vp-col-name">Name <span style="font-size:10px;color:rgba(0,0,0,0.3);">↓</span></div>
+            <div class="vp-col-owner">Owner</div>
+          </div>
+          ${rows}
+        </div>
+      </div>
+    `;
+  }
+
+  // ═══ Table page renderer ═══
+  const TABLE_DATA = {
+    'diagnostic-imaging': [
+      { icon: 'scan', color: '#cf8e3e', name: 'X-Ray — Milo (Labrador)', sub: 'Left hind leg', health: 'On track', hTime: '2h', lead: 'SS', leadColor: '#5e6ad2', date: 'Mar 16th', pct: '100%', trend: 'up' },
+      { icon: 'scan', color: '#cf8e3e', name: 'Ultrasound — Bella (Persian)', sub: 'Abdominal scan', health: 'On track', hTime: '3h', lead: 'KB', leadColor: '#4dab9a', date: 'Mar 17th', pct: '40%', trend: 'up' },
+      { icon: 'scan', color: '#cf8e3e', name: 'X-Ray — Rex (Shepherd)', sub: 'Chest radiograph', health: 'At risk', hTime: '5h', lead: 'MJ', leadColor: '#cf8e3e', date: 'Mar 15th', pct: '80%', trend: 'down' },
+      { icon: 'scan', color: '#cf8e3e', name: 'CT Scan — Daisy (Beagle)', sub: 'Post-surgery follow-up', health: 'On track', hTime: '6h', lead: 'SS', leadColor: '#5e6ad2', date: 'Mar 18th', pct: '25%', trend: 'up' },
+      { icon: 'scan', color: '#cf8e3e', name: 'Ultrasound — Luna (Siamese)', sub: 'Cardiac assessment', health: 'On track', hTime: '8h', lead: 'KB', leadColor: '#4dab9a', date: 'Mar 19th', pct: '10%', trend: '' },
+    ],
+    'estimates': [
+      { icon: 'file-text', color: '#5e6ad2', name: 'Spay procedure — Nala', sub: 'Estimate #EST-2041', health: 'On track', hTime: '1h', lead: 'MJ', leadColor: '#cf8e3e', date: 'Mar 16th', pct: 'Approved', trend: 'up' },
+      { icon: 'file-text', color: '#5e6ad2', name: 'Dental cleaning — Archie', sub: 'Estimate #EST-2042', health: 'On track', hTime: '3h', lead: 'SS', leadColor: '#5e6ad2', date: 'Mar 17th', pct: 'Pending', trend: '' },
+      { icon: 'file-text', color: '#5e6ad2', name: 'Lump removal — Daisy', sub: 'Estimate #EST-2038', health: 'On track', hTime: '5h', lead: 'MJ', leadColor: '#cf8e3e', date: 'Mar 14th', pct: 'Approved', trend: 'up' },
+      { icon: 'file-text', color: '#5e6ad2', name: 'Vaccination package — Puppies', sub: 'Estimate #EST-2043', health: 'At risk', hTime: '1d', lead: 'KB', leadColor: '#4dab9a', date: 'Mar 20th', pct: 'Declined', trend: 'down' },
+      { icon: 'file-text', color: '#5e6ad2', name: 'Emergency surgery — Tigger', sub: 'Estimate #EST-2039', health: 'On track', hTime: '2d', lead: 'MJ', leadColor: '#cf8e3e', date: 'Mar 12th', pct: 'Approved', trend: 'up' },
+    ],
+    'invoices': [
+      { icon: 'receipt', color: '#57ab5a', name: 'INV-10232 — Amy Collins', sub: 'Annual check-up · Milo', health: 'On track', hTime: '1h', lead: 'SS', leadColor: '#5e6ad2', date: 'Mar 16th', pct: 'Paid', trend: 'up' },
+      { icon: 'receipt', color: '#57ab5a', name: 'INV-10231 — David Turner', sub: 'Vaccination · Archie', health: 'On track', hTime: '3h', lead: 'KB', leadColor: '#4dab9a', date: 'Mar 15th', pct: 'Paid', trend: 'up' },
+      { icon: 'receipt', color: '#57ab5a', name: 'INV-10230 — Emma Patel', sub: 'Surgery · Daisy', health: 'At risk', hTime: '1d', lead: 'MJ', leadColor: '#cf8e3e', date: 'Mar 14th', pct: 'Overdue', trend: 'down' },
+      { icon: 'receipt', color: '#57ab5a', name: 'INV-10229 — Rebecca Young', sub: 'Spay · Nala', health: 'On track', hTime: '2d', lead: 'MJ', leadColor: '#cf8e3e', date: 'Mar 13th', pct: 'Pending', trend: '' },
+      { icon: 'receipt', color: '#57ab5a', name: 'INV-10228 — Daniel Reyes', sub: 'Consultation · Luna', health: 'On track', hTime: '3d', lead: 'SS', leadColor: '#5e6ad2', date: 'Mar 12th', pct: 'Paid', trend: 'up' },
+      { icon: 'receipt', color: '#57ab5a', name: 'INV-10227 — Olivia Zhang', sub: 'Follow-up · Rex', health: 'On track', hTime: '3d', lead: 'KB', leadColor: '#4dab9a', date: 'Mar 12th', pct: 'Paid', trend: 'up' },
+    ],
+    'written-prescriptions': [
+      { icon: 'pill', color: '#e5534b', name: 'Metacam 1.5mg — Milo', sub: 'Anti-inflammatory · 14 days', health: 'On track', hTime: '2h', lead: 'SS', leadColor: '#5e6ad2', date: 'Mar 16th', pct: 'Active', trend: 'up' },
+      { icon: 'pill', color: '#e5534b', name: 'Amoxicillin 250mg — Rex', sub: 'Antibiotic · 10 days', health: 'On track', hTime: '1d', lead: 'KB', leadColor: '#4dab9a', date: 'Mar 15th', pct: 'Active', trend: '' },
+      { icon: 'pill', color: '#e5534b', name: 'Gabapentin 100mg — Pepper', sub: 'Pain relief · 7 days', health: 'At risk', hTime: '2d', lead: 'SS', leadColor: '#5e6ad2', date: 'Mar 14th', pct: 'Expiring', trend: 'down' },
+      { icon: 'pill', color: '#e5534b', name: 'Apoquel 16mg — Luna', sub: 'Allergy · 30 days', health: 'On track', hTime: '3d', lead: 'MJ', leadColor: '#cf8e3e', date: 'Mar 10th', pct: 'Active', trend: 'up' },
+    ],
+    'health-plans': [
+      { icon: 'heart-pulse', color: '#c96198', name: 'Puppy Wellness — Archie', sub: 'David Turner · 6-month plan', health: 'On track', hTime: '1h', lead: 'KB', leadColor: '#4dab9a', date: 'Sep 2026', pct: '35%', trend: 'up' },
+      { icon: 'heart-pulse', color: '#c96198', name: 'Senior Care — Milo', sub: 'Amy Collins · Annual', health: 'On track', hTime: '3h', lead: 'SS', leadColor: '#5e6ad2', date: 'Jan 2027', pct: '60%', trend: 'up' },
+      { icon: 'heart-pulse', color: '#c96198', name: 'Kitten Package — Bella', sub: 'Sarah Chen · 12-month', health: 'On track', hTime: '2d', lead: 'KB', leadColor: '#4dab9a', date: 'Mar 2027', pct: '15%', trend: 'up' },
+      { icon: 'heart-pulse', color: '#c96198', name: 'Dental Care — Daisy', sub: 'Emma Patel · 6-month', health: 'At risk', hTime: '5d', lead: 'MJ', leadColor: '#cf8e3e', date: 'Jun 2026', pct: '80%', trend: 'down' },
+    ],
+    'patient-referrals': [
+      { icon: 'send', color: '#986ee2', name: 'Rex — Orthopaedic specialist', sub: 'Olivia Zhang · Hip dysplasia', health: 'On track', hTime: '2h', lead: 'SS', leadColor: '#5e6ad2', date: 'Mar 18th', pct: 'Sent', trend: '' },
+      { icon: 'send', color: '#986ee2', name: 'Daisy — Oncology', sub: 'Emma Patel · Lump biopsy', health: 'On track', hTime: '1d', lead: 'MJ', leadColor: '#cf8e3e', date: 'Mar 20th', pct: 'Accepted', trend: 'up' },
+      { icon: 'send', color: '#986ee2', name: 'Tigger — Cardiology', sub: 'Michael Green · Heart murmur', health: 'At risk', hTime: '3d', lead: 'KB', leadColor: '#4dab9a', date: 'Mar 15th', pct: 'Pending', trend: 'down' },
+    ],
+    'reminders': [
+      { icon: 'bell', color: '#539bf5', name: 'Vaccination — Luna', sub: 'Daniel Reyes · Booster due', health: 'On track', hTime: '1h', lead: 'KB', leadColor: '#4dab9a', date: 'Mar 17th', pct: 'Scheduled', trend: '' },
+      { icon: 'bell', color: '#539bf5', name: 'Annual check-up — Milo', sub: 'Amy Collins · Overdue 2 weeks', health: 'At risk', hTime: '2h', lead: 'SS', leadColor: '#5e6ad2', date: 'Mar 2nd', pct: 'Overdue', trend: 'down' },
+      { icon: 'bell', color: '#539bf5', name: 'Dental cleaning — Archie', sub: 'David Turner · 6 months', health: 'On track', hTime: '1d', lead: 'KB', leadColor: '#4dab9a', date: 'Sep 16th', pct: 'Scheduled', trend: '' },
+      { icon: 'bell', color: '#539bf5', name: 'Flea treatment — Pepper', sub: 'Hannah Wells · Monthly', health: 'On track', hTime: '2d', lead: 'SS', leadColor: '#5e6ad2', date: 'Apr 1st', pct: 'Scheduled', trend: 'up' },
+      { icon: 'bell', color: '#539bf5', name: 'Spay follow-up — Nala', sub: 'Rebecca Young · 2 weeks post-op', health: 'On track', hTime: '3d', lead: 'MJ', leadColor: '#cf8e3e', date: 'Mar 22nd', pct: 'Scheduled', trend: '' },
+      { icon: 'bell', color: '#539bf5', name: 'Blood test — Rex', sub: 'Olivia Zhang · Pre-surgery', health: 'On track', hTime: '5d', lead: 'KB', leadColor: '#4dab9a', date: 'Mar 25th', pct: 'Scheduled', trend: 'up' },
+    ],
+  };
+
+  // ═══ Customers page renderer ═══
+  function renderCustomersPage() {
+    const customers = [
+      { name: 'Sandhedens Dyreklinik', initials: 'S', color: '#5e6ad2', visits: 164, revenue: '', pets: '', status: 'true', tier: 'terapeut_b...', email: 'veterinaria...', source: 'Intercom' },
+      { name: 'Coronaria Contextia Oy', initials: 'C', color: '#986ee2', visits: 240, revenue: '1,373', pets: '', status: 'Active', tier: 'Diarium', email: 'coronaria.fi', source: 'Intercom' },
+      { name: 'Nordhealth', initials: 'N', color: '#5e6ad2', visits: 231, revenue: '', pets: '', status: 'Active', tier: 'terapeut_b...', email: 'nordhealth...', source: 'Intercom' },
+      { name: '4973 CVS - all clinics ** (7031 Northern I...', initials: 'V', color: '#539bf5', visits: 213, revenue: '', pets: '', status: 'Active', tier: '', email: 'cvsvets.com', source: 'API' },
+      { name: '4478 EU IVC Evidensia Spain', initials: 'E', color: '#cf8e3e', visits: 144, revenue: '', pets: '', status: 'true', tier: '', email: 'ivcevidens...', source: 'API' },
+      { name: '4060 EU AniCura Sweden', initials: 'A', color: '#57ab5a', visits: 122, revenue: '', pets: '', status: 'true', tier: '', email: 'anicura.se', source: 'API' },
+      { name: 'AmeriVet - Support 6738 US ENT', initials: 'A', color: '#c96198', visits: 89, revenue: '', pets: '', status: 'Active', tier: '', email: 'amerivet.c...', source: 'API' },
+      { name: '2342 EU EMPET', initials: 'E', color: '#57ab5a', visits: 82, revenue: '', pets: '', status: 'true', tier: '', email: 'empet.no', source: 'API' },
+      { name: '1941 Enterprise EU (SLA) - IVC Evidensia...', initials: 'E', color: '#4dab9a', visits: 94, revenue: '', pets: '', status: 'true', tier: '', email: 'evidensia.fi', source: 'API' },
+      { name: '6181 EU ENT Pets at Home (6538, 5654 ...', initials: 'P', color: '#986ee2', visits: 89, revenue: '', pets: '', status: 'true', tier: '', email: 'vets4pets....', source: 'API' },
+      { name: '4933 EU ENT Evidensia Denmark', initials: 'E', color: '#cf8e3e', visits: 92, revenue: '', pets: '', status: 'true', tier: '', email: 'evidensia.dk', source: 'API' },
+      { name: '5526 AniCura Norway', initials: 'A', color: '#e5534b', visits: 84, revenue: '', pets: '', status: 'true', tier: '', email: 'anicura.no', source: 'API' },
+      { name: 'Psykologspesialist John Nikolaisen, Spe...', initials: 'P', color: '#539bf5', visits: 74, revenue: '', pets: '', status: 'Active', tier: 'psykbase', email: 'online.no', source: 'Intercom' },
+      { name: 'Pets At Home', initials: 'P', color: '#986ee2', visits: 51, revenue: '', pets: '', status: 'Active', tier: '', email: '', source: '' },
+      { name: 'Mimers Loft v/ Mette Bentzen, Psykolog...', initials: 'M', color: '#5e6ad2', visits: 58, revenue: '', pets: '', status: 'Active', tier: 'terapeut_b...', email: 'mettebent...', source: 'Intercom' },
+    ];
+
+    const rows = customers.map(c => `
+      <div class="cust-row">
+        <div class="cust-col-name">
+          <span class="cust-row-avatar" style="background:${c.color}">${c.initials}</span>
+          <span class="cust-row-name">${c.name}</span>
+        </div>
+        <div class="cust-col-visits">${c.visits}</div>
+        <div class="cust-col-spend">${c.revenue}</div>
+        <div class="cust-col-pets">${c.pets}</div>
+        <div class="cust-col-status"><span class="cust-status-badge ${c.status === 'Active' ? 'active' : 'inactive'}"><span style="margin-right:3px;">■</span> ${c.status}</span></div>
+        <div class="cust-col-plan">${c.tier}</div>
+        <div class="cust-col-vet"><span class="cust-owner-avatar"><i data-lucide="user-plus"></i></span></div>
+        <div class="cust-col-phone">${c.email}</div>
+        <div class="cust-col-reg">${c.source}</div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="cust-page">
+        <div class="page-topbar" style="border-bottom:none; padding-bottom:4px;">
+          <span class="page-topbar-title">Customers</span>
+          <span class="page-topbar-count">${customers.length}</span>
+          <div class="page-topbar-right">
+            <button class="ptb-add"><i data-lucide="plus"></i></button>
+          </div>
+        </div>
+        <div class="cust-search-row">
+          <div class="cust-search-input">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Find by name or domain..." />
+          </div>
+          <div class="cust-search-actions">
+            <button><i data-lucide="filter"></i></button>
+            <button><i data-lucide="sliders-horizontal"></i></button>
+          </div>
+        </div>
+        <div class="cust-scroll">
+          <div class="cust-table-head">
+            <div class="cust-col-name">Name</div>
+            <div class="cust-col-visits">↑ Requests</div>
+            <div class="cust-col-spend">Monthly revenue</div>
+            <div class="cust-col-pets">Size</div>
+            <div class="cust-col-status">Status</div>
+            <div class="cust-col-plan">Tier</div>
+            <div class="cust-col-vet">Owner</div>
+            <div class="cust-col-phone">Domains</div>
+            <div class="cust-col-reg">Data source</div>
+          </div>
+          ${rows}
+        </div>
+      </div>`;
+  }
+
+  function renderTablePage(navKey, page) {
+    const data = TABLE_DATA[navKey] || [];
+    const rows = data.map(r => {
+      const hColor = r.health === 'On track' ? '#57ab5a' : '#cf8e3e';
+      const trendIcon = r.trend === 'up' ? 'chevron-up' : r.trend === 'down' ? 'chevron-down' : 'minus';
+      const trendClass = r.trend === 'up' ? 'up' : r.trend === 'down' ? 'down' : '';
+      return `
+        <div class="tp-row">
+          <div class="tp-col-name">
+            <span class="tp-row-icon" style="color:${r.color}"><i data-lucide="${r.icon}"></i></span>
+            <span class="tp-row-title">${r.name}</span>
+            <span class="tp-row-sub">${r.sub}</span>
+          </div>
+          <div class="tp-col-health">
+            <span class="tp-health">
+              <span class="tp-health-dot" style="background:${hColor}"></span>
+              <span class="tp-health-text">${r.health}</span>
+              <span class="tp-health-time">· ${r.hTime}</span>
+            </span>
+          </div>
+          <div class="tp-col-priority"><span class="tp-priority"><i data-lucide="signal"></i></span></div>
+          <div class="tp-col-lead"><span class="tp-lead" style="background:${r.leadColor}">${r.lead}</span></div>
+          <div class="tp-col-date"><span class="tp-date"><i data-lucide="calendar"></i> ${r.date}</span></div>
+          <div class="tp-col-status">
+            <span class="tp-status-val"><i data-lucide="target"></i> ${r.pct}</span>
+          </div>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="table-page">
+        <div class="page-topbar">
+          <span class="page-topbar-title">${page.title}</span>
+          <span class="page-topbar-count">${data.length}</span>
+          <span class="page-topbar-dots">···</span>
+          <div class="page-topbar-right">
+            <button><i data-lucide="filter"></i></button>
+            <button><i data-lucide="sliders-horizontal"></i></button>
+            <button><i data-lucide="columns-3"></i></button>
+          </div>
+        </div>
+        <div class="tp-count">${data.length} items</div>
+        <div class="tp-scroll">
+          <div class="tp-table-head">
+            <div class="tp-col-name">Name</div>
+            <div class="tp-col-health">Health ↑</div>
+            <div class="tp-col-priority">Priority</div>
+            <div class="tp-col-lead">Lead</div>
+            <div class="tp-col-date">Target date</div>
+            <div class="tp-col-status">Status</div>
+          </div>
+          ${rows}
+        </div>
+      </div>`;
+  }
+
+  // ═══ Settings page — sidebar takeover ═══
+  let settingsActiveSection = 'personal-details';
+  let settingsSelectedLocation = 'Canadian department';
+  let inSettingsMode = false;
+
+  const SETTINGS_NAV = [
+    { type: 'section', label: 'My account' },
+    { type: 'link', key: 'personal-details', label: 'Personal details' },
+    { type: 'link', key: 'profile-image', label: 'Profile image' },
+    { type: 'link', key: 'change-password', label: 'Change password' },
+    { type: 'link', key: 'mfa', label: 'Multi-factor authentication' },
+    { type: 'link', key: 'oauth', label: 'OAuth 2.0 authorizations' },
+    { type: 'link', key: 'preferences', label: 'Preferences' },
+    { type: 'link', key: 'widgets', label: 'Widgets' },
+    { type: 'link', key: 'feeds', label: 'Feeds' },
+    { type: 'link', key: 'tasks', label: 'Tasks' },
+    { type: 'link', key: 'notifications', label: 'Notifications' },
+    { type: 'link', key: 'direct-printing', label: 'Direct printing' },
+    { type: 'link', key: 'mobile-app', label: 'Mobile app' },
+    { type: 'section', label: 'Workspace' },
+    { type: 'subgroup', label: 'Organization' },
+    { type: 'link', key: 'org-profile', label: 'Organization profile' },
+    { type: 'link', key: 'currency-tz', label: 'Currency, time zone & data location' },
+    { type: 'link', key: 'comm-prefs', label: 'Communication preferences' },
+    { type: 'subgroup', label: 'Billing & payments' },
+    { type: 'link', key: 'subscription', label: 'Subscription' },
+    { type: 'link', key: 'payment-methods', label: 'Payment methods' },
+    { type: 'link', key: 'provet-pay-ws', label: 'Provet Pay' },
+    { type: 'subgroup', label: 'Finance & tax' },
+    { type: 'link', key: 'vat', label: 'VAT management' },
+    { type: 'link', key: 'account-numbers', label: 'Account number management' },
+    { type: 'link', key: 'coupons-ws', label: 'Coupons' },
+    { type: 'subgroup', label: 'Users & access' },
+    { type: 'link', key: 'users', label: 'Users' },
+    { type: 'link', key: 'personnel-groups', label: 'Personnel groups' },
+    { type: 'link', key: 'permission-groups', label: 'Permission groups' },
+    { type: 'link', key: 'password-settings', label: 'Password settings' },
+    { type: 'link', key: 'ip-restriction', label: 'IP restriction' },
+    { type: 'subgroup', label: 'Locations' },
+    { type: 'link', key: 'clinic-locations', label: 'Clinic locations' },
+    { type: 'link', key: 'clinic-location-groups', label: 'Clinic location groups' },
+    { type: 'subgroup', label: 'Integrations' },
+    { type: 'link', key: 'api-tokens', label: 'API tokens' },
+    { type: 'link', key: 'api-settings', label: 'API settings' },
+    { type: 'link', key: 'api-request-log', label: 'API request log' },
+    { type: 'link', key: 'open-api-access', label: 'Open API access' },
+    { type: 'link', key: 'webhooks', label: 'Webhooks' },
+    { type: 'link', key: 'custom-integrations', label: 'Custom integrations' },
+    { type: 'link', key: 'ext-laboratories', label: 'External laboratories' },
+    { type: 'link', key: 'ext-accounting', label: 'External accounting' },
+    { type: 'link', key: 'ext-financing', label: 'External financing' },
+    { type: 'link', key: 'template-gateway', label: 'Template gateway' },
+    { type: 'link', key: 'email-backend', label: 'Email backend' },
+    { type: 'link', key: 'support-chat', label: 'Support chat' },
+    { type: 'subgroup', label: 'Import & export' },
+    { type: 'link', key: 'import-file', label: 'Import from file' },
+    { type: 'link', key: 'import-lists', label: 'Import from lists' },
+    { type: 'link', key: 'import-progress', label: 'Import progress' },
+    { type: 'link', key: 'export', label: 'Export' },
+    { type: 'subgroup', label: 'Audit & logs' },
+    { type: 'link', key: 'client-comm-log', label: 'Client communication log' },
+    { type: 'link', key: 'user-changes-log', label: 'User changes log' },
+    { type: 'link', key: 'settings-changes-log', label: 'Settings changes log' },
+    { type: 'link', key: 'integration-changes-log', label: 'Integration changes log' },
+    { type: 'section', label: 'Location' },
+    { type: 'location-picker' },
+    { type: 'subgroup', label: 'Profile' },
+    { type: 'link', key: 'location-details', label: 'Location details' },
+    { type: 'link', key: 'logo-colour', label: 'Logo & colour' },
+    { type: 'link', key: 'resources', label: 'Resources' },
+    { type: 'link', key: 'services', label: 'Services' },
+    { type: 'link', key: 'loc-teams', label: 'Teams' },
+    { type: 'link', key: 'patient-locations', label: 'Patient locations' },
+    { type: 'subgroup', label: 'Finance & invoicing' },
+    { type: 'link', key: 'invoices-settings', label: 'Invoices' },
+    { type: 'link', key: 'finance', label: 'Finance' },
+    { type: 'link', key: 'loc-account-numbers', label: 'Account numbers' },
+    { type: 'link', key: 'plans', label: 'Plans' },
+    { type: 'link', key: 'clinic-location-rates', label: 'Clinic location rates' },
+    { type: 'link', key: 'handling-injection-fees', label: 'Handling & injection fees' },
+    { type: 'link', key: 'auto-inhouse-fees', label: 'Automatic inhouse fees' },
+    { type: 'link', key: 'loc-coupons', label: 'Coupons' },
+    { type: 'link', key: 'insurance', label: 'Insurance' },
+    { type: 'link', key: 'statement', label: 'Statement' },
+    { type: 'subgroup', label: 'Clinical' },
+    { type: 'link', key: 'consultation-details', label: 'Consultation details settings' },
+    { type: 'link', key: 'consultation-advanced', label: 'Consultation advanced settings' },
+    { type: 'link', key: 'triage', label: 'Triage' },
+    { type: 'link', key: 'health-plan', label: 'Health plan' },
+    { type: 'link', key: 'patient-referrals-settings', label: 'Patient referrals' },
+    { type: 'link', key: 'complication-report', label: 'Complication report' },
+    { type: 'link', key: 'clinical-ai', label: 'Clinical AI' },
+    { type: 'subgroup', label: 'Scheduling & operations' },
+    { type: 'link', key: 'client-interaction', label: 'Client interaction' },
+    { type: 'link', key: 'scheduling-calendar', label: 'Scheduling & calendar' },
+    { type: 'link', key: 'shift-types', label: 'Shift types' },
+    { type: 'link', key: 'booking', label: 'Booking' },
+    { type: 'link', key: 'online-booking', label: 'Online booking' },
+    { type: 'link', key: 'auto-logout', label: 'Auto-logout' },
+    { type: 'subgroup', label: 'Communication & reminders' },
+    { type: 'link', key: 'loc-email', label: 'Email' },
+    { type: 'link', key: 'summary-email', label: 'Summary email' },
+    { type: 'link', key: 'reminder', label: 'Reminder' },
+    { type: 'link', key: 'loc-task', label: 'Task' },
+    { type: 'subgroup', label: 'Stock & pharmacy' },
+    { type: 'link', key: 'stock-settings', label: 'Stock' },
+    { type: 'link', key: 'bonus', label: 'Bonus' },
+    { type: 'link', key: 'pharmacies', label: 'Pharmacies' },
+    { type: 'link', key: 'swedish-eprescription', label: 'Swedish E-prescription' },
+    { type: 'link', key: 'medicine-registers', label: 'Medicine registers' },
+    { type: 'link', key: 'home-delivery', label: 'Home delivery' },
+    { type: 'subgroup', label: 'Reporting & diagnostics' },
+    { type: 'link', key: 'reporting', label: 'Reporting' },
+    { type: 'link', key: 'diagnostic-imaging-settings', label: 'Diagnostic imaging' },
+    { type: 'link', key: 'laboratory', label: 'Laboratory' },
+    { type: 'subgroup', label: 'Device & hardware integrations' },
+    { type: 'link', key: 'scil-vip', label: 'Scil vIP connection' },
+    { type: 'link', key: 'idexx-vetlab', label: 'IDEXX Vetlab Station' },
+    { type: 'link', key: 'labterm', label: 'Labterm connection' },
+    { type: 'link', key: 'nets-connect', label: 'Nets Connect@Cloud' },
+    { type: 'link', key: 'nets-terminals', label: 'Nets payment terminals' },
+    { type: 'link', key: 'label-printing', label: 'Label printing' },
+    { type: 'link', key: 'loc-direct-printing', label: 'Direct printing' },
+    { type: 'link', key: 'provet-proprint', label: 'Provet ProPrint' },
+    { type: 'link', key: 'cloud-printing', label: 'Cloud printing' },
+    { type: 'link', key: 'weight-check', label: 'Weight check' },
+    { type: 'link', key: 'client-display', label: 'Client display' },
+    { type: 'link', key: 'e-signature', label: 'E-signature' },
+    { type: 'subgroup', label: 'Partner integrations' },
+    { type: 'link', key: 'medvind', label: 'Medvind integration' },
+    { type: 'link', key: 'agria', label: 'Agria connection' },
+    { type: 'link', key: 'covetrus', label: 'Covetrus integration' },
+    { type: 'link', key: 'smart-flow', label: 'Smart Flow integration' },
+    { type: 'link', key: 'provet-pay-loc', label: 'Provet Pay' },
+    { type: 'subgroup', label: 'Country-specific' },
+    { type: 'link', key: 'country-specific', label: 'Country-specific settings' },
+    { type: 'subgroup', label: 'Print settings' },
+    { type: 'link', key: 'print-general', label: 'General' },
+    { type: 'link', key: 'print-invoice', label: 'Invoice' },
+    { type: 'link', key: 'print-receipt', label: 'Receipt' },
+    { type: 'link', key: 'print-prescription', label: 'Written prescription' },
+    { type: 'link', key: 'print-discharge', label: 'Discharge instructions' },
+    { type: 'link', key: 'print-financial', label: 'Financial summaries' },
+    { type: 'link', key: 'print-estimate', label: 'Estimate' },
+    { type: 'link', key: 'print-vaccination', label: 'Vaccination certificate' },
+    { type: 'link', key: 'print-end-of-day', label: 'End of day' },
+    { type: 'link', key: 'print-health-plan', label: 'Health plan' },
+    { type: 'subgroup', label: 'Screens' },
+    { type: 'link', key: 'my-workspace', label: 'My Workspace' },
+    { type: 'link', key: 'screen-config', label: 'Screen configuration' },
+    { type: 'section', label: 'Lists & templates' },
+    { type: 'subgroup', label: 'Lists' },
+    { type: 'link', key: 'reasons', label: 'Reasons' },
+    { type: 'link', key: 'lists', label: 'Lists' },
+    { type: 'link', key: 'tags', label: 'Tags' },
+    { type: 'link', key: 'microbiology', label: 'Microbiology' },
+    { type: 'link', key: 'discounts', label: 'Discounts' },
+    { type: 'link', key: 'commissions', label: 'Commissions' },
+    { type: 'link', key: 'custom-fields', label: 'Custom fields' },
+    { type: 'link', key: 'custom-statuses', label: 'Custom statuses' },
+    { type: 'link', key: 'lt-health-plan', label: 'Health plan' },
+    { type: 'subgroup', label: 'Templates' },
+    { type: 'link', key: 'text-templates', label: 'Text templates' },
+    { type: 'link', key: 'shift-templates', label: 'Shift templates' },
+    { type: 'link', key: 'cert-form-templates', label: 'Certification & form templates' },
+    { type: 'link', key: 'reminder-templates', label: 'Reminder templates' },
+  ];
+
+  const SETTINGS_LOCATIONS = [
+    'Canadian department',
+    'Helsinki Main Clinic',
+    'Stockholm Branch',
+  ];
+
+  function enterSettingsMode() {
+    inSettingsMode = true;
+    const sb = document.getElementById('sidebar');
+    sb.classList.add('settings-mode');
+
+    // Build settings sidebar nav HTML
+    const nav = document.getElementById('settingsSidebarNav');
+    let html = `<button class="settings-sidebar-back" id="settingsBackBtn"><i data-lucide="chevron-left"></i> Back to app</button>`;
+
+    SETTINGS_NAV.forEach(item => {
+      if (item.type === 'section') {
+        html += `<div class="settings-nav-section">${item.label}</div>`;
+      } else if (item.type === 'subgroup') {
+        html += `<div class="settings-nav-subgroup">${item.label}</div>`;
+      } else if (item.type === 'location-picker') {
+        html += `<button class="settings-location-picker" id="settingsLocationPicker">
+          <i data-lucide="map-pin"></i>
+          <span>${settingsSelectedLocation}</span>
+          <i data-lucide="chevron-down" class="chevron"></i>
+        </button>`;
+      } else if (item.type === 'link') {
+        html += `<div class="settings-nav-item${item.key === settingsActiveSection ? ' active' : ''}" data-settings-nav="${item.key}">${item.label}</div>`;
+      }
+    });
+
+    nav.innerHTML = html;
+    lucide.createIcons({ nodes: nav.querySelectorAll('i') });
+
+    // Show settings content in pageView
+    const welcome = document.getElementById('welcomeScreen');
+    const inbox = document.getElementById('inboxPanel');
+    const pageView = document.getElementById('pageView');
+    welcome.style.display = 'none';
+    inbox.classList.remove('active');
+    pageView.style.display = 'flex';
+    pageView.style.overflow = 'hidden';
+    const c = document.getElementById('pageViewContent');
+    c.innerHTML = `<div class="settings-content" id="settingsContent">${renderSettingsSection(settingsActiveSection)}</div>`;
+    lucide.createIcons({ nodes: c.querySelectorAll('i') });
+    wireSettingsToggles(c);
+    wireThemeSelect(c);
+
+    // Wire back button
+    document.getElementById('settingsBackBtn').addEventListener('click', exitSettingsMode);
+
+    // Wire nav links
+    nav.querySelectorAll('[data-settings-nav]').forEach(item => {
+      item.addEventListener('click', () => {
+        settingsActiveSection = item.dataset.settingsNav;
+        nav.querySelectorAll('.settings-nav-item').forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+        const content = document.getElementById('settingsContent');
+        if (content) {
+          content.innerHTML = renderSettingsSection(settingsActiveSection);
+          lucide.createIcons({ nodes: content.querySelectorAll('i') });
+          wireSettingsToggles(content);
+          wireThemeSelect(content);
+        }
+      });
+    });
+
+    // Wire location picker
+    const locPicker = nav.querySelector('#settingsLocationPicker');
+    if (locPicker) {
+      locPicker.addEventListener('click', () => {
+        const idx = SETTINGS_LOCATIONS.indexOf(settingsSelectedLocation);
+        settingsSelectedLocation = SETTINGS_LOCATIONS[(idx + 1) % SETTINGS_LOCATIONS.length];
+        locPicker.querySelector('span').textContent = settingsSelectedLocation;
+      });
+    }
+  }
+
+  function exitSettingsMode() {
+    inSettingsMode = false;
+    const sb = document.getElementById('sidebar');
+    sb.classList.remove('settings-mode');
+    document.getElementById('settingsSidebarNav').innerHTML = '';
+    // Navigate back to welcome screen
+    activeNav = null;
+    updateActiveStates();
+    document.getElementById('welcomeScreen').style.display = 'flex';
+    document.getElementById('inboxPanel').classList.remove('active');
+    document.getElementById('pageView').style.display = 'none';
+  }
+
+  function renderSettingsSection(key) {
+    if (key === 'preferences') return renderPreferencesSection();
+    const navItem = SETTINGS_NAV.find(n => n.key === key);
+    const title = navItem ? navItem.label : key;
+    return `<div class="settings-title">${title}</div><div class="ph-desc" style="margin-top:8px;">This section is under development.</div>`;
+  }
+
+  function renderPreferencesSection() {
+    const isDark = document.body.classList.contains('dark');
+    return `
+      <div class="settings-title">Preferences</div>
+
+      <div class="settings-section-label">General</div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Default home view</div>
+          <div class="settings-row-desc">Select which view to display when launching Provet Cloud</div>
+        </div>
+        <div class="settings-row-action">
+          <select class="settings-select">
+            <option>Active issues</option><option>Inbox</option><option>Calendar</option><option>Customers</option>
+          </select>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Display names</div>
+          <div class="settings-row-desc">Select how names are displayed in the interface</div>
+        </div>
+        <div class="settings-row-action">
+          <select class="settings-select"><option>Username</option><option>Full name</option></select>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">First day of the week</div>
+          <div class="settings-row-desc">Used for date pickers</div>
+        </div>
+        <div class="settings-row-action">
+          <select class="settings-select"><option>Monday</option><option>Sunday</option><option>Saturday</option></select>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Convert text emoticons into emojis</div>
+          <div class="settings-row-desc">Strings like :) will be converted to 😀</div>
+        </div>
+        <div class="settings-row-action">
+          <button class="settings-toggle on" data-toggle="emoticons"></button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Send comment on...</div>
+          <div class="settings-row-desc">Choose which key press is used to submit a comment</div>
+        </div>
+        <div class="settings-row-action">
+          <select class="settings-select"><option>${isMac ? '⌘' : 'Ctrl'}+Enter</option><option>Enter</option></select>
+        </div>
+      </div>
+
+      <div class="settings-section-gap"></div>
+      <div class="settings-section-label">Interface and theme</div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">App sidebar</div>
+          <div class="settings-row-desc">Customize sidebar item visibility, ordering, and badge style</div>
+        </div>
+        <div class="settings-row-action"><button class="settings-btn">Customize</button></div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Font size</div>
+          <div class="settings-row-desc">Adjust the size of text across the app</div>
+        </div>
+        <div class="settings-row-action">
+          <select class="settings-select"><option>Default</option><option>Small</option><option>Large</option></select>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Use pointer cursors</div>
+          <div class="settings-row-desc">Change the cursor to a pointer when hovering over any interactive elements</div>
+        </div>
+        <div class="settings-row-action">
+          <button class="settings-toggle" data-toggle="pointer-cursors"></button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Interface theme</div>
+          <div class="settings-row-desc">Select or customize your interface color scheme</div>
+        </div>
+        <div class="settings-row-action">
+          <select class="settings-select" id="settingsThemeSelect">
+            <option value="system">System preference</option>
+            <option value="light"${!isDark ? ' selected' : ''}>Light</option>
+            <option value="dark"${isDark ? ' selected' : ''}>Dark</option>
+          </select>
+        </div>
+      </div>
+      <div class="settings-theme-row">
+        <div class="settings-theme-icon light">Aa</div>
+        <div class="settings-theme-info">
+          <div class="settings-theme-name">Light</div>
+          <div class="settings-theme-desc">Theme to use for light system appearance</div>
+        </div>
+        <div class="settings-row-action">
+          <select class="settings-select"><option>Light</option></select>
+        </div>
+      </div>
+      <div class="settings-theme-row">
+        <div class="settings-theme-icon dark">Aa</div>
+        <div class="settings-theme-info">
+          <div class="settings-theme-name">Dark</div>
+          <div class="settings-theme-desc">Theme to use for dark system appearance</div>
+        </div>
+        <div class="settings-row-action">
+          <select class="settings-select"><option>Dark</option></select>
+        </div>
+      </div>
+
+      <div class="settings-section-gap"></div>
+      <div class="settings-section-label">Desktop application</div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Open in desktop app</div>
+          <div class="settings-row-desc">Automatically open links in desktop app when possible</div>
+        </div>
+        <div class="settings-row-action">
+          <button class="settings-toggle" data-toggle="desktop-app"></button>
+        </div>
+      </div>
+    `;
+  }
+
+  function wireSettingsToggles(container) {
+    container.querySelectorAll('.settings-toggle').forEach(btn => {
+      btn.addEventListener('click', () => btn.classList.toggle('on'));
+    });
+  }
+
+  function wireThemeSelect(container) {
+    const sel = container.querySelector('#settingsThemeSelect');
+    if (!sel) return;
+    sel.addEventListener('change', () => {
+      const val = sel.value;
+      if (val === 'dark') {
+        document.body.classList.add('dark');
+        localStorage.setItem('provet-dark', true);
+      } else if (val === 'light') {
+        document.body.classList.remove('dark');
+        localStorage.setItem('provet-dark', false);
+      }
+      const isDark = document.body.classList.contains('dark');
+      document.getElementById('darkModeLabel').textContent = isDark ? 'Light mode' : 'Dark mode';
+      const dmIcon = document.querySelector('[data-action="dark-mode"] .dd-icon');
+      if (dmIcon) { dmIcon.innerHTML = '<i data-lucide="' + (isDark ? 'sun' : 'moon') + '"></i>'; lucide.createIcons({ nodes: dmIcon.querySelectorAll('i') }); }
+      var calFrame = document.getElementById('calFrame');
+      if (calFrame && calFrame.contentDocument) { calFrame.contentDocument.body.classList.toggle('dark', isDark); }
+    });
+  }
+
+  function updateActiveStates() {
+    document.querySelectorAll('.nav-item[data-nav]').forEach(el => el.classList.toggle('active', el.dataset.nav === activeNav));
+    document.querySelectorAll('.nav-subitem[data-nav]').forEach(el => el.classList.toggle('active', el.dataset.nav === activeNav));
+    renderFavourites();
+  }
+
+  document.querySelectorAll('.nav-item[data-nav]').forEach(el => {
+    el.addEventListener('click', () => navigateTo(el.dataset.nav));
+  });
+  document.querySelectorAll('.nav-subitem[data-nav]').forEach(el => {
+    el.addEventListener('click', () => navigateTo(el.dataset.nav));
+  });
+
+  // ═══ Inbox ═══
+  const INBOX_ITEMS = [
+    { initials: 'AC', color: '#cf8e3e', title: 'Milo — Annual check-up results', subtitle: 'Amy Collins replied: Thanks for the update...', time: '1h', unread: true, badge: 'close', badgeColor: '#e5534b' },
+    { initials: 'MJ', color: '#57ab5a', title: 'Surgery complete — Daisy', subtitle: 'New patient update by mike.johnson', time: '2h', unread: true, badge: 'project', badgeColor: '#5e6ad2' },
+    { initials: 'DT', color: '#5e6ad2', title: 'Reschedule Archie appointment', subtitle: 'david.turner mentioned you: Can we move...', time: '3h', unread: true, badge: 'mention', badgeColor: '#cf8e3e' },
+    { initials: 'SS', color: '#986ee2', title: 'Lab results — Collins patient', subtitle: 'sarah.smith commented: Results are back...', time: '4h', unread: true, badge: 'comment', badgeColor: '#986ee2' },
+    { initials: 'OZ', color: '#4dab9a', title: 'Rex follow-up confirmed', subtitle: 'olivia.zhang replied: We\'ll bring him in Friday', time: '5h', unread: false, badge: 'project', badgeColor: '#57ab5a' },
+    { initials: 'KB', color: '#c96198', title: 'Vaccination reminder — Luna', subtitle: 'Reminder sent to Daniel Reyes for tomorrow', time: '6h', unread: true, badge: 'bell', badgeColor: '#539bf5' },
+    { initials: 'DR', color: '#539bf5', title: 'Luna medication update', subtitle: 'daniel.reyes replied: She\'s doing much better...', time: '7h', unread: true, badge: 'comment', badgeColor: '#986ee2' },
+    { initials: 'HW', color: '#e5534b', title: 'Prescription refill — Pepper', subtitle: 'hannah.wells requested: Is there a refill available?', time: '8h', unread: true, badge: 'pill', badgeColor: '#e5534b' },
+    { initials: 'EM', color: '#cf8e3e', title: 'Post-op recovery — Nala Day 3', subtitle: 'Follow-up task assigned to you', time: '9h', unread: false, badge: 'task', badgeColor: '#cf8e3e' },
+    { initials: 'MG', color: '#57ab5a', title: 'Low stock alert: Metacam', subtitle: 'Stock level: 3 units remaining', time: '10h', unread: false, badge: 'alert', badgeColor: '#e5534b' },
+    { initials: 'RY', color: '#986ee2', title: 'Spay procedure — Nala complete', subtitle: 'rebecca.young notified about discharge', time: '10h', unread: false, badge: 'check', badgeColor: '#57ab5a' },
+  ];
+
+  let selectedInboxIdx = -1;
+  let activeDrawerTab = 'client';
+
+  function renderInbox() {
+    const list = document.getElementById('inboxList');
+    list.innerHTML = '';
+    const unreadCount = INBOX_ITEMS.filter(i => i.unread).length;
+    document.getElementById('inboxEmptyText').textContent = unreadCount + ' unread notifications';
+    document.getElementById('inboxBadge').textContent = unreadCount;
+
+    INBOX_ITEMS.forEach((item, idx) => {
+      const el = document.createElement('div');
+      el.className = 'inbox-item' + (item.unread ? ' unread' : '') + (idx === selectedInboxIdx ? ' selected' : '');
+      el.innerHTML = `
+        <div class="inbox-avatar-wrap">
+          <div class="inbox-avatar" style="background:${item.color}">${item.initials}</div>
+          <span class="inbox-avatar-badge" style="color:rgba(0,0,0,0.4)"><i data-lucide="at-sign"></i></span>
+        </div>
+        <div class="inbox-content">
+          <div class="inbox-title-row">
+            ${item.unread ? '<span class="inbox-unread-dot"></span>' : ''}
+            <span class="inbox-title">${item.title}</span>
+          </div>
+          <div class="inbox-subtitle">
+            <span class="inbox-subtitle-icon"><i data-lucide="message-circle"></i></span>
+            ${item.subtitle}
+          </div>
+        </div>
+        <div class="inbox-meta">
+          <span class="inbox-type-icon"><i data-lucide="circle"></i></span>
+          <span class="inbox-time">${item.time}</span>
+        </div>`;
+      el.addEventListener('click', () => selectInboxItem(idx));
+      list.appendChild(el);
+    });
+    lucide.createIcons({ nodes: list.querySelectorAll('i') });
+    wireInboxDrawer();
+  }
+
+  function selectInboxItem(idx) {
+    selectedInboxIdx = idx;
+    // Update list selection
+    document.querySelectorAll('#inboxList .inbox-item').forEach((el, i) => {
+      el.classList.toggle('selected', i === idx);
+    });
+    // Show detail
+    document.getElementById('inboxMiddleEmpty').style.display = 'none';
+    const detail = document.getElementById('inboxDetail');
+    detail.style.display = 'flex';
+    const item = INBOX_ITEMS[idx];
+    detail.innerHTML = renderInboxDetail(item, idx);
+    lucide.createIcons({ nodes: detail.querySelectorAll('i') });
+    // Update drawer
+    renderDrawerContent();
+  }
+
+  // Per-item patient/client data
+  const INBOX_CONTEXT = [
+    { client: 'Amy Collins', pet: 'Milo', species: 'Canine', breed: 'Labrador Retriever', sex: 'Male (Neutered)', age: '7 years', weight: '32 kg', dob: 'Mar 15, 2019', id: '30041', activeTab: 'Messages' },
+    { client: 'Mike Johnson', pet: 'Daisy', species: 'Canine', breed: 'Beagle', sex: 'Female', age: '3 years', weight: '11 kg', dob: 'Jun 2, 2023', id: '30055', activeTab: 'Chart' },
+    { client: 'David Turner', pet: 'Archie', species: 'Canine', breed: 'Mixed Breed', sex: 'Male', age: '8 months', weight: '6 kg', dob: 'Jul 20, 2025', id: '30062', activeTab: 'Chart' },
+    { client: 'Sarah Smith', pet: 'Buddy', species: 'Canine', breed: 'Golden Retriever', sex: 'Male (Neutered)', age: '5 years', weight: '29 kg', dob: 'Jan 8, 2021', id: '30018', activeTab: 'Labs' },
+    { client: 'Olivia Zhang', pet: 'Rex', species: 'Canine', breed: 'German Shepherd', sex: 'Male', age: '6 years', weight: '38 kg', dob: 'Sep 14, 2020', id: '30027', activeTab: 'Chart' },
+    { client: 'Daniel Reyes', pet: 'Luna', species: 'Feline', breed: 'Siamese', sex: 'Female (Spayed)', age: '4 years', weight: '4.2 kg', dob: 'Nov 3, 2022', id: '30034', activeTab: 'Immunizations' },
+    { client: 'Daniel Reyes', pet: 'Luna', species: 'Feline', breed: 'Siamese', sex: 'Female (Spayed)', age: '4 years', weight: '4.2 kg', dob: 'Nov 3, 2022', id: '30034', activeTab: 'Medications' },
+    { client: 'Hannah Wells', pet: 'Pepper', species: 'Feline', breed: 'Domestic Shorthair', sex: 'Female', age: '9 years', weight: '4.8 kg', dob: 'Apr 11, 2017', id: '30071', activeTab: 'Medications' },
+    { client: 'Emma Patel', pet: 'Nala', species: 'Canine', breed: 'Mixed Breed', sex: 'Female', age: '2 years', weight: '14 kg', dob: 'Dec 28, 2023', id: '30079', activeTab: 'Chart' },
+    { client: '—', pet: '—', species: '—', breed: '—', sex: '—', age: '—', weight: '—', dob: '—', id: '—', activeTab: 'Info' },
+    { client: 'Rebecca Young', pet: 'Nala', species: 'Canine', breed: 'Mixed Breed', sex: 'Female', age: '2 years', weight: '14 kg', dob: 'Dec 28, 2023', id: '30079', activeTab: 'Chart' },
+  ];
+
+  const DETAIL_TABS = ['Chart','Medications','Immunizations','Labs','Billing','Messages','Tasks','Forms','Info'];
+
+  function renderInboxDetail(item, idx) {
+    const ctx = INBOX_CONTEXT[idx];
+    const isStock = idx === 9; // Low stock has no patient
+
+    // Patient header bar
+    let patientBar = '';
+    if (!isStock) {
+      patientBar = `
+        <div class="inbox-patient-bar">
+          <div class="inbox-patient-bar-avatar">${ctx.pet.charAt(0)}</div>
+          <div class="inbox-patient-bar-info">
+            <div class="inbox-patient-bar-names">
+              <span class="client-name">${ctx.client}</span>
+              <span class="sep">&rsaquo;</span>
+              <span class="pet-name">${ctx.pet}</span>
+            </div>
+            <div class="inbox-patient-bar-meta">
+              <span>${ctx.age}</span><span class="dot">&middot;</span>
+              <span>${ctx.sex}</span><span class="dot">&middot;</span>
+              <span>${ctx.species}</span><span class="dot">&middot;</span>
+              <span>${ctx.breed}</span><span class="dot">&middot;</span>
+              <span>Weight: ${ctx.weight}</span><span class="dot">&middot;</span>
+              <span>DOB: ${ctx.dob}</span><span class="dot">&middot;</span>
+              <span>ID: ${ctx.id}</span>
+            </div>
+          </div>
+          <div class="inbox-patient-bar-actions">
+            <button><i data-lucide="mail"></i> Compose email</button>
+          </div>
+        </div>`;
+    } else {
+      patientBar = `
+        <div class="inbox-patient-bar">
+          <div class="inbox-patient-bar-avatar"><i data-lucide="package" style="width:16px;height:16px;stroke-width:2;color:#fff;"></i></div>
+          <div class="inbox-patient-bar-info">
+            <div class="inbox-patient-bar-names">
+              <span class="pet-name">Metacam 1.5mg/mL</span>
+            </div>
+            <div class="inbox-patient-bar-meta">
+              <span>Oral suspension</span><span class="dot">&middot;</span>
+              <span>Meloxicam</span><span class="dot">&middot;</span>
+              <span>Anti-inflammatory</span><span class="dot">&middot;</span>
+              <span>Stock: 3 units</span>
+            </div>
+          </div>
+          <div class="inbox-patient-bar-actions">
+            <button><i data-lucide="shopping-cart"></i> Reorder</button>
+          </div>
+        </div>`;
+    }
+
+    // Tabs
+    let tabs = '';
+    if (!isStock) {
+      tabs = '<div class="inbox-detail-tabs">' + DETAIL_TABS.map(t => {
+        let cls = t === ctx.activeTab ? ' active' : '';
+        let badge = '';
+        if (t === 'Billing' && (idx === 0 || idx === 4)) badge = '<span class="tab-badge due">Due</span>';
+        return `<div class="inbox-detail-tab${cls}" data-detail-tab="${t}">${t}${badge}</div>`;
+      }).join('') + '</div>';
+    } else {
+      tabs = `<div class="inbox-detail-tabs">
+        <div class="inbox-detail-tab active" data-detail-tab="Info">Stock Info</div>
+        <div class="inbox-detail-tab" data-detail-tab="History">Order History</div>
+        <div class="inbox-detail-tab" data-detail-tab="Usage">Usage</div>
+      </div>`;
+    }
+
+    // Body content
+    let body = renderDetailContent(idx, ctx);
+
+    return patientBar + tabs + `<div class="inbox-detail-body">${body}</div>` +
+      (idx === 0 ? `<div class="chat-input-row"><input class="chat-input" placeholder="Type a message..." /><button class="chat-send-btn"><i data-lucide="send"></i></button></div>` : '');
+  }
+
+  function renderDetailContent(idx, ctx) {
+    // Amy Collins — Messages tab (chat)
+    if (idx === 0) {
+      return `
+        <div class="chat-messages">
+          <div class="chat-msg">
+            <div class="chat-msg-avatar" style="background:#5e6ad2">PC</div>
+            <div>
+              <div class="chat-msg-bubble">Hi Amy, Milo's annual check-up results are in. Everything looks great — bloodwork, heart, and joints all normal. He's in excellent shape for his age!</div>
+              <div class="chat-msg-time">Yesterday at 2:15 PM</div>
+            </div>
+          </div>
+          <div class="chat-msg outgoing">
+            <div class="chat-msg-avatar" style="background:#cf8e3e">AC</div>
+            <div>
+              <div class="chat-msg-bubble">Thanks for the update! That's such a relief. Should we schedule his next check-up now or wait?</div>
+              <div class="chat-msg-time">Today at 9:30 AM</div>
+            </div>
+          </div>
+          <div class="chat-msg">
+            <div class="chat-msg-avatar" style="background:#5e6ad2">PC</div>
+            <div>
+              <div class="chat-msg-bubble">I'd recommend booking his next annual in about 12 months. We can also set up a vaccination reminder for his booster in 6 months. Want me to schedule both?</div>
+              <div class="chat-msg-time">Today at 10:05 AM</div>
+            </div>
+          </div>
+          <div class="chat-msg outgoing">
+            <div class="chat-msg-avatar" style="background:#cf8e3e">AC</div>
+            <div>
+              <div class="chat-msg-bubble">Yes please, that would be perfect. Thanks so much!</div>
+              <div class="chat-msg-time">Today at 10:12 AM</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // All other items — action card content
+    const cards = {
+      1: { h: 'Surgery Update', p: 'Daisy\'s spay surgery was completed successfully at 11:30 AM. She is recovering well in the post-op ward. Vitals are stable and she should be ready for discharge tomorrow morning.', tags: [{l:'Procedure',v:'Spay surgery'},{l:'Surgeon',v:'Dr. Mike Johnson'},{l:'Status',v:'Recovering',c:'ok'}], btns: [{l:'Notify owner',c:'primary'},{l:'Schedule follow-up',c:''},{l:'View vitals',c:''}] },
+      2: { h: 'Appointment Reschedule Request', p: 'David Turner has requested to reschedule Archie\'s dental cleaning from March 19th to a later date. He mentioned next week would work better.', tags: [{l:'Appointment',v:'Dental cleaning'},{l:'Current date',v:'Mar 19th, 10:00 AM'},{l:'Requested',v:'Next week'}], btns: [{l:'Reschedule',c:'primary'},{l:'Contact client',c:''},{l:'Cancel appointment',c:'danger'}] },
+      3: { h: 'Lab Results Available', p: 'Blood panel results are back from VetPath Diagnostics. Liver enzymes slightly elevated (ALT: 85 U/L, normal: 10-60). All other markers within normal range. Follow-up recommended.', tags: [{l:'Test',v:'Complete blood panel'},{l:'Lab',v:'VetPath Diagnostics'},{l:'ALT Level',v:'85 U/L (elevated)',c:'urgent'}], btns: [{l:'Contact pet parent',c:'primary'},{l:'View full results',c:''},{l:'Order follow-up test',c:''}] },
+      4: { h: 'Follow-up Confirmed', p: 'Olivia Zhang has confirmed Rex\'s orthopaedic follow-up for this Friday at 2:00 PM. She reports he\'s putting more weight on the leg and seems more comfortable.', tags: [{l:'Appointment',v:'Friday, 2:00 PM'},{l:'Reason',v:'Orthopaedic follow-up'},{l:'Status',v:'Confirmed',c:'ok'}], btns: [{l:'View appointment',c:'primary'},{l:'Prepare notes',c:''}] },
+      5: { h: 'Vaccination Reminder Sent', p: 'An automated reminder has been sent to Daniel Reyes for Luna\'s FVRCP booster due tomorrow. Reminder sent via email and SMS.', tags: [{l:'Vaccine',v:'FVRCP Booster'},{l:'Due',v:'Tomorrow'},{l:'Sent via',v:'Email + SMS'}], btns: [{l:'View appointment',c:'primary'},{l:'Resend reminder',c:''}] },
+      6: { h: 'Medication Progress', p: 'Daniel Reyes reports Luna is responding well to Apoquel. Itching reduced significantly and she\'s much more comfortable. He\'s asking about next steps.', tags: [{l:'Medication',v:'Apoquel 16mg'},{l:'Duration',v:'30 days'},{l:'Response',v:'Positive',c:'ok'}], btns: [{l:'Reply to owner',c:'primary'},{l:'Update treatment plan',c:''},{l:'Schedule review',c:''}] },
+      7: { h: 'Prescription Refill Request', p: 'Hannah Wells has requested a refill of Gabapentin 100mg for Pepper. Current prescription expires in 2 days. Last dispensed: March 10th (7-day supply).', tags: [{l:'Medication',v:'Gabapentin 100mg'},{l:'Dosage',v:'1 capsule twice daily'},{l:'Expiry',v:'In 2 days',c:'urgent'}], btns: [{l:'Approve refill',c:'primary'},{l:'Request consultation first',c:''},{l:'Deny refill',c:'danger'}] },
+      8: { h: 'Post-Op Follow-Up — Day 3', p: 'Review surgical site, check for signs of infection, assess pain levels, and update owner on Nala\'s recovery progress following her spay procedure.', tags: [{l:'Procedure',v:'Spay (Day 3)'},{l:'Pain level',v:'Mild — managed'},{l:'Status',v:'On track',c:'ok'}], btns: [{l:'Complete check',c:'primary'},{l:'Update owner',c:''},{l:'Flag concern',c:'danger'}] },
+      9: { h: 'Low Stock Alert', p: 'Metacam (Meloxicam) 1.5mg/mL oral suspension has reached critical stock level. Only 3 units remaining. Average weekly usage: 5 units. Estimated stockout: within 4 days.', tags: [{l:'Stock',v:'3 units remaining',c:'urgent'},{l:'Weekly usage',v:'~5 units'},{l:'Supplier',v:'Boehringer Ingelheim'}], btns: [{l:'Reorder now',c:'primary'},{l:'View stock history',c:''},{l:'Dismiss alert',c:''}] },
+      10: { h: 'Discharge Ready', p: 'Nala\'s spay procedure has been completed and she is cleared for discharge. Rebecca Young has been notified. Discharge instructions and medication are prepared.', tags: [{l:'Owner',v:'Rebecca Young'},{l:'Meds prepared',v:'Metacam 3-day supply'},{l:'Status',v:'Ready for discharge',c:'ok'}], btns: [{l:'Process discharge',c:'primary'},{l:'Print instructions',c:''},{l:'Contact owner',c:''}] },
+    };
+
+    const card = cards[idx];
+    if (!card) return '';
+
+    let tagsHtml = card.tags.map(t =>
+      `<span class="action-meta-tag${t.c ? ' ' + t.c : ''}"><strong>${t.l}:</strong> ${t.v}</span>`
+    ).join('');
+    let btnsHtml = card.btns.map(b =>
+      `<button class="inbox-action-btn${b.c ? ' ' + b.c : ''}">${b.l}</button>`
+    ).join('');
+
+    return `
+      <div class="inbox-action-card">
+        <h3>${card.h}</h3>
+        <p>${card.p}</p>
+        <div class="action-meta">${tagsHtml}</div>
+        <div class="inbox-action-btns">${btnsHtml}</div>
+      </div>`;
+  }
+
+  // ═══ Inbox drawer ═══
+  function wireInboxDrawer() {
+    const drawer = document.getElementById('inboxDrawer');
+    const toggleBtn = document.getElementById('inboxDrawerToggle');
+    const expandBtn = document.getElementById('inboxDrawerExpand');
+
+    toggleBtn.addEventListener('click', () => {
+      drawer.classList.add('collapsed');
+      expandBtn.style.display = 'flex';
+    });
+    expandBtn.addEventListener('click', () => {
+      drawer.classList.remove('collapsed');
+      expandBtn.style.display = 'none';
+    });
+
+    // Tabs
+    document.querySelectorAll('#inboxDrawerTabs .inbox-drawer-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        activeDrawerTab = tab.dataset.drawerTab;
+        document.querySelectorAll('#inboxDrawerTabs .inbox-drawer-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderDrawerContent();
+      });
+    });
+
+    renderDrawerContent();
+    lucide.createIcons({ nodes: drawer.querySelectorAll('i') });
+  }
+
+  function renderDrawerContent() {
+    const body = document.getElementById('inboxDrawerBody');
+    const item = selectedInboxIdx >= 0 ? INBOX_ITEMS[selectedInboxIdx] : null;
+    const ctx = selectedInboxIdx >= 0 ? INBOX_CONTEXT[selectedInboxIdx] : null;
+    const empty = '<div style="color:rgba(0,0,0,0.3);font-size:13px;text-align:center;padding:24px;">Select an item to view details</div>';
+
+    if (activeDrawerTab === 'client') {
+      if (!item || !ctx || ctx.client === '—') { body.innerHTML = empty; return; }
+      const email = ctx.client.toLowerCase().replace(' ','.') + '@email.com';
+      body.innerHTML = `
+        <div class="inbox-drawer-avatar-row">
+          <div class="inbox-drawer-avatar" style="background:${item.color}">${item.initials}</div>
+          <div>
+            <div class="inbox-drawer-name">${ctx.client}</div>
+            <div class="inbox-drawer-sub">Client</div>
+          </div>
+        </div>
+        <div class="inbox-drawer-section">
+          <div class="inbox-drawer-section-title">Contact</div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Email</div><div class="inbox-drawer-value">${email}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Phone</div><div class="inbox-drawer-value">+1 (555) 012-3456</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Address</div><div class="inbox-drawer-value">123 Main St, Toronto</div></div>
+        </div>
+        <div class="inbox-drawer-section">
+          <div class="inbox-drawer-section-title">Account</div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Client since</div><div class="inbox-drawer-value">Jan 2024</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Outstanding balance</div><div class="inbox-drawer-value">$0.00</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Last visit</div><div class="inbox-drawer-value">Mar 14, 2026</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Pets</div><div class="inbox-drawer-value">${ctx.pet}</div></div>
+        </div>`;
+    } else if (activeDrawerTab === 'patient') {
+      if (!item || !ctx || ctx.pet === '—') { body.innerHTML = empty; return; }
+      body.innerHTML = `
+        <div class="inbox-drawer-avatar-row">
+          <div class="inbox-drawer-avatar" style="background:${item.color}"><i data-lucide="paw-print" style="width:16px;height:16px;stroke-width:2;color:#fff;"></i></div>
+          <div>
+            <div class="inbox-drawer-name">${ctx.pet}</div>
+            <div class="inbox-drawer-sub">${ctx.breed}</div>
+          </div>
+        </div>
+        <div class="inbox-drawer-section">
+          <div class="inbox-drawer-section-title">Details</div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Species</div><div class="inbox-drawer-value">${ctx.species}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Breed</div><div class="inbox-drawer-value">${ctx.breed}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Sex</div><div class="inbox-drawer-value">${ctx.sex}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Age</div><div class="inbox-drawer-value">${ctx.age}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Weight</div><div class="inbox-drawer-value">${ctx.weight}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">DOB</div><div class="inbox-drawer-value">${ctx.dob}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Patient ID</div><div class="inbox-drawer-value">${ctx.id}</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Microchip</div><div class="inbox-drawer-value">985112003456789</div></div>
+        </div>
+        <div class="inbox-drawer-section">
+          <div class="inbox-drawer-section-title">Medical</div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Allergies</div><div class="inbox-drawer-value">None known</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Last vaccination</div><div class="inbox-drawer-value">Feb 28, 2026</div></div>
+          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Chronic conditions</div><div class="inbox-drawer-value">None</div></div>
+        </div>`;
+    } else {
+      body.innerHTML = `
+        <div style="margin-bottom:12px;">
+          <textarea class="ask-ai-input" placeholder="Ask AI about this patient, client, or case..."></textarea>
+          <div class="ask-ai-hint">Press Enter to ask</div>
+        </div>
+        <div class="ask-ai-suggestions">
+          <div class="inbox-drawer-section-title">Suggestions</div>
+          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Summarize this patient's history</div>
+          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Draft a reply to the client</div>
+          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Check for drug interactions</div>
+          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Suggest next steps</div>
+          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Generate discharge notes</div>
+        </div>`;
+    }
+    lucide.createIcons({ nodes: body.querySelectorAll('i') });
+  }
+
+  // ═══ Search ═══
+  const searchOverlay = document.getElementById('searchOverlay');
+  const searchInput = document.getElementById('searchInput');
+  const searchBody = document.getElementById('searchBody');
+  const ALL_SEARCHABLE = Object.entries(NAV_PAGES).map(([k, v]) => ({ key: k, title: v.title, icon: v.icon }));
+
+  function openSearch() { searchOverlay.classList.add('open'); searchInput.value = ''; searchInput.focus(); renderSearchResults(''); }
+  function closeSearch() { searchOverlay.classList.remove('open'); }
+
+  function renderSearchResults(q) {
+    searchBody.innerHTML = '';
+    q = q.toLowerCase().trim();
+    let results = q ? ALL_SEARCHABLE.filter(r => r.title.toLowerCase().includes(q)) : ALL_SEARCHABLE;
+    if (!results.length) { searchBody.innerHTML = '<div class="search-empty">No results</div>'; return; }
+
+    const label = document.createElement('div');
+    label.className = 'search-section-label';
+    label.textContent = q ? 'Results' : 'Pages';
+    searchBody.appendChild(label);
+
+    results.forEach((r, i) => {
+      const el = document.createElement('div');
+      el.className = 'search-result' + (i === 0 ? ' focused' : '');
+      el.dataset.nav = r.key;
+      el.innerHTML = `<span class="r-icon"><i data-lucide="${r.icon}"></i></span><span>${r.title}</span><span class="r-hint">\u21B5</span>`;
+      el.addEventListener('click', () => { closeSearch(); navigateTo(r.key); });
+      searchBody.appendChild(el);
+    });
+    lucide.createIcons({ nodes: searchBody.querySelectorAll('i') });
+  }
+
+  searchInput.addEventListener('input', () => renderSearchResults(searchInput.value));
+
+  searchInput.addEventListener('keydown', (e) => {
+    const results = searchBody.querySelectorAll('.search-result');
+    const cur = searchBody.querySelector('.search-result.focused');
+    let idx = Array.from(results).indexOf(cur);
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (idx < results.length - 1) { cur && cur.classList.remove('focused'); results[idx + 1].classList.add('focused'); results[idx + 1].scrollIntoView({ block: 'nearest' }); } }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); if (idx > 0) { cur && cur.classList.remove('focused'); results[idx - 1].classList.add('focused'); results[idx - 1].scrollIntoView({ block: 'nearest' }); } }
+    else if (e.key === 'Enter') { e.preventDefault(); if (cur) { closeSearch(); navigateTo(cur.dataset.nav); } }
+  });
+
+  document.getElementById('searchBtn').addEventListener('click', openSearch);
+  searchOverlay.addEventListener('click', (e) => { if (e.target === searchOverlay) closeSearch(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && searchOverlay.classList.contains('open')) closeSearch();
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); searchOverlay.classList.contains('open') ? closeSearch() : openSearch(); }
+  });
+
+  // ═══ Keyboard nav ═══
+  function getAllFocusable() {
+    return [...document.getElementById('sidebarNav').querySelectorAll('[tabindex="0"]')];
+  }
+  document.addEventListener('keydown', (e) => {
+    if (searchOverlay.classList.contains('open')) return;
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const f = getAllFocusable();
+    const i = f.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown' && i >= 0) { e.preventDefault(); if (i + 1 < f.length) f[i + 1].focus(); }
+    else if (e.key === 'ArrowUp' && i >= 0) { e.preventDefault(); if (i > 0) f[i - 1].focus(); }
+    else if (e.key === 'Enter' && i >= 0) { e.preventDefault(); document.activeElement.click(); }
+  });
+</script>
+
+<script src="ai-chat.js"></script>
+</body>
+</html>
