@@ -117,7 +117,8 @@
     .sidebar.collapsed .org-chevron { display: none; }
     .sidebar.collapsed .sidebar-topbar { padding: 10px 6px 6px; justify-content: center; }
     .sidebar.collapsed .org-btn { flex: 0; padding: 2px; }
-    .sidebar.collapsed .topbar-icon-btn { display: none; }
+    .sidebar.collapsed .topbar-icon-btn:not(#sidebarToggle):not(#inboxDrawerToggle) { display: none; }
+    .sidebar.collapsed .sidebar-topbar { flex-wrap: wrap; }
 
     /* ─── Org dropdown ─── */
     .org-dropdown-wrapper { position: relative; flex: 1; min-width: 0; }
@@ -2139,6 +2140,7 @@
           </div>
         </div>
       </div>
+      <button class="topbar-icon-btn" id="inboxDrawerToggle" title="Toggle side panel"><i data-lucide="panel-right-close"></i></button>
       <button class="topbar-icon-btn" id="sidebarToggle" aria-label="Toggle sidebar"><i data-lucide="panel-left-close"></i></button>
     </div>
 
@@ -2244,8 +2246,7 @@
     <!-- Page view -->
     <div id="pageView"><div id="pageViewContent"></div></div>
 
-    <!-- Sidebar toggle (top-right of content area) -->
-    <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Toggle sidebar"><i data-lucide="panel-left-close"></i></button>
+    <!-- Sidebar toggle removed — now in sidebar topbar -->
   </div>
 </div>
 
