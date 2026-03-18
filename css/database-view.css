@@ -1,0 +1,109 @@
+/* === Database View Page === */
+.dbv-page { display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
+
+/* === DBV Header === */
+.dbv-header { padding: 16px 24px 0; flex-shrink: 0; }
+.dbv-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.dbv-title-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.4); }
+.dbv-title-icon svg { width: 18px; height: 18px; }
+.dbv-title-input { font-size: 18px; font-weight: 650; border: none; outline: none; background: transparent; color: #222; font-family: inherit; flex: 1; padding: 2px 0; }
+.dbv-title-input::placeholder { color: rgba(0,0,0,0.25); }
+.dbv-desc-input { font-size: 13px; border: none; outline: none; background: transparent; color: rgba(0,0,0,0.4); font-family: inherit; width: 100%; padding: 0 0 0 38px; margin-bottom: 10px; }
+.dbv-desc-input::placeholder { color: rgba(0,0,0,0.25); }
+
+/* === DBV Save Row === */
+.dbv-save-row { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0; }
+.dbv-save-btn { padding: 4px 12px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.1s; }
+.dbv-save-btn.primary { background: #222; color: #fff; }
+.dbv-save-btn.primary:hover { background: #333; }
+.dbv-save-btn.ghost { background: none; color: rgba(0,0,0,0.5); }
+.dbv-save-btn.ghost:hover { background: rgba(0,0,0,0.04); }
+
+/* === DBV Source Tabs === */
+.dbv-source-tabs { display: flex; align-items: center; gap: 2px; flex-shrink: 0; padding: 0 24px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+.dbv-source-tab { padding: 8px 14px; font-size: 12px; font-weight: 500; color: rgba(0,0,0,0.45); cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.1s; white-space: nowrap; }
+.dbv-source-tab:hover { color: rgba(0,0,0,0.7); }
+.dbv-source-tab.active { color: #222; border-bottom-color: #5e6ad2; font-weight: 600; }
+
+/* === DBV Filter Icon === */
+.dbv-filter-icon { padding: 6px 10px; font-size: 12px; color: rgba(0,0,0,0.35); cursor: pointer; display: flex; align-items: center; gap: 4px; border-radius: 4px; transition: background 0.1s; position: relative; }
+.dbv-filter-icon:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
+.dbv-filter-icon svg { width: 14px; height: 14px; stroke-width: 1.8; }
+
+/* === DBV Toolbar === */
+.dbv-toolbar { display: flex; align-items: center; gap: 6px; padding: 8px 24px; flex-shrink: 0; border-bottom: 1px solid rgba(0,0,0,0.04); flex-wrap: wrap; }
+.dbv-tool-btn { display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 5px; border: 1px solid rgba(0,0,0,0.08); background: #fff; font-size: 12px; color: rgba(0,0,0,0.55); cursor: pointer; font-family: inherit; transition: all 0.1s; white-space: nowrap; }
+.dbv-tool-btn:hover { border-color: rgba(0,0,0,0.15); color: rgba(0,0,0,0.75); background: rgba(0,0,0,0.02); }
+.dbv-tool-btn svg { width: 13px; height: 13px; stroke-width: 1.8; }
+.dbv-tool-btn.has-value { background: rgba(94,106,210,0.06); border-color: rgba(94,106,210,0.2); color: #5e6ad2; }
+.dbv-tool-spacer { flex: 1; }
+
+/* === DBV Group Header === */
+.dbv-group-header { display: flex; align-items: center; gap: 8px; padding: 8px 24px; font-size: 12px; font-weight: 600; color: rgba(0,0,0,0.6); background: rgba(0,0,0,0.015); border-bottom: 1px solid rgba(0,0,0,0.04); cursor: pointer; user-select: none; }
+.dbv-group-header .g-arrow { font-size: 9px; color: rgba(0,0,0,0.3); }
+.dbv-group-header .g-count { color: rgba(0,0,0,0.3); font-weight: 500; margin-left: 4px; }
+.dbv-group-header .g-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* === DBV Table === */
+.dbv-table-wrap { flex: 1; overflow: auto; }
+.dbv-table { width: 100%; border-collapse: collapse; min-width: 900px; }
+.dbv-table th { position: sticky; top: 0; z-index: 2; background: #fafafa; padding: 6px 14px; font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.4); text-align: left; border-bottom: 1px solid rgba(0,0,0,0.06); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.3px; cursor: pointer; user-select: none; }
+.dbv-table th:hover { color: rgba(0,0,0,0.6); }
+.dbv-table td { padding: 8px 14px; font-size: 13px; color: rgba(0,0,0,0.7); border-bottom: 1px solid rgba(0,0,0,0.03); white-space: nowrap; }
+.dbv-table tr:hover td { background: rgba(0,0,0,0.015); }
+.dbv-table .col-id { width: 90px; color: rgba(0,0,0,0.35); font-family: 'SF Mono', monospace; font-size: 11px; }
+
+/* === DBV Pills === */
+.dbv-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+.dbv-pill.green { background: rgba(87,171,90,0.1); color: #57ab5a; }
+.dbv-pill.yellow { background: rgba(207,142,62,0.1); color: #cf8e3e; }
+.dbv-pill.red { background: rgba(229,83,75,0.1); color: #e5534b; }
+.dbv-pill.blue { background: rgba(94,106,210,0.1); color: #5e6ad2; }
+.dbv-pill.purple { background: rgba(152,110,226,0.1); color: #986ee2; }
+.dbv-pill.gray { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.45); }
+.dbv-pill .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* === DBV Add Row === */
+.dbv-add-row { display: flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 12px; color: rgba(0,0,0,0.3); cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.03); }
+.dbv-add-row:hover { color: rgba(0,0,0,0.5); }
+.dbv-add-row svg { width: 14px; height: 14px; }
+
+/* === DBV Filter Dropdown === */
+.dbv-filter-dropdown { position: absolute; top: 100%; left: 0; width: 240px; background: #fff; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06); z-index: 100; padding: 6px; animation: dropIn 0.1s ease; }
+.dbv-filter-search { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-bottom: 1px solid rgba(0,0,0,0.06); margin-bottom: 4px; }
+.dbv-filter-search input { border: none; outline: none; font-size: 12px; font-family: inherit; flex: 1; background: transparent; color: #222; }
+.dbv-filter-search input::placeholder { color: rgba(0,0,0,0.3); }
+.dbv-filter-search svg { width: 13px; height: 13px; color: rgba(0,0,0,0.3); }
+.dbv-filter-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 5px; font-size: 12px; color: rgba(0,0,0,0.65); cursor: pointer; transition: background 0.08s; }
+.dbv-filter-item:hover { background: rgba(0,0,0,0.04); }
+.dbv-filter-item svg { width: 14px; height: 14px; stroke-width: 1.7; color: rgba(0,0,0,0.35); }
+.dbv-filter-item .fi-arrow { margin-left: auto; color: rgba(0,0,0,0.2); }
+.dbv-filter-item .fi-arrow svg { width: 12px; height: 12px; }
+
+/* === DBV Properties Panel === */
+.dbv-props-panel { position: absolute; top: 0; right: 0; width: 300px; height: 100%; background: #fff; border-left: 1px solid rgba(0,0,0,0.06); box-shadow: -4px 0 20px rgba(0,0,0,0.04); z-index: 50; display: flex; flex-direction: column; animation: slideInRight 0.15s ease; overflow-y: auto; }
+@keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.dbv-props-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,0.06); flex-shrink: 0; }
+.dbv-props-header h4 { font-size: 13px; font-weight: 600; color: #222; margin: 0; }
+.dbv-props-close { width: 24px; height: 24px; border-radius: 4px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.4); }
+.dbv-props-close:hover { background: rgba(0,0,0,0.06); }
+.dbv-props-close svg { width: 14px; height: 14px; }
+.dbv-props-body { padding: 12px 16px; flex: 1; }
+.dbv-props-section { margin-bottom: 16px; }
+.dbv-props-section-title { font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.4); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px; }
+.dbv-props-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 12px; }
+.dbv-props-row-label { color: rgba(0,0,0,0.6); }
+.dbv-props-select { padding: 3px 8px; border-radius: 5px; border: 1px solid rgba(0,0,0,0.1); font-size: 12px; font-family: inherit; color: rgba(0,0,0,0.65); background: #fff; cursor: pointer; }
+.dbv-props-toggle { width: 32px; height: 18px; border-radius: 9px; border: none; cursor: pointer; position: relative; transition: background 0.15s; }
+.dbv-props-toggle.off { background: rgba(0,0,0,0.12); }
+.dbv-props-toggle.on { background: #5e6ad2; }
+.dbv-props-toggle::after { content: ''; position: absolute; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: left 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+.dbv-props-toggle.off::after { left: 2px; }
+.dbv-props-toggle.on::after { left: 16px; }
+
+/* === DBV Column Chips === */
+.dbv-col-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.dbv-col-chip { padding: 4px 10px; border-radius: 5px; font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.1s; border: 1px solid rgba(0,0,0,0.08); }
+.dbv-col-chip.on { background: rgba(94,106,210,0.08); border-color: rgba(94,106,210,0.2); color: #5e6ad2; }
+.dbv-col-chip.off { background: rgba(0,0,0,0.02); color: rgba(0,0,0,0.35); }
+.dbv-col-chip:hover { border-color: rgba(0,0,0,0.2); }

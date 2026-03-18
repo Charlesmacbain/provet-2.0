@@ -1,0 +1,472 @@
+/* === Sidebar === */
+.sidebar {
+  width: 170px;
+  min-width: 170px;
+  height: 100vh;
+  background: #f9f8f8;
+  border-right: 1px solid #e8e8e6;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 20;
+  user-select: none;
+  overflow: hidden;
+  transition: width 0.2s ease, min-width 0.2s ease;
+}
+
+.sidebar.collapsed {
+  width: 44px;
+  min-width: 44px;
+}
+
+/* === Sidebar Topbar === */
+.sidebar-topbar {
+  display: flex;
+  align-items: center;
+  padding: 10px 10px 6px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+/* === Org Button === */
+.org-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+}
+.org-btn:hover { background: rgba(0,0,0,0.04); }
+
+.org-logo-img {
+  height: 18px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.org-chevron {
+  width: 12px;
+  height: 12px;
+  color: rgba(0,0,0,0.35);
+  flex-shrink: 0;
+}
+.org-chevron svg { width: 12px; height: 12px; stroke-width: 2; }
+
+/* === Topbar Icon Button === */
+.topbar-icon-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0,0,0,0.4);
+  flex-shrink: 0;
+  transition: background 0.1s, color 0.1s;
+}
+.topbar-icon-btn:hover {
+  background: rgba(0,0,0,0.06);
+  color: rgba(0,0,0,0.65);
+}
+.topbar-icon-btn svg { width: 15px; height: 15px; stroke-width: 1.8; }
+
+/* === Collapsed Topbar === */
+.sidebar.collapsed .org-logo-img,
+.sidebar.collapsed .org-chevron { display: none; }
+.sidebar.collapsed .sidebar-topbar { padding: 10px 6px 6px; justify-content: center; }
+.sidebar.collapsed .org-btn { flex: 0; padding: 2px; }
+.sidebar.collapsed .topbar-icon-btn:not(#sidebarToggle):not(#inboxDrawerToggle) { display: none; }
+.sidebar.collapsed .sidebar-topbar { flex-wrap: wrap; }
+
+/* === Org Dropdown === */
+.org-dropdown-wrapper { position: relative; flex: 1; min-width: 0; }
+
+.org-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 220px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+  z-index: 50;
+  padding: 4px;
+  display: none;
+  animation: dropIn 0.12s ease;
+}
+.org-dropdown.open { display: block; }
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.org-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  color: rgba(0,0,0,0.7);
+  transition: background 0.08s;
+  white-space: nowrap;
+}
+.org-dropdown-item:hover {
+  background: rgba(0,0,0,0.04);
+  color: rgba(0,0,0,0.9);
+}
+.org-dropdown-item .dd-icon {
+  width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(0,0,0,0.35);
+  flex-shrink: 0;
+}
+.org-dropdown-item .dd-icon svg { width: 15px; height: 15px; stroke-width: 1.7; }
+.org-dropdown-item .dd-label { flex: 1; }
+.org-dropdown-item .dd-hint {
+  font-size: 10px; font-family: 'SF Mono', monospace;
+  color: rgba(0,0,0,0.25);
+}
+
+.org-dropdown-divider {
+  height: 1px;
+  background: rgba(0,0,0,0.06);
+  margin: 3px 6px;
+}
+
+.sidebar.collapsed .org-dropdown { display: none !important; }
+
+/* === Nav Scroll Area === */
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2px 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.06) transparent;
+}
+.sidebar-nav::-webkit-scrollbar { width: 3px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 3px; }
+
+/* === Section Label Headers === */
+.section-label-header {
+  padding: 6px 8px;
+  margin-top: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(0,0,0,0.4);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.08s, color 0.08s;
+  white-space: nowrap;
+  user-select: none;
+}
+.section-label-header:hover {
+  background: rgba(0,0,0,0.03);
+  color: rgba(0,0,0,0.55);
+}
+.section-label-header .section-arrow {
+  font-size: 8px;
+  color: rgba(0,0,0,0.3);
+}
+
+/* === Nav Item Toggle Arrow === */
+.nav-item .section-arrow {
+  font-size: 9px;
+  color: rgba(0,0,0,0.3);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* === Nav Items === */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(0,0,0,0.6);
+  transition: background 0.08s;
+  position: relative;
+  white-space: nowrap;
+  text-decoration: none;
+  height: 28px;
+}
+
+.nav-item:hover {
+  background: rgba(0,0,0,0.04);
+  color: rgba(0,0,0,0.8);
+}
+
+.nav-item.active {
+  background: rgba(0,0,0,0.06);
+  color: rgba(0,0,0,0.9);
+  font-weight: 500;
+}
+
+.nav-item .nav-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0,0,0,0.4);
+}
+.nav-item .nav-icon svg { width: 16px; height: 16px; stroke-width: 1.7; }
+.nav-item.active .nav-icon { color: rgba(0,0,0,0.6); }
+
+.nav-item .nav-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === Nav Badge === */
+.nav-badge {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(0,0,0,0.4);
+  padding: 0 4px;
+  min-width: 14px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* === Section Headers === */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(0,0,0,0.4);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.08s, color 0.08s;
+  position: relative;
+  white-space: nowrap;
+  height: 24px;
+}
+
+.section-header:hover {
+  background: rgba(0,0,0,0.03);
+  color: rgba(0,0,0,0.55);
+}
+
+.section-header .section-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.section-header .section-arrow {
+  font-size: 9px;
+  color: rgba(0,0,0,0.35);
+  transition: transform 0.12s;
+  display: inline-block;
+}
+
+/* === Sub-items === */
+.nav-subitems {
+  overflow: hidden;
+}
+.nav-subitems.hidden {
+  display: none;
+}
+
+.nav-subitem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(0,0,0,0.6);
+  transition: background 0.08s;
+  position: relative;
+  white-space: nowrap;
+  height: 28px;
+}
+
+.nav-subitem:hover {
+  background: rgba(0,0,0,0.04);
+  color: rgba(0,0,0,0.8);
+}
+
+.nav-subitem.active {
+  background: rgba(0,0,0,0.06);
+  color: rgba(0,0,0,0.9);
+  font-weight: 500;
+}
+
+.nav-subitem .sub-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0,0,0,0.35);
+}
+.nav-subitem .sub-icon svg { width: 15px; height: 15px; stroke-width: 1.7; }
+
+.nav-subitem .sub-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === Star Toggle === */
+.star-toggle {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.1s;
+  color: rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.star-toggle svg { width: 12px; height: 12px; stroke-width: 2; }
+
+.nav-subitem:hover .star-toggle { opacity: 1; }
+.star-toggle.starred { opacity: 0.7; color: #cf8e3e; }
+.star-toggle.starred svg { fill: #cf8e3e; }
+.nav-subitem:hover .star-toggle.starred { opacity: 1; }
+
+/* === Favourites === */
+.favourites-section { display: none; }
+.favourites-section.visible { display: block; }
+
+.fav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(0,0,0,0.6);
+  transition: background 0.08s;
+  white-space: nowrap;
+  height: 28px;
+}
+.fav-item:hover {
+  background: rgba(0,0,0,0.04);
+  color: rgba(0,0,0,0.8);
+}
+.fav-item.active {
+  background: rgba(0,0,0,0.06);
+  color: rgba(0,0,0,0.9);
+  font-weight: 500;
+}
+.fav-item .fav-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.fav-item .fav-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === Sidebar Footer === */
+.sidebar-footer {
+  padding: 4px 6px 8px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  flex-shrink: 0;
+}
+
+/* === Collapsed Sidebar States === */
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .nav-badge,
+.sidebar.collapsed .section-header .section-label,
+.sidebar.collapsed .star-toggle,
+.sidebar.collapsed .sub-label,
+.sidebar.collapsed .fav-label,
+.sidebar.collapsed .nav-subitems,
+.sidebar.collapsed .favourites-section,
+.sidebar.collapsed .fav-dot { display: none; }
+
+.sidebar.collapsed .nav-item,
+.sidebar.collapsed .nav-subitem {
+  justify-content: center;
+  padding: 4px;
+}
+.sidebar.collapsed .section-header {
+  justify-content: center;
+  padding: 4px;
+}
+
+/* === Collapsed Tooltips === */
+.sidebar.collapsed .nav-item[data-tooltip]:hover::after,
+.sidebar.collapsed .section-header[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* === Sidebar Toggle Button === */
+.sidebar-toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 30;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0,0,0,0.35);
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.sidebar-toggle-btn:hover {
+  background: rgba(0,0,0,0.04);
+  color: rgba(0,0,0,0.6);
+  border-color: rgba(0,0,0,0.15);
+}
+.sidebar-toggle-btn svg { width: 15px; height: 15px; stroke-width: 1.8; }
+
+/* === Hidden Nav Items (from customize) === */
+.nav-item.sidebar-hidden { display: none; }

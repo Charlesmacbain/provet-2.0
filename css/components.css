@@ -1,0 +1,43 @@
+/* === Status Pill === */
+.status-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500;
+}
+.status-pill.active { background: rgba(87,171,90,0.1); color: #2d8a3e; }
+.status-pill.completed { background: rgba(94,106,210,0.08); color: #5e6ad2; }
+.status-pill.pending { background: rgba(207,142,62,0.1); color: #a06b1f; }
+.status-pill.overdue { background: rgba(229,83,75,0.08); color: #e5534b; }
+.status-pill.normal { background: rgba(87,171,90,0.1); color: #2d8a3e; }
+.status-pill.abnormal { background: rgba(229,83,75,0.08); color: #e5534b; }
+.status-pill.due { background: rgba(207,142,62,0.1); color: #a06b1f; }
+.status-pill.paid { background: rgba(87,171,90,0.1); color: #2d8a3e; }
+.status-pill.unpaid { background: rgba(229,83,75,0.08); color: #e5534b; }
+.status-pill.draft { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.45); }
+.status-pill.high { background: rgba(229,83,75,0.08); color: #e5534b; }
+.status-pill.medium { background: rgba(207,142,62,0.1); color: #a06b1f; }
+.status-pill.low { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.45); }
+.status-pill.dot::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+}
+.status-pill.scheduled { background: rgba(94,106,210,0.08); color: #5e6ad2; }
+
+/* === Tab Badge === */
+.inbox-detail-tab .tab-badge {
+  display: inline-block; padding: 1px 6px; border-radius: 8px;
+  font-size: 10px; font-weight: 600; margin-left: 4px;
+  background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.4);
+}
+.inbox-detail-tab .tab-badge.due {
+  background: #e5934b; color: #fff;
+}
+
+/* === Welcome Screen === */
+.welcome-screen {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px;
+  color: rgba(0,0,0,0.4);
+}
+.welcome-screen .w-icon { width: 40px; height: 40px; color: rgba(0,0,0,0.1); }
+.welcome-screen .w-icon svg { width: 40px; height: 40px; stroke-width: 1; }
+.welcome-screen h2 { font-size: 17px; font-weight: 600; color: rgba(0,0,0,0.6); }
+.welcome-screen p { font-size: 13px; max-width: 280px; text-align: center; line-height: 1.5; }

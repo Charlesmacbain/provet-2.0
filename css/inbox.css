@@ -1,0 +1,228 @@
+/* === Inbox Panel === */
+.inbox-panel { flex: 1; display: none; flex-direction: row; background: #fff; overflow: hidden; position: relative; }
+.inbox-panel.active { display: flex; }
+
+/* === Inbox Left (notification list) === */
+.inbox-left {
+  width: 286px; min-width: 221px; max-width: 286px;
+  border-right: 1px solid rgba(0,0,0,0.06);
+  display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
+}
+
+/* === Inbox Topbar === */
+.inbox-topbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; flex-shrink: 0;
+}
+.inbox-topbar h2 { font-size: 14px; font-weight: 600; color: #222; }
+.inbox-topbar .inbox-dots {
+  font-size: 14px; color: rgba(0,0,0,0.3); cursor: pointer; letter-spacing: 1px;
+}
+.inbox-topbar-icons { margin-left: auto; display: flex; gap: 2px; }
+.inbox-topbar-icons button {
+  width: 26px; height: 26px; border-radius: 4px; border: none;
+  background: none; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; color: rgba(0,0,0,0.35);
+}
+.inbox-topbar-icons button:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
+.inbox-topbar-icons button svg { width: 15px; height: 15px; stroke-width: 1.7; }
+
+/* === Inbox List === */
+.inbox-list { flex: 1; overflow-y: auto; }
+
+/* === Inbox Item === */
+.inbox-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 10px; cursor: pointer; transition: background 0.08s;
+  border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+.inbox-item:hover { background: rgba(0,0,0,0.02); }
+.inbox-item.selected { background: rgba(94,106,210,0.06); }
+
+/* === Inbox Avatar === */
+.inbox-avatar-wrap { position: relative; flex-shrink: 0; }
+.inbox-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.inbox-avatar-badge {
+  position: absolute; bottom: -1px; right: -1px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 8px; border: 1.5px solid #fff;
+}
+.inbox-avatar-badge svg { width: 10px; height: 10px; stroke-width: 2; }
+
+/* === Inbox Content === */
+.inbox-content { flex: 1; min-width: 0; }
+.inbox-title-row { display: flex; align-items: center; gap: 6px; }
+.inbox-unread-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #5e6ad2; flex-shrink: 0;
+}
+.inbox-title {
+  font-size: 13px; font-weight: 500; color: #222;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.inbox-item.unread .inbox-title { font-weight: 600; }
+.inbox-subtitle {
+  font-size: 12px; color: rgba(0,0,0,0.4);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px;
+  display: flex; align-items: center; gap: 4px;
+}
+.inbox-subtitle-icon { color: rgba(0,0,0,0.3); flex-shrink: 0; }
+.inbox-subtitle-icon svg { width: 11px; height: 11px; stroke-width: 2; }
+
+/* === Inbox Meta === */
+.inbox-meta {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+  flex-shrink: 0; min-width: 32px;
+}
+.inbox-type-icon { color: rgba(0,0,0,0.25); }
+.inbox-type-icon svg { width: 14px; height: 14px; stroke-width: 1.7; }
+.inbox-time { font-size: 11px; color: rgba(0,0,0,0.25); white-space: nowrap; }
+
+/* === Inbox Middle === */
+.inbox-middle {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+  min-width: 0;
+}
+.inbox-middle-empty {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px;
+  color: rgba(0,0,0,0.35);
+}
+.inbox-middle-empty .inbox-empty-icon { color: rgba(0,0,0,0.1); }
+.inbox-middle-empty .inbox-empty-icon svg { width: 64px; height: 64px; stroke-width: 0.8; }
+.inbox-middle-empty .inbox-empty-text { font-size: 13px; color: rgba(0,0,0,0.35); }
+
+/* === Inbox Detail === */
+.inbox-detail { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* === Detail Header === */
+.inbox-detail-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 20px; border-bottom: 1px solid rgba(0,0,0,0.06);
+  flex-shrink: 0; min-height: 44px;
+}
+.inbox-detail-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.inbox-detail-title { font-size: 14px; font-weight: 600; color: #222; }
+.inbox-detail-time { font-size: 11px; color: rgba(0,0,0,0.3); margin-left: auto; }
+
+/* === Detail Header Banner === */
+.inbox-detail-header-banner {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 20px; border-bottom: 1px solid rgba(0,0,0,0.06);
+  flex-shrink: 0; background: #fff;
+}
+.inbox-detail-header-banner .inbox-detail-avatar {
+  width: 32px; height: 32px; font-size: 12px;
+}
+.inbox-detail-header-text { flex: 1; min-width: 0; }
+.inbox-detail-header-top {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500;
+}
+.inbox-detail-client-name { color: rgba(0,0,0,0.5); }
+.inbox-detail-sep { color: rgba(0,0,0,0.2); font-size: 12px; }
+.inbox-detail-pet-name { font-weight: 700; color: #222; }
+.inbox-detail-header-meta {
+  font-size: 11px; color: rgba(0,0,0,0.4); margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.inbox-detail-header-meta strong { color: rgba(0,0,0,0.55); font-weight: 600; }
+
+/* === Detail Tabs === */
+.inbox-detail-tabs {
+  display: flex; gap: 0; padding: 0 20px; border-bottom: 1px solid rgba(0,0,0,0.06);
+  flex-shrink: 0; background: #fff; overflow-x: auto; scrollbar-width: none;
+}
+.inbox-detail-tabs::-webkit-scrollbar { display: none; }
+.inbox-detail-tab {
+  padding: 10px 14px; font-size: 12px; font-weight: 500; color: rgba(0,0,0,0.4);
+  cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.1s;
+  white-space: nowrap;
+}
+.inbox-detail-tab:hover { color: rgba(0,0,0,0.7); }
+.inbox-detail-tab.active { color: #222; border-bottom-color: #5e6ad2; }
+
+/* === Detail Body === */
+.inbox-detail-body { flex: 1; overflow-y: auto; padding: 20px; }
+
+/* === Chat Messages === */
+.chat-messages { display: flex; flex-direction: column; gap: 16px; }
+.chat-msg { display: flex; gap: 10px; max-width: 85%; }
+.chat-msg.outgoing { margin-left: auto; flex-direction: row-reverse; }
+.chat-msg-avatar {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: #fff;
+}
+.chat-msg-bubble {
+  padding: 10px 14px; border-radius: 12px;
+  font-size: 13px; line-height: 1.5; color: #222;
+  background: rgba(0,0,0,0.04);
+}
+.chat-msg.outgoing .chat-msg-bubble {
+  background: #5e6ad2; color: #fff;
+}
+.chat-msg-time { font-size: 10px; color: rgba(0,0,0,0.25); margin-top: 4px; }
+.chat-msg.outgoing .chat-msg-time { text-align: right; }
+
+/* === Chat Input === */
+.chat-input-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 20px; border-top: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
+}
+.chat-input {
+  flex: 1; padding: 8px 12px; border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1); font-size: 13px;
+  font-family: inherit; outline: none; background: #fff;
+}
+.chat-input:focus { border-color: rgba(94,106,210,0.4); }
+.chat-send-btn {
+  width: 32px; height: 32px; border-radius: 6px; border: none;
+  background: #5e6ad2; color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.chat-send-btn:hover { background: #4f5bc4; }
+.chat-send-btn svg { width: 15px; height: 15px; stroke-width: 2; }
+
+/* === Action Cards (non-chat inbox items) === */
+.inbox-action-card {
+  background: #fff; border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 10px; padding: 20px; margin-bottom: 16px;
+}
+.inbox-action-card h3 { font-size: 14px; font-weight: 600; color: #222; margin-bottom: 4px; }
+.inbox-action-card p { font-size: 13px; color: rgba(0,0,0,0.5); line-height: 1.5; margin-bottom: 12px; }
+.inbox-action-card .action-meta {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+}
+.action-meta-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 500;
+  background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55);
+}
+.action-meta-tag svg { width: 12px; height: 12px; stroke-width: 2; }
+.action-meta-tag.urgent { background: rgba(229,83,75,0.08); color: #e5534b; }
+.action-meta-tag.ok { background: rgba(87,171,90,0.08); color: #57ab5a; }
+.inbox-action-btns { display: flex; gap: 8px; }
+.inbox-action-btn {
+  padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 500;
+  font-family: inherit; cursor: pointer; border: 1px solid rgba(0,0,0,0.1);
+  background: #fff; color: #222; transition: background 0.1s;
+}
+.inbox-action-btn:hover { background: rgba(0,0,0,0.03); }
+.inbox-action-btn.primary {
+  background: #5e6ad2; color: #fff; border-color: #5e6ad2;
+}
+.inbox-action-btn.primary:hover { background: #4f5bc4; }
+.inbox-action-btn.danger {
+  background: #fff; color: #e5534b; border-color: rgba(229,83,75,0.3);
+}
+.inbox-action-btn.danger:hover { background: rgba(229,83,75,0.04); }

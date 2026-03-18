@@ -1,0 +1,161 @@
+/* === Search Overlay === */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 100;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+}
+.search-overlay.open { display: flex; }
+
+/* === Search Modal === */
+.search-modal {
+  width: 780px; max-width: 90vw;
+  background: #fff; border-radius: 12px;
+  box-shadow: 0 16px 60px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.06);
+  overflow: hidden; animation: searchIn 0.15s ease;
+  display: flex; flex-direction: column; max-height: 520px;
+}
+@keyframes searchIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* === Search Input Row === */
+.search-input-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,0.06);
+  flex-shrink: 0;
+}
+.search-input-row .s-icon { width: 16px; height: 16px; color: rgba(0,0,0,0.35); flex-shrink: 0; }
+.search-input-row .s-icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
+.search-input-row input {
+  flex: 1; border: none; outline: none; font-size: 14px; font-family: inherit;
+  color: #222; background: transparent;
+}
+.search-input-row input::placeholder { color: rgba(0,0,0,0.3); }
+.search-ask-ai {
+  font-size: 12px; color: rgba(0,0,0,0.35); flex-shrink: 0;
+  display: flex; align-items: center; gap: 4px; cursor: pointer;
+}
+.search-ask-ai:hover { color: rgba(0,0,0,0.6); }
+.search-ask-ai .kbd {
+  font-size: 10px; font-family: 'SF Mono', 'Fira Code', monospace;
+  color: rgba(0,0,0,0.25); background: rgba(0,0,0,0.04);
+  padding: 1px 4px; border-radius: 3px;
+}
+
+/* === Search Panels === */
+.search-panels { display: flex; flex: 1; min-height: 0; overflow: hidden; }
+
+/* === Search List (left) === */
+.search-list {
+  width: 55%; border-right: 1px solid rgba(0,0,0,0.06);
+  overflow-y: auto; padding: 6px;
+}
+.search-section-label {
+  font-size: 10px; font-weight: 600; color: rgba(0,0,0,0.35);
+  text-transform: uppercase; letter-spacing: 0.4px; padding: 8px 8px 4px;
+}
+.search-result {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 8px; border-radius: 6px; cursor: pointer;
+  font-size: 13px; color: rgba(0,0,0,0.7); transition: background 0.08s;
+}
+.search-result:hover, .search-result.focused { background: rgba(0,0,0,0.04); }
+.search-result .r-avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.search-result .r-name { font-weight: 500; color: #222; }
+.search-result .r-sub { font-size: 12px; color: rgba(0,0,0,0.35); margin-left: 4px; }
+.search-result .r-badge {
+  margin-left: auto; font-size: 10px; font-weight: 600; padding: 2px 8px;
+  border-radius: 4px; flex-shrink: 0;
+}
+.search-result .r-badge.client { background: rgba(94,106,210,0.08); color: #5e6ad2; }
+.search-result .r-badge.patient { background: rgba(87,171,90,0.08); color: #57ab5a; }
+.search-result .r-icon { width: 16px; height: 16px; color: rgba(0,0,0,0.35); flex-shrink: 0; }
+.search-result .r-icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
+
+/* === Search Preview (right) === */
+.search-preview {
+  width: 45%; overflow-y: auto; padding: 16px 20px;
+}
+.search-preview-empty {
+  height: 100%; display: flex; align-items: center; justify-content: center;
+  color: rgba(0,0,0,0.2); font-size: 12px;
+}
+.search-preview-header {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+}
+.search-preview-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.search-preview-name { font-size: 15px; font-weight: 700; color: #222; }
+.search-preview-badge {
+  font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+  margin-left: 4px;
+}
+.search-preview-section {
+  font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.35);
+  margin-bottom: 10px; margin-top: 16px;
+}
+.search-preview-field {
+  display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;
+}
+.search-preview-field .spf-icon {
+  width: 16px; height: 16px; color: rgba(0,0,0,0.25); flex-shrink: 0; margin-top: 1px;
+}
+.search-preview-field .spf-icon svg { width: 16px; height: 16px; stroke-width: 1.7; }
+.search-preview-field .spf-value { font-size: 13px; color: #222; line-height: 1.4; }
+.search-preview-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.search-preview-tag {
+  font-size: 11px; padding: 2px 8px; border-radius: 4px;
+  background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55);
+}
+
+/* === Search Footer === */
+.search-footer {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px; border-top: 1px solid rgba(0,0,0,0.06);
+  flex-shrink: 0;
+}
+.search-footer-nav {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; color: rgba(0,0,0,0.3);
+}
+.search-footer-nav .key {
+  width: 20px; height: 20px; border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center;
+  justify-content: center; font-size: 11px; color: rgba(0,0,0,0.35);
+}
+.search-footer-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.search-footer-actions {
+  font-size: 12px; color: rgba(0,0,0,0.35);
+  display: flex; align-items: center; gap: 4px;
+}
+.search-footer-actions .kbd {
+  font-size: 10px; font-family: 'SF Mono', monospace;
+  color: rgba(0,0,0,0.25); background: rgba(0,0,0,0.04);
+  padding: 1px 4px; border-radius: 3px;
+}
+
+/* === Search Open Button === */
+.search-open-btn {
+  padding: 6px 14px; border-radius: 6px; border: none;
+  background: #5e6ad2; color: #fff; font-size: 12px; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+}
+.search-open-btn:hover { background: #4f5bc4; }
+.search-open-btn .kbd { font-size: 11px; color: rgba(255,255,255,0.5); }
+
+/* === Search Empty === */
+.search-empty { padding: 20px; text-align: center; font-size: 13px; color: rgba(0,0,0,0.3); }

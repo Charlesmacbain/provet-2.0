@@ -1,0 +1,113 @@
+/* === Customize Sidebar Overlay === */
+.customize-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+  z-index: 200; display: none; align-items: flex-start;
+  justify-content: center; padding-top: 10vh;
+}
+.customize-overlay.open { display: flex; }
+
+/* === Customize Modal === */
+.customize-modal {
+  width: 480px; max-width: 90vw; max-height: 75vh;
+  background: #fff; border-radius: 12px;
+  box-shadow: 0 16px 60px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.06);
+  overflow: hidden; animation: searchIn 0.15s ease;
+  display: flex; flex-direction: column;
+}
+
+/* === Customize Header === */
+.customize-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 16px; flex-shrink: 0;
+}
+.customize-header h3 { font-size: 16px; font-weight: 650; color: #222; margin: 0; }
+
+/* === Customize Close Button === */
+.customize-close {
+  width: 28px; height: 28px; border-radius: 6px; border: none; background: none;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: rgba(0,0,0,0.4); transition: background 0.1s, color 0.1s;
+}
+.customize-close:hover { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.7); }
+.customize-close svg { width: 16px; height: 16px; stroke-width: 2; }
+
+/* === Customize Body === */
+.customize-body {
+  flex: 1; overflow-y: auto; padding: 0 24px 24px;
+  scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.08) transparent;
+}
+.customize-body::-webkit-scrollbar { width: 4px; }
+.customize-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 4px; }
+
+/* === Customize Section Label === */
+.customize-section-label {
+  font-size: 12px; font-weight: 600; color: rgba(0,0,0,0.5);
+  margin-bottom: 8px; margin-top: 16px;
+}
+.customize-section-label:first-child { margin-top: 0; }
+
+/* === Customize Group === */
+.customize-group {
+  background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 10px; overflow: hidden;
+}
+
+/* === Customize Row === */
+.customize-row {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  font-size: 13px; color: rgba(0,0,0,0.75); cursor: grab;
+  transition: background 0.08s; border-bottom: 1px solid rgba(0,0,0,0.04);
+  user-select: none; position: relative;
+}
+.customize-row:last-child { border-bottom: none; }
+.customize-row:hover { background: rgba(0,0,0,0.03); }
+.customize-row.dragging { opacity: 0.5; background: rgba(0,0,0,0.04); }
+.customize-row.drag-over { box-shadow: inset 0 2px 0 0 var(--p-blue, #3559c7); }
+
+/* === Customize Drag Handle === */
+.customize-drag-handle {
+  display: flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; color: rgba(0,0,0,0.2); flex-shrink: 0; cursor: grab;
+}
+
+/* === Customize Row Icon === */
+.customize-row-icon {
+  width: 16px; height: 16px; display: flex; align-items: center;
+  justify-content: center; color: rgba(0,0,0,0.4); flex-shrink: 0;
+}
+.customize-row-icon svg { width: 16px; height: 16px; stroke-width: 1.7; }
+
+/* === Customize Row Label === */
+.customize-row-label { flex: 1; font-weight: 500; }
+
+/* === Customize Visibility Button === */
+.customize-visibility-btn {
+  font-size: 12px; color: rgba(0,0,0,0.45); background: none; border: none;
+  cursor: pointer; display: flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 4px; transition: background 0.08s, color 0.08s;
+  flex-shrink: 0; font-family: inherit; white-space: nowrap;
+}
+.customize-visibility-btn:hover { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.65); }
+.customize-visibility-btn svg { width: 12px; height: 12px; stroke-width: 2; }
+
+/* === Customize Visibility Menu === */
+.customize-visibility-menu {
+  position: absolute; right: 14px; top: 100%; background: #fff;
+  border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06);
+  z-index: 210; padding: 4px; min-width: 150px; display: none; animation: dropIn 0.1s ease;
+}
+.customize-visibility-menu.open { display: block; }
+
+/* === Customize Visibility Option === */
+.customize-vis-option {
+  display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+  border-radius: 5px; cursor: pointer; font-size: 12px;
+  color: rgba(0,0,0,0.65); transition: background 0.08s;
+}
+.customize-vis-option:hover { background: rgba(0,0,0,0.04); }
+.customize-vis-option.active { font-weight: 600; color: rgba(0,0,0,0.85); }
+.customize-vis-option .vis-check {
+  width: 14px; height: 14px; display: flex; align-items: center;
+  justify-content: center; color: var(--p-blue, #3559c7);
+}
+.customize-vis-option .vis-check svg { width: 14px; height: 14px; stroke-width: 2.5; }
