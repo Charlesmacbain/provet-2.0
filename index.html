@@ -35,8 +35,8 @@
 
     /* ═══ Sidebar ═══ */
     .sidebar {
-      width: 200px;
-      min-width: 200px;
+      width: 170px;
+      min-width: 170px;
       height: 100vh;
       background: #f9f8f8;
       border-right: 1px solid #e8e8e6;
@@ -683,12 +683,12 @@
     .welcome-screen p { font-size: 13px; max-width: 280px; text-align: center; line-height: 1.5; }
 
     /* ═══ Inbox panel (three-column) ═══ */
-    .inbox-panel { flex: 1; display: none; flex-direction: row; background: #fff; overflow: hidden; }
+    .inbox-panel { flex: 1; display: none; flex-direction: row; background: #fff; overflow: hidden; position: relative; }
     .inbox-panel.active { display: flex; }
 
     /* Left: notification list */
     .inbox-left {
-      width: 336px; min-width: 260px; max-width: 336px;
+      width: 286px; min-width: 221px; max-width: 286px;
       border-right: 1px solid rgba(0,0,0,0.06);
       display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
     }
@@ -713,8 +713,8 @@
     .inbox-list { flex: 1; overflow-y: auto; }
 
     .inbox-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 16px; cursor: pointer; transition: background 0.08s;
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 10px; cursor: pointer; transition: background 0.08s;
       border-bottom: 1px solid rgba(0,0,0,0.03);
     }
     .inbox-item:hover { background: rgba(0,0,0,0.02); }
@@ -790,6 +790,28 @@
     }
     .inbox-detail-title { font-size: 14px; font-weight: 600; color: #222; }
     .inbox-detail-time { font-size: 11px; color: rgba(0,0,0,0.3); margin-left: auto; }
+
+    .inbox-detail-header-banner {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 20px; border-bottom: 1px solid rgba(0,0,0,0.06);
+      flex-shrink: 0; background: #fff;
+    }
+    .inbox-detail-header-banner .inbox-detail-avatar {
+      width: 32px; height: 32px; font-size: 12px;
+    }
+    .inbox-detail-header-text { flex: 1; min-width: 0; }
+    .inbox-detail-header-top {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 500;
+    }
+    .inbox-detail-client-name { color: rgba(0,0,0,0.5); }
+    .inbox-detail-sep { color: rgba(0,0,0,0.2); font-size: 12px; }
+    .inbox-detail-pet-name { font-weight: 700; color: #222; }
+    .inbox-detail-header-meta {
+      font-size: 11px; color: rgba(0,0,0,0.4); margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .inbox-detail-header-meta strong { color: rgba(0,0,0,0.55); font-weight: 600; }
 
     /* Detail tabs */
     .inbox-detail-tabs {
@@ -1029,6 +1051,46 @@
     .billing-card .bc-sub { font-size: 10px; color: rgba(0,0,0,0.3); margin-top: 1px; }
     .billing-card.overdue .bc-value { color: #e5534b; }
 
+    .billing-subtabs {
+      display: flex; gap: 0; padding: 0 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .billing-subtab {
+      padding: 8px 14px; font-size: 12px; font-weight: 500;
+      color: rgba(0,0,0,0.4); cursor: pointer;
+      border-bottom: 2px solid transparent; transition: color 0.1s;
+    }
+    .billing-subtab:hover { color: rgba(0,0,0,0.7); }
+    .billing-subtab.active { color: #222; border-bottom-color: #5e6ad2; }
+    .billing-subtab-content { padding: 0; }
+    .billing-items-panel { padding: 0; }
+    .billing-actions-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px; border-top: 1px solid rgba(0,0,0,0.06);
+      background: rgba(0,0,0,0.01);
+    }
+    .billing-selected-total { font-size: 13px; color: rgba(0,0,0,0.5); }
+    .billing-selected-total strong { color: #222; }
+    .billing-actions-right { display: flex; gap: 8px; }
+    .billing-add-item-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 6px 12px; border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.12); background: #fff;
+      font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.55);
+      cursor: pointer; font-family: inherit;
+    }
+    .billing-add-item-btn:hover { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.2); }
+    .billing-add-item-btn svg { width: 13px; height: 13px; stroke-width: 2; }
+    .billing-pay-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 6px 14px; border-radius: 6px;
+      border: none; background: #5e6ad2; color: #fff;
+      font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .billing-pay-btn:hover { background: #4f5bc4; }
+    .billing-pay-btn svg { width: 13px; height: 13px; stroke-width: 2; }
+    .billing-check { width: 14px; height: 14px; accent-color: #5e6ad2; cursor: pointer; }
+
     .imm-bar-wrap { margin-bottom: 16px; }
     .imm-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: rgba(0,0,0,0.4); margin-bottom: 4px; font-weight: 500; }
     .imm-bar { height: 6px; background: rgba(0,0,0,0.06); border-radius: 3px; overflow: hidden; }
@@ -1070,6 +1132,16 @@
     body.dark .billing-card .bc-value { color: #d4d4d4; }
     body.dark .billing-card .bc-sub { color: rgba(255,255,255,0.2); }
     body.dark .billing-card.overdue .bc-value { color: #e5534b; }
+    body.dark .billing-subtabs { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .billing-subtab { color: rgba(255,255,255,0.35); }
+    body.dark .billing-subtab:hover { color: rgba(255,255,255,0.6); }
+    body.dark .billing-subtab.active { color: #d4d4d4; border-bottom-color: #5e6ad2; }
+    body.dark .billing-actions-bar { border-top-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    body.dark .billing-selected-total { color: rgba(255,255,255,0.4); }
+    body.dark .billing-selected-total strong { color: #d4d4d4; }
+    body.dark .billing-add-item-btn { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.55); }
+    body.dark .billing-add-item-btn:hover { background: #333; }
+    body.dark .billing-pay-btn { background: #5e6ad2; }
     body.dark .imm-bar { background: rgba(255,255,255,0.06); }
     body.dark .imm-bar-label { color: rgba(255,255,255,0.3); }
 
@@ -1083,7 +1155,7 @@
     .inbox-drawer-tabs {
       display: flex; align-items: stretch;
       border-bottom: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
-      min-height: 44px;
+      min-height: 44px; padding-right: 34px;
     }
     .inbox-drawer-tab {
       flex: 1; display: flex; align-items: center; justify-content: center;
@@ -1095,14 +1167,16 @@
     .inbox-drawer-tab.active { color: #222; border-bottom-color: #222; }
 
     .inbox-drawer-toggle {
-      flex: none; width: 26px; height: 26px; border-radius: 4px; border: none;
+      position: absolute; top: 10px; right: 10px; z-index: 10;
+      width: 26px; height: 26px; border-radius: 4px; border: none;
       background: none; cursor: pointer; display: flex; align-items: center;
       justify-content: center; color: rgba(0,0,0,0.3); font-family: inherit;
-      align-self: center; margin-right: 8px;
     }
     .inbox-drawer-toggle:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55); }
     .inbox-drawer-toggle svg { width: 15px; height: 15px; stroke-width: 1.7; }
-    .inbox-drawer-body { flex: 1; overflow-y: auto; padding: 16px; }
+    .inbox-drawer-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .ask-ai-scroll { flex: 1; overflow-y: auto; padding: 16px; }
+    .ask-ai-input-bar { flex-shrink: 0; padding: 12px 16px; border-top: 1px solid rgba(0,0,0,0.06); }
     .inbox-drawer-section { margin-bottom: 16px; }
     .inbox-drawer-section-title {
       font-size: 10px; font-weight: 700; color: rgba(0,0,0,0.3);
@@ -1132,14 +1206,124 @@
     .ask-ai-hint { font-size: 11px; color: rgba(0,0,0,0.3); margin-top: 6px; }
     .ask-ai-suggestions { margin-top: 16px; }
     .ask-ai-suggestion {
-      padding: 8px 10px; border-radius: 6px; font-size: 12px; color: rgba(0,0,0,0.55);
-      cursor: pointer; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;
+      padding: 8px 10px; border-radius: 6px; font-size: 12px; color: rgba(0,0,0,0.65);
+      cursor: pointer; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
+      border: 1px solid rgba(0,0,0,0.06); transition: background 0.1s, border-color 0.1s;
     }
-    .ask-ai-suggestion:hover { background: rgba(0,0,0,0.03); }
-    .ask-ai-suggestion svg { width: 14px; height: 14px; stroke-width: 1.7; color: rgba(94,106,210,0.5); flex-shrink: 0; }
+    .ask-ai-suggestion:hover { background: rgba(94,106,210,0.04); border-color: rgba(94,106,210,0.2); }
+    .ask-ai-suggestion svg { width: 14px; height: 14px; stroke-width: 1.7; color: rgba(94,106,210,0.6); flex-shrink: 0; }
 
     /* Hidden — toggle is now always in the detail header */
     .inbox-drawer-expand { display: none !important; }
+
+    /* ═══ Active Consultation (SOAP + AI Scribe + Orders) ═══ */
+    .consultation-active { padding: 0; }
+    .consultation-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px; border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .consultation-header-left { display: flex; align-items: center; gap: 12px; }
+    .consultation-date { font-size: 12px; color: rgba(0,0,0,0.4); }
+    .consultation-vet { font-size: 12px; color: rgba(0,0,0,0.4); display: flex; align-items: center; gap: 4px; }
+    .consultation-vet svg { width: 12px; height: 12px; stroke-width: 2; }
+    .consultation-header-right { display: flex; align-items: center; gap: 6px; }
+    .consultation-action-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1);
+      background: #fff; font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.55);
+      cursor: pointer; font-family: inherit; transition: background 0.1s;
+    }
+    .consultation-action-btn:hover { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.18); }
+    .consultation-action-btn svg { width: 13px; height: 13px; stroke-width: 1.8; }
+    .consultation-action-primary { background: #5e6ad2; color: #fff; border-color: #5e6ad2; }
+    .consultation-action-primary:hover { background: #4f5bc4; }
+
+    .consultation-reason {
+      padding: 12px 20px; border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .consultation-label {
+      font-size: 10px; font-weight: 700; color: rgba(0,0,0,0.3);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .consultation-label svg { width: 13px; height: 13px; stroke-width: 1.8; color: rgba(94,106,210,0.5); }
+    .consultation-reason-text { font-size: 13px; font-weight: 500; color: #222; }
+
+    .soap-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .soap-section {
+      padding: 12px 20px; border-right: 1px solid rgba(0,0,0,0.06);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .soap-section:nth-child(2n) { border-right: none; }
+    .soap-section:nth-child(n+3) { border-bottom: none; }
+    .soap-label {
+      font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.4);
+      margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+    }
+    .soap-letter {
+      width: 18px; height: 18px; border-radius: 4px; background: #5e6ad2;
+      color: #fff; font-size: 10px; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .soap-textarea {
+      width: 100%; min-height: 80px; padding: 8px 10px; border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.08); background: rgba(0,0,0,0.01);
+      font-size: 12px; line-height: 1.6; color: #333; font-family: inherit;
+      resize: vertical;
+    }
+    .soap-textarea:focus { outline: none; border-color: rgba(94,106,210,0.4); }
+
+    .consultation-ai-scribe { padding: 16px 20px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .ai-scribe-status {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: rgba(0,0,0,0.45); margin-bottom: 10px;
+    }
+    .ai-scribe-indicator {
+      width: 8px; height: 8px; border-radius: 50%; background: #e5534b;
+      animation: scribe-pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes scribe-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .ai-scribe-transcript {
+      background: rgba(0,0,0,0.02); border-radius: 8px; padding: 10px 12px;
+      margin-bottom: 10px; max-height: 120px; overflow-y: auto;
+    }
+    .ai-scribe-line { font-size: 12px; color: rgba(0,0,0,0.55); margin-bottom: 6px; line-height: 1.5; }
+    .ai-scribe-line:last-child { margin-bottom: 0; }
+    .ai-scribe-speaker { font-weight: 600; color: rgba(0,0,0,0.7); }
+    .ai-scribe-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .ai-scribe-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(94,106,210,0.2);
+      background: rgba(94,106,210,0.04); font-size: 11px; font-weight: 500;
+      color: #5e6ad2; cursor: pointer; font-family: inherit; transition: all 0.1s;
+    }
+    .ai-scribe-btn:hover { background: rgba(94,106,210,0.08); border-color: rgba(94,106,210,0.35); }
+    .ai-scribe-btn svg { width: 13px; height: 13px; stroke-width: 1.8; }
+
+    .consultation-orders { padding: 16px 20px; }
+    .orders-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+    .order-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06);
+    }
+    .order-item:hover { background: rgba(0,0,0,0.01); }
+    .order-icon { color: rgba(0,0,0,0.3); flex-shrink: 0; }
+    .order-icon svg { width: 16px; height: 16px; stroke-width: 1.7; }
+    .order-body { flex: 1; min-width: 0; }
+    .order-name { font-size: 12px; font-weight: 600; color: #222; }
+    .order-detail { font-size: 11px; color: rgba(0,0,0,0.4); margin-top: 1px; }
+    .status-pill.scheduled { background: rgba(94,106,210,0.08); color: #5e6ad2; }
+    .add-order-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 6px 12px; border-radius: 6px; border: 1px dashed rgba(0,0,0,0.15);
+      background: none; font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.4);
+      cursor: pointer; font-family: inherit; width: 100%; justify-content: center;
+    }
+    .add-order-btn:hover { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.25); color: rgba(0,0,0,0.6); }
+    .add-order-btn svg { width: 13px; height: 13px; stroke-width: 2; }
 
     /* ═══ Record view (search → open record) ═══ */
     .record-page {
@@ -1156,15 +1340,54 @@
     .record-drawer.collapsed { width: 0; min-width: 0; border-left: none; overflow: hidden; }
     .record-back-btn {
       display: flex; align-items: center; gap: 4px;
-      padding: 0; border: none; background: none; cursor: pointer;
-      font-size: 12px; color: rgba(0,0,0,0.4); font-family: inherit;
+      padding: 4px; border: none; background: none; cursor: pointer;
+      font-size: 12px; color: rgba(0,0,0,0.35); font-family: inherit;
+      border-radius: 4px; flex-shrink: 0;
     }
-    .record-back-btn:hover { color: rgba(0,0,0,0.7); }
-    .record-back-btn svg { width: 14px; height: 14px; stroke-width: 2; }
+    .record-back-btn:hover { color: rgba(0,0,0,0.7); background: rgba(0,0,0,0.04); }
+    .record-back-btn svg { width: 16px; height: 16px; stroke-width: 2; }
+    .inbox-detail-header-banner .record-back-btn { color: rgba(0,0,0,0.3); }
+    .inbox-detail-header-banner .record-back-btn:hover { color: rgba(0,0,0,0.6); background: rgba(0,0,0,0.04); }
+    .record-pet-select {
+      margin-left: 4px; font-size: 11px; font-family: inherit;
+      padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.12);
+      background: rgba(0,0,0,0.03); color: #333; cursor: pointer;
+    }
+    .record-pet-select:hover { border-color: rgba(0,0,0,0.2); }
 
     body.dark .record-drawer { border-left-color: rgba(255,255,255,0.06); }
     body.dark .record-back-btn { color: rgba(255,255,255,0.35); }
-    body.dark .record-back-btn:hover { color: rgba(255,255,255,0.65); }
+    body.dark .record-back-btn:hover { color: rgba(255,255,255,0.65); background: rgba(255,255,255,0.06); }
+    body.dark .inbox-detail-header-banner .record-back-btn { color: rgba(255,255,255,0.35); }
+    body.dark .inbox-detail-header-banner .record-back-btn:hover { color: rgba(255,255,255,0.65); background: rgba(255,255,255,0.06); }
+    body.dark .record-pet-select { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); color: #d4d4d4; }
+
+    /* Consultation dark mode */
+    body.dark .consultation-header { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .consultation-date { color: rgba(255,255,255,0.35); }
+    body.dark .consultation-vet { color: rgba(255,255,255,0.35); }
+    body.dark .consultation-action-btn { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.55); }
+    body.dark .consultation-action-btn:hover { background: #333; }
+    body.dark .consultation-reason { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .consultation-reason-text { color: #d4d4d4; }
+    body.dark .consultation-label { color: rgba(255,255,255,0.3); }
+    body.dark .soap-grid { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .soap-section { border-right-color: rgba(255,255,255,0.06); border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .soap-label { color: rgba(255,255,255,0.4); }
+    body.dark .soap-textarea { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); color: #d4d4d4; }
+    body.dark .soap-textarea:focus { border-color: rgba(94,106,210,0.4); }
+    body.dark .consultation-ai-scribe { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .ai-scribe-status { color: rgba(255,255,255,0.4); }
+    body.dark .ai-scribe-transcript { background: rgba(255,255,255,0.03); }
+    body.dark .ai-scribe-line { color: rgba(255,255,255,0.45); }
+    body.dark .ai-scribe-speaker { color: rgba(255,255,255,0.7); }
+    body.dark .ai-scribe-btn { background: rgba(94,106,210,0.08); border-color: rgba(94,106,210,0.2); }
+    body.dark .order-item { border-color: rgba(255,255,255,0.06); }
+    body.dark .order-name { color: #d4d4d4; }
+    body.dark .order-detail { color: rgba(255,255,255,0.35); }
+    body.dark .order-icon { color: rgba(255,255,255,0.25); }
+    body.dark .add-order-btn { border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.35); }
+    body.dark .add-order-btn:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.55); }
 
     /* ═══ Unified page topbar ═══ */
     .page-topbar {
@@ -1599,6 +1822,13 @@
     body.dark .inbox-detail-header { border-bottom-color: rgba(255,255,255,0.06); }
     body.dark .inbox-detail-title { color: #d4d4d4; }
     body.dark .inbox-detail-time { color: rgba(255,255,255,0.25); }
+    body.dark .inbox-detail-header-banner { background: #1a1a1a; border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .inbox-detail-client-name { color: rgba(255,255,255,0.5); }
+    body.dark .inbox-detail-sep { color: rgba(255,255,255,0.2); }
+    body.dark .inbox-detail-pet-name { color: #d4d4d4; }
+    body.dark .inbox-detail-header-meta { color: rgba(255,255,255,0.35); }
+    body.dark .inbox-detail-header-meta strong { color: rgba(255,255,255,0.5); }
+    body.dark .ask-ai-input-bar { border-top-color: rgba(255,255,255,0.06); }
     body.dark .inbox-detail-tabs { background: #1a1a1a; border-bottom-color: rgba(255,255,255,0.06); }
     body.dark .inbox-detail-tab { color: rgba(255,255,255,0.35); }
     body.dark .inbox-detail-tab:hover { color: rgba(255,255,255,0.65); }
@@ -1629,8 +1859,8 @@
     body.dark .inbox-drawer-sub { color: rgba(255,255,255,0.35); }
     body.dark .ask-ai-input { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
     body.dark .ask-ai-hint { color: rgba(255,255,255,0.25); }
-    body.dark .ask-ai-suggestion { color: rgba(255,255,255,0.45); }
-    body.dark .ask-ai-suggestion:hover { background: rgba(255,255,255,0.04); }
+    body.dark .ask-ai-suggestion { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.08); }
+    body.dark .ask-ai-suggestion:hover { background: rgba(94,106,210,0.08); border-color: rgba(94,106,210,0.3); }
     /* drawer toggle inherits page-topbar-right button dark styles */
 
     /* Views page dark */
@@ -2140,7 +2370,6 @@
           </div>
         </div>
       </div>
-      <button class="topbar-icon-btn" id="inboxDrawerToggle" title="Toggle side panel"><i data-lucide="panel-right-close"></i></button>
       <button class="topbar-icon-btn" id="sidebarToggle" aria-label="Toggle sidebar"><i data-lucide="panel-left-close"></i></button>
     </div>
 
@@ -2235,12 +2464,11 @@
       </div>
       <div class="inbox-drawer" id="inboxDrawer">
         <div class="inbox-drawer-tabs" id="inboxDrawerTabs">
-          <div class="inbox-drawer-tab active" data-drawer-tab="client">Client</div>
-          <div class="inbox-drawer-tab" data-drawer-tab="patient">Patient</div>
-          <div class="inbox-drawer-tab" data-drawer-tab="ask-ai">Ask AI</div>
+          <div class="inbox-drawer-tab active" data-drawer-tab="ask-ai">Ask AI</div>
         </div>
         <div class="inbox-drawer-body" id="inboxDrawerBody"></div>
       </div>
+      <button class="inbox-drawer-toggle" id="inboxDrawerToggle" title="Toggle side panel"><i data-lucide="panel-right-close"></i></button>
     </div>
 
     <!-- Page view -->
@@ -3701,7 +3929,7 @@
   ];
 
   let selectedInboxIdx = -1;
-  let activeDrawerTab = 'client';
+  let activeDrawerTab = 'ask-ai';
 
   function renderInbox() {
     const list = document.getElementById('inboxList');
@@ -3781,12 +4009,38 @@
     const isStock = idx === 9;
     const currentTab = activeDetailTabs[idx] || ctx.activeTab;
 
-    let header = `
+    let header = '';
+    if (!isStock && ctx.client !== '—') {
+      // Check if client has multiple pets
+      const clientRec = SEARCH_RECORDS.find(r => r.type === 'client' && r.name === ctx.client);
+      let petSelector = '';
+      if (clientRec && clientRec.pets.length > 1) {
+        const opts = clientRec.pets.map(p => `<option value="${p}"${p === ctx.pet ? ' selected' : ''}>${p}</option>`).join('');
+        petSelector = `<select class="record-pet-select" id="inboxPetSelect">${opts}</select>`;
+      }
+      header = `
+      <div class="inbox-detail-header-banner">
+        <div class="inbox-detail-avatar" style="background:${item.color}">${item.initials}</div>
+        <div class="inbox-detail-header-text">
+          <div class="inbox-detail-header-top">
+            <span class="inbox-detail-client-name">${ctx.client}</span>
+            <span class="inbox-detail-sep">\u00BB</span>
+            <span class="inbox-detail-pet-name">${ctx.pet}</span>
+            ${petSelector}
+          </div>
+          <div class="inbox-detail-header-meta">
+            ${ctx.age} &middot; ${ctx.sex} &middot; ${ctx.species} &middot; ${ctx.breed} &middot; <strong>Weight:</strong> ${ctx.weight} &middot; <strong>DOB:</strong> ${ctx.dob} &middot; <strong>ID:</strong> ${ctx.id}
+          </div>
+        </div>
+      </div>`;
+    } else {
+      header = `
       <div class="inbox-detail-header">
         <div class="inbox-detail-avatar" style="background:${item.color}">${item.initials}</div>
         <div class="inbox-detail-title">${item.title}</div>
         <div class="inbox-detail-time">${item.time} ago</div>
       </div>`;
+    }
 
     let tabs = '';
     if (!isStock) {
@@ -4038,6 +4292,17 @@
 
   // ── Billing tab ──
   function renderBillingTab(idx, ctx) {
+    const lineItems = [
+      { id: 'LI-001', desc: 'Consultation — annual wellness exam', qty: 1, unitPrice: 85.00, total: 85.00, checked: true },
+      { id: 'LI-002', desc: 'DA2PP vaccination', qty: 1, unitPrice: 32.00, total: 32.00, checked: true },
+      { id: 'LI-003', desc: 'Rabies vaccination', qty: 1, unitPrice: 28.00, total: 28.00, checked: true },
+      { id: 'LI-004', desc: 'Ear flush — Epi-Otic (in-clinic)', qty: 1, unitPrice: 18.00, total: 18.00, checked: false },
+      { id: 'LI-005', desc: 'Epi-Otic ear cleanser — dispense 120ml', qty: 1, unitPrice: 22.50, total: 22.50, checked: false },
+      { id: 'LI-006', desc: 'Fecal exam — routine', qty: 1, unitPrice: 35.00, total: 35.00, checked: false },
+    ];
+    const selectedTotal = lineItems.filter(li => li.checked).reduce((s, li) => s + li.total, 0);
+    const allTotal = lineItems.reduce((s, li) => s + li.total, 0);
+
     const invoices = [
       { id: 'INV-2026-0341', date: 'Mar 14, 2026', desc: 'Annual wellness exam', amount: '$145.00', status: 'unpaid' },
       { id: 'INV-2026-0298', date: 'Feb 28, 2026', desc: 'Rabies booster vaccination', amount: '$65.00', status: 'paid' },
@@ -4047,10 +4312,16 @@
       { id: 'INV-2025-0905', date: 'Sep 5, 2025', desc: 'Post-dental follow-up', amount: '$0.00', status: 'paid' },
     ];
 
-    const totalPaid = 1350;
-    const totalUnpaid = 145;
+    const lineItemRows = lineItems.map(li => `
+      <tr>
+        <td><input type="checkbox" class="billing-check" data-amount="${li.total}" ${li.checked ? 'checked' : ''} /></td>
+        <td>${li.desc}</td>
+        <td style="text-align:center">${li.qty}</td>
+        <td style="text-align:right">$${li.unitPrice.toFixed(2)}</td>
+        <td style="text-align:right;font-weight:600">$${li.total.toFixed(2)}</td>
+      </tr>`).join('');
 
-    const rows = invoices.map(inv => `
+    const invoiceRows = invoices.map(inv => `
       <tr>
         <td style="font-family:'SF Mono',monospace;font-size:11px;color:rgba(0,0,0,0.4)">${inv.id}</td>
         <td>${inv.date}</td>
@@ -4064,13 +4335,13 @@
         <div class="billing-summary">
           <div class="billing-card overdue">
             <div class="bc-label">Outstanding</div>
-            <div class="bc-value">$${totalUnpaid.toFixed(2)}</div>
+            <div class="bc-value">$145.00</div>
             <div class="bc-sub">1 invoice</div>
           </div>
           <div class="billing-card">
-            <div class="bc-label">YTD Spend</div>
-            <div class="bc-value">$${(totalPaid + totalUnpaid).toFixed(2)}</div>
-            <div class="bc-sub">${invoices.length} invoices</div>
+            <div class="bc-label">Unbilled Items</div>
+            <div class="bc-value">$${allTotal.toFixed(2)}</div>
+            <div class="bc-sub">${lineItems.length} items</div>
           </div>
           <div class="billing-card">
             <div class="bc-label">Last Payment</div>
@@ -4079,14 +4350,72 @@
           </div>
         </div>
       </div>
-      <div class="tab-section">
-        <div class="tab-section-title"><i data-lucide="receipt"></i> Invoice History — ${ctx.pet}</div>
-        <table class="tab-table">
-          <thead><tr><th>Invoice</th><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
+      <div class="billing-subtabs">
+        <div class="billing-subtab active" data-billing-subtab="items">Items to Bill</div>
+        <div class="billing-subtab" data-billing-subtab="invoices">Invoices</div>
+      </div>
+      <div class="billing-subtab-content" id="billingSubtabContent">
+        <div class="billing-items-panel" id="billingItemsPanel">
+          <table class="tab-table">
+            <thead><tr><th style="width:32px"></th><th>Description</th><th style="text-align:center">Qty</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th></tr></thead>
+            <tbody>${lineItemRows}</tbody>
+          </table>
+          <div class="billing-actions-bar">
+            <div class="billing-selected-total">
+              Selected: <strong id="billingSelectedTotal">$${selectedTotal.toFixed(2)}</strong>
+            </div>
+            <div class="billing-actions-right">
+              <button class="billing-add-item-btn"><i data-lucide="plus"></i> Add Item</button>
+              <button class="billing-pay-btn"><i data-lucide="credit-card"></i> Create Invoice & Pay</button>
+            </div>
+          </div>
+        </div>
       </div>`;
   }
+
+  // Wire billing subtabs via delegation
+  let _billingItemsHTML = '';
+  document.addEventListener('click', function(e) {
+    const subtab = e.target.closest('.billing-subtab');
+    if (!subtab) return;
+    const container = subtab.parentElement;
+    container.querySelectorAll('.billing-subtab').forEach(t => t.classList.remove('active'));
+    subtab.classList.add('active');
+    const panel = document.getElementById('billingSubtabContent');
+    if (!panel) return;
+    if (subtab.dataset.billingSubtab === 'invoices') {
+      // Save items HTML before switching
+      _billingItemsHTML = panel.innerHTML;
+      const invoices = [
+        { id: 'INV-2026-0341', date: 'Mar 14, 2026', desc: 'Annual wellness exam', amount: '$145.00', status: 'unpaid' },
+        { id: 'INV-2026-0298', date: 'Feb 28, 2026', desc: 'Rabies booster vaccination', amount: '$65.00', status: 'paid' },
+        { id: 'INV-2026-0215', date: 'Jan 15, 2026', desc: 'Blood panel — routine', amount: '$210.00', status: 'paid' },
+        { id: 'INV-2025-1104', date: 'Nov 20, 2025', desc: 'Consultation — skin irritation + Apoquel Rx', amount: '$185.00', status: 'paid' },
+        { id: 'INV-2025-0901', date: 'Sep 1, 2025', desc: 'Dental cleaning + extraction (#108)', amount: '$890.00', status: 'paid' },
+        { id: 'INV-2025-0905', date: 'Sep 5, 2025', desc: 'Post-dental follow-up', amount: '$0.00', status: 'paid' },
+      ];
+      panel.innerHTML = `<table class="tab-table">
+        <thead><tr><th>Invoice</th><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>${invoices.map(inv => `<tr>
+          <td style="font-family:'SF Mono',monospace;font-size:11px;color:rgba(0,0,0,0.4)">${inv.id}</td>
+          <td>${inv.date}</td><td>${inv.desc}</td>
+          <td style="font-weight:600">${inv.amount}</td>
+          <td><span class="status-pill ${inv.status}">${inv.status === 'paid' ? 'Paid' : 'Unpaid'}</span></td>
+        </tr>`).join('')}</tbody></table>`;
+    } else if (_billingItemsHTML) {
+      panel.innerHTML = _billingItemsHTML;
+    }
+  });
+
+  // Wire billing checkbox changes
+  document.addEventListener('change', function(e) {
+    if (!e.target.classList.contains('billing-check')) return;
+    const checks = document.querySelectorAll('.billing-check');
+    let total = 0;
+    checks.forEach(cb => { if (cb.checked) total += parseFloat(cb.dataset.amount); });
+    const el = document.getElementById('billingSelectedTotal');
+    if (el) el.textContent = '$' + total.toFixed(2);
+  });
 
   // ── Messages tab ──
   function renderMessagesTab(idx, ctx) {
@@ -4216,30 +4545,110 @@
       </div>`;
   }
 
-  // ── Consultations tab ──
+  // ── Consultations tab (Active SOAP note + AI scribe + Orders) ──
   function renderConsultationsTab(idx, ctx) {
-    const consults = [
-      { date: 'Mar 14, 2026', reason: 'Annual wellness exam', vet: 'Dr. Sarah Smith', status: 'completed', notes: 'All vitals normal. Dental grade 1. Recommend dental cleaning in 6 months.' },
-      { date: 'Sep 1, 2025', reason: 'Spay procedure', vet: 'Dr. James Wilson', status: 'completed', notes: 'Routine ovariohysterectomy. No complications. Recovery uneventful.' },
-      { date: 'Aug 25, 2025', reason: 'Pre-surgical assessment', vet: 'Dr. Sarah Smith', status: 'completed', notes: 'Bloodwork within normal limits. Cleared for surgery.' },
-      { date: 'Feb 12, 2025', reason: 'Limping — right forelimb', vet: 'Dr. Sarah Smith', status: 'completed', notes: 'Mild soft-tissue injury. Prescribed 5-day rest and meloxicam.' },
-      { date: 'Jan 8, 2024', reason: 'New patient exam', vet: 'Dr. Sarah Smith', status: 'completed', notes: 'Healthy puppy. Vaccination schedule started. Weight on track.' },
-    ];
-
     return `
-      <div class="tab-section">
-        <div class="tab-section-title"><i data-lucide="stethoscope"></i> Consultations — ${ctx.pet}</div>
-        <table class="tab-table">
-          <thead><tr><th>Date</th><th>Reason</th><th>Veterinarian</th><th>Status</th></tr></thead>
-          <tbody>${consults.map(c => `
-            <tr>
-              <td>${c.date}</td>
-              <td>${c.reason}</td>
-              <td>${c.vet}</td>
-              <td><span class="status-pill completed">${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span></td>
-            </tr>`).join('')}
-          </tbody>
-        </table>
+      <div class="consultation-active">
+        <div class="consultation-header">
+          <div class="consultation-header-left">
+            <span class="status-pill active dot">In Progress</span>
+            <span class="consultation-date">Mar 18, 2026</span>
+            <span class="consultation-vet"><i data-lucide="user"></i> Dr. Sarah Smith</span>
+          </div>
+          <div class="consultation-header-right">
+            <button class="consultation-action-btn" title="AI Scribe"><i data-lucide="mic"></i> AI Scribe</button>
+            <button class="consultation-action-btn consultation-action-primary" title="Finalize"><i data-lucide="check"></i> Finalize</button>
+          </div>
+        </div>
+
+        <div class="consultation-reason">
+          <div class="consultation-label">Reason for Visit</div>
+          <div class="consultation-reason-text">Annual wellness exam — ${ctx.pet}</div>
+        </div>
+
+        <div class="soap-grid">
+          <div class="soap-section">
+            <div class="soap-label"><span class="soap-letter">S</span> Subjective</div>
+            <textarea class="soap-textarea" placeholder="Owner's observations, history, complaints...">${ctx.pet === '\u2014' ? '' : 'Owner reports ' + ctx.pet + ' is eating and drinking normally. No vomiting, diarrhea, or coughing. Activity level unchanged. Owner notes occasional scratching at left ear for the past week.'}</textarea>
+          </div>
+          <div class="soap-section">
+            <div class="soap-label"><span class="soap-letter">O</span> Objective</div>
+            <textarea class="soap-textarea" placeholder="Physical exam findings, vitals, test results...">${ctx.pet === '\u2014' ? '' : 'Weight: ' + ctx.weight + '. Temp: 38.5\u00B0C. HR: 90 bpm. RR: 18/min. BCS: 5/9. Mucous membranes pink and moist. CRT < 2s. Heart and lungs auscultate normally. Abdomen soft, non-painful. Mild ceruminous debris in left ear canal, no erythema. Dental grade 1 — mild tartar on upper premolars.'}</textarea>
+          </div>
+          <div class="soap-section">
+            <div class="soap-label"><span class="soap-letter">A</span> Assessment</div>
+            <textarea class="soap-textarea" placeholder="Diagnosis, differential diagnoses...">${ctx.pet === '\u2014' ? '' : 'Healthy ' + ctx.species.toLowerCase() + ' presenting for annual wellness exam. Mild ceruminous otitis — left ear. Mild dental tartar (grade 1). No other abnormalities detected.'}</textarea>
+          </div>
+          <div class="soap-section">
+            <div class="soap-label"><span class="soap-letter">P</span> Plan</div>
+            <textarea class="soap-textarea" placeholder="Treatment plan, follow-up, client instructions...">${ctx.pet === '\u2014' ? '' : '1. Ear cleaning — flush left ear with Epi-Otic, dispense for home use BID x 7 days.\n2. Recommend dental cleaning within 6 months.\n3. Annual vaccinations administered (see Immunizations).\n4. Recheck ear in 2 weeks if not improved.\n5. Continue current diet and exercise regimen.'}</textarea>
+          </div>
+        </div>
+
+        <div class="consultation-ai-scribe">
+          <div class="consultation-label"><i data-lucide="sparkles"></i> AI Scribe</div>
+          <div class="ai-scribe-status">
+            <span class="ai-scribe-indicator"></span>
+            <span>Listening... recording consultation notes</span>
+          </div>
+          <div class="ai-scribe-transcript">
+            <div class="ai-scribe-line"><span class="ai-scribe-speaker">Dr. Smith:</span> Let\u2019s start with the exam. ${ctx.pet} looks good today, weight is stable...</div>
+            <div class="ai-scribe-line"><span class="ai-scribe-speaker">Dr. Smith:</span> Heart and lungs sound clear. I\u2019m noticing some debris in the left ear...</div>
+            <div class="ai-scribe-line"><span class="ai-scribe-speaker">Owner:</span> Yes, ${ctx.pet === '\u2014' ? 'the pet' : ctx.pet} has been scratching at that ear for about a week now.</div>
+            <div class="ai-scribe-line"><span class="ai-scribe-speaker">Dr. Smith:</span> I\u2019ll flush it and send you home with ear cleaner. Teeth look okay but we should plan a dental cleaning...</div>
+          </div>
+          <div class="ai-scribe-actions">
+            <button class="ai-scribe-btn"><i data-lucide="wand-2"></i> Auto-fill SOAP from transcript</button>
+            <button class="ai-scribe-btn"><i data-lucide="file-text"></i> Generate summary for client</button>
+          </div>
+        </div>
+
+        <div class="consultation-orders">
+          <div class="consultation-label"><i data-lucide="clipboard-list"></i> Orders</div>
+          <div class="orders-list">
+            <div class="order-item">
+              <div class="order-icon"><i data-lucide="syringe"></i></div>
+              <div class="order-body">
+                <div class="order-name">DA2PP Vaccination</div>
+                <div class="order-detail">Administered — right shoulder, SC</div>
+              </div>
+              <span class="status-pill completed">Done</span>
+            </div>
+            <div class="order-item">
+              <div class="order-icon"><i data-lucide="syringe"></i></div>
+              <div class="order-body">
+                <div class="order-name">Rabies Vaccination</div>
+                <div class="order-detail">Administered — right rear leg, SC</div>
+              </div>
+              <span class="status-pill completed">Done</span>
+            </div>
+            <div class="order-item">
+              <div class="order-icon"><i data-lucide="droplets"></i></div>
+              <div class="order-body">
+                <div class="order-name">Ear flush — Epi-Otic (left ear)</div>
+                <div class="order-detail">In-clinic treatment + dispense for home BID x 7 days</div>
+              </div>
+              <span class="status-pill active dot">Pending</span>
+            </div>
+            <div class="order-item">
+              <div class="order-icon"><i data-lucide="flask-conical"></i></div>
+              <div class="order-body">
+                <div class="order-name">Fecal exam — routine</div>
+                <div class="order-detail">Send to lab, results expected in 24-48h</div>
+              </div>
+              <span class="status-pill active dot">Pending</span>
+            </div>
+            <div class="order-item">
+              <div class="order-icon"><i data-lucide="calendar"></i></div>
+              <div class="order-body">
+                <div class="order-name">Dental cleaning</div>
+                <div class="order-detail">Schedule within 6 months — grade 1 tartar</div>
+              </div>
+              <span class="status-pill scheduled">Scheduled</span>
+            </div>
+          </div>
+          <button class="add-order-btn"><i data-lucide="plus"></i> Add Order</button>
+        </div>
       </div>`;
   }
 
@@ -4411,72 +4820,105 @@
     const ctx = selectedInboxIdx >= 0 ? INBOX_CONTEXT[selectedInboxIdx] : null;
     const empty = '<div style="color:rgba(0,0,0,0.3);font-size:13px;text-align:center;padding:24px;">Select an item to view details</div>';
 
-    if (activeDrawerTab === 'client') {
-      if (!item || !ctx || ctx.client === '—') { body.innerHTML = empty; return; }
-      const email = ctx.client.toLowerCase().replace(' ','.') + '@email.com';
-      body.innerHTML = `
-        <div class="inbox-drawer-avatar-row">
-          <div class="inbox-drawer-avatar" style="background:${item.color}">${item.initials}</div>
-          <div>
-            <div class="inbox-drawer-name">${ctx.client}</div>
-            <div class="inbox-drawer-sub">Client</div>
-          </div>
-        </div>
+    if (!item || !ctx) { body.innerHTML = empty; return; }
+
+    // Task context and suggested actions per inbox item
+    const drawerContextMap = [
+      { task: 'Review annual check-up results for Milo and share findings with client.',
+        actions: [
+          ['file-text', 'Summarize Milo\u2019s check-up results'],
+          ['send', 'Draft message to Amy with findings'],
+          ['alert-triangle', 'Flag any out-of-range values'],
+          ['calendar', 'Schedule Milo\u2019s next annual visit'],
+        ]},
+      { task: 'Confirm post-surgery recovery plan for Daisy and schedule follow-up.',
+        actions: [
+          ['clipboard-list', 'Generate post-op care instructions'],
+          ['send', 'Send recovery plan to Mike Johnson'],
+          ['calendar', 'Book 2-week follow-up appointment'],
+          ['pill', 'Review Daisy\u2019s pain medication plan'],
+        ]},
+      { task: 'Reschedule Archie\u2019s appointment and notify the client.',
+        actions: [
+          ['calendar', 'Find next available appointment slot'],
+          ['send', 'Notify David Turner of the new time'],
+          ['clock', 'Check Archie\u2019s vaccination schedule'],
+          ['file-text', 'Pull up Archie\u2019s last visit notes'],
+        ]},
+      { task: 'Review lab results for Buddy and flag any abnormal values.',
+        actions: [
+          ['search', 'Analyze Buddy\u2019s lab panel results'],
+          ['alert-triangle', 'Highlight abnormal values with context'],
+          ['send', 'Draft lab summary for Sarah Smith'],
+          ['git-compare', 'Compare with Buddy\u2019s previous labs'],
+        ]},
+      { task: 'Confirm Rex\u2019s follow-up appointment details with client.',
+        actions: [
+          ['send', 'Send appointment confirmation to Olivia'],
+          ['file-text', 'Summarize Rex\u2019s treatment history'],
+          ['clipboard-list', 'Prepare pre-visit checklist'],
+          ['calendar', 'Reschedule if client needs a new time'],
+        ]},
+      { task: 'Send vaccination reminder to Daniel Reyes for Luna.',
+        actions: [
+          ['send', 'Draft vaccination reminder for Daniel'],
+          ['syringe', 'Check Luna\u2019s immunization history'],
+          ['calendar', 'Book Luna\u2019s vaccination appointment'],
+          ['file-text', 'List overdue vaccinations for Luna'],
+        ]},
+      { task: 'Review and update Luna\u2019s medication dosage.',
+        actions: [
+          ['pill', 'Review current medications and dosages'],
+          ['alert-triangle', 'Check for drug interactions'],
+          ['calculator', 'Calculate weight-based dosage for Luna'],
+          ['send', 'Notify Daniel Reyes of dosage change'],
+        ]},
+      { task: 'Process prescription refill request for Pepper.',
+        actions: [
+          ['pill', 'Review Pepper\u2019s prescription history'],
+          ['check-circle', 'Approve and process the refill'],
+          ['send', 'Confirm refill with Hannah Wells'],
+          ['alert-triangle', 'Check for refill frequency concerns'],
+        ]},
+      { task: 'Check Nala\u2019s post-op recovery progress and update chart.',
+        actions: [
+          ['activity', 'Summarize Nala\u2019s recovery milestones'],
+          ['file-text', 'Update Nala\u2019s chart with latest status'],
+          ['send', 'Send progress update to Emma Patel'],
+          ['calendar', 'Schedule suture removal appointment'],
+        ]},
+      { task: 'Reorder Metacam \u2014 stock level critical.',
+        actions: [
+          ['package', 'Generate purchase order for Metacam'],
+          ['bar-chart-3', 'Review Metacam usage trends'],
+          ['alert-triangle', 'Check for alternative NSAIDs in stock'],
+          ['clipboard-list', 'Audit other low-stock medications'],
+        ]},
+      { task: 'Prepare for Nala\u2019s spay procedure and confirm pre-op checklist.',
+        actions: [
+          ['clipboard-list', 'Generate pre-op checklist for spay'],
+          ['send', 'Send pre-op instructions to Rebecca Young'],
+          ['file-text', 'Review Nala\u2019s anesthesia risk profile'],
+          ['calendar', 'Confirm surgery time and room booking'],
+        ]},
+    ];
+    const dctx = drawerContextMap[selectedInboxIdx] || { task: 'No task context available.', actions: [] };
+
+    body.innerHTML = `
+      <div class="ask-ai-scroll">
         <div class="inbox-drawer-section">
-          <div class="inbox-drawer-section-title">Contact</div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Email</div><div class="inbox-drawer-value">${email}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Phone</div><div class="inbox-drawer-value">+1 (555) 012-3456</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Address</div><div class="inbox-drawer-value">123 Main St, Toronto</div></div>
-        </div>
-        <div class="inbox-drawer-section">
-          <div class="inbox-drawer-section-title">Account</div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Client since</div><div class="inbox-drawer-value">Jan 2024</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Outstanding balance</div><div class="inbox-drawer-value">$0.00</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Last visit</div><div class="inbox-drawer-value">Mar 14, 2026</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Pets</div><div class="inbox-drawer-value">${ctx.pet}</div></div>
-        </div>`;
-    } else if (activeDrawerTab === 'patient') {
-      if (!item || !ctx || ctx.pet === '—') { body.innerHTML = empty; return; }
-      body.innerHTML = `
-        <div class="inbox-drawer-avatar-row">
-          <div class="inbox-drawer-avatar" style="background:${item.color}"><i data-lucide="paw-print" style="width:16px;height:16px;stroke-width:2;color:#fff;"></i></div>
-          <div>
-            <div class="inbox-drawer-name">${ctx.pet}</div>
-            <div class="inbox-drawer-sub">${ctx.breed}</div>
-          </div>
-        </div>
-        <div class="inbox-drawer-section">
-          <div class="inbox-drawer-section-title">Details</div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Species</div><div class="inbox-drawer-value">${ctx.species}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Breed</div><div class="inbox-drawer-value">${ctx.breed}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Sex</div><div class="inbox-drawer-value">${ctx.sex}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Age</div><div class="inbox-drawer-value">${ctx.age}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Weight</div><div class="inbox-drawer-value">${ctx.weight}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">DOB</div><div class="inbox-drawer-value">${ctx.dob}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Patient ID</div><div class="inbox-drawer-value">${ctx.id}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Microchip</div><div class="inbox-drawer-value">985112003456789</div></div>
-        </div>
-        <div class="inbox-drawer-section">
-          <div class="inbox-drawer-section-title">Medical</div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Allergies</div><div class="inbox-drawer-value">None known</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Last vaccination</div><div class="inbox-drawer-value">Feb 28, 2026</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Chronic conditions</div><div class="inbox-drawer-value">None</div></div>
-        </div>`;
-    } else {
-      body.innerHTML = `
-        <div style="margin-bottom:12px;">
-          <textarea class="ask-ai-input" placeholder="Ask AI about this patient, client, or case..."></textarea>
-          <div class="ask-ai-hint">Press Enter to ask</div>
+          <div class="inbox-drawer-section-title">Current Task</div>
+          <div style="font-size:12px;color:#333;line-height:1.5;padding:8px 10px;background:rgba(0,0,0,0.02);border-radius:6px;">${dctx.task}</div>
         </div>
         <div class="ask-ai-suggestions">
-          <div class="inbox-drawer-section-title">Suggestions</div>
-          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Summarize this patient's history</div>
-          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Draft a reply to the client</div>
-          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Check for drug interactions</div>
-          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Suggest next steps</div>
-          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Generate discharge notes</div>
-        </div>`;
-    }
+          <div class="inbox-drawer-section-title">Suggested Actions</div>
+          ${dctx.actions.map(a => `<div class="ask-ai-suggestion"><i data-lucide="${a[0]}"></i> ${a[1]}</div>`).join('')}
+        </div>
+      </div>
+      <div class="ask-ai-input-bar">
+        <textarea class="ask-ai-input" placeholder="Ask AI about this patient, client, or case..."></textarea>
+        <div class="ask-ai-hint">Press Enter to ask</div>
+      </div>`;
     lucide.createIcons({ nodes: body.querySelectorAll('i') });
   }
 
@@ -4640,7 +5082,7 @@
   // ═══ Record view ═══
   let recordDrawerTab = 'client';
 
-  function openRecordView(record) {
+  function openRecordView(record, selectedPetName) {
     if (inSettingsMode) { inSettingsMode = false; document.getElementById('sidebar').classList.remove('settings-mode'); document.getElementById('settingsSidebarNav').innerHTML = ''; }
     activeNav = null;
     updateActiveStates();
@@ -4653,22 +5095,70 @@
 
     const isPatient = record.type === 'patient';
 
-    let detailHeader = `<div class="inbox-detail-header">
-      <button class="record-back-btn" id="recordBackBtn"><i data-lucide="arrow-left"></i> Back</button>
-      <div class="inbox-detail-avatar" style="background:${record.color}">${record.initials}</div>
-      <div class="inbox-detail-title">${isPatient ? record.owner + ' \u203A ' + record.name : record.name}</div>
-      <div class="inbox-detail-time"></div>
-    </div>`;
+    // Resolve client and patient for the banner
+    let client, patient, clientPets;
+    if (isPatient) {
+      patient = record;
+      client = SEARCH_RECORDS.find(r => r.type === 'client' && r.name === record.owner);
+    } else {
+      client = record;
+      const petName = selectedPetName || record.pets[0];
+      patient = SEARCH_RECORDS.find(r => r.type === 'patient' && r.name === petName);
+    }
+    clientPets = client ? client.pets : [];
 
-    const tabList = isPatient ? ['Chart','Medications','Immunizations','Labs','Billing','Messages','Tasks','Forms','Info'] : ['Overview','Pets','Billing','Messages','Tasks','Forms','Info'];
+    // Build banner header
+    let petSelector = '';
+    if (clientPets.length > 1 && patient) {
+      const opts = clientPets.map(p => `<option value="${p}"${p === patient.name ? ' selected' : ''}>${p}</option>`).join('');
+      petSelector = `<select class="record-pet-select" id="recordPetSelect">${opts}</select>`;
+    }
+
+    let detailHeader;
+    if (client && patient) {
+      detailHeader = `<div class="inbox-detail-header-banner">
+        <button class="record-back-btn" id="recordBackBtn"><i data-lucide="arrow-left"></i></button>
+        <div class="inbox-detail-avatar" style="background:${patient.color}">${patient.initials}</div>
+        <div class="inbox-detail-header-text">
+          <div class="inbox-detail-header-top">
+            <span class="inbox-detail-client-name">${client.name}</span>
+            <span class="inbox-detail-sep">\u00BB</span>
+            <span class="inbox-detail-pet-name">${patient.name}</span>
+            ${petSelector}
+          </div>
+          <div class="inbox-detail-header-meta">
+            ${patient.age} &middot; ${patient.sex} &middot; ${patient.species} &middot; ${patient.breed} &middot; <strong>Weight:</strong> ${patient.weight} &middot; <strong>DOB:</strong> ${patient.dob || '—'} &middot; <strong>ID:</strong> ${patient.id}
+          </div>
+        </div>
+      </div>`;
+    } else if (client) {
+      detailHeader = `<div class="inbox-detail-header-banner">
+        <button class="record-back-btn" id="recordBackBtn"><i data-lucide="arrow-left"></i></button>
+        <div class="inbox-detail-avatar" style="background:${client.color}">${client.initials}</div>
+        <div class="inbox-detail-header-text">
+          <div class="inbox-detail-header-top">
+            <span class="inbox-detail-pet-name">${client.name}</span>
+          </div>
+          <div class="inbox-detail-header-meta">
+            <strong>Email:</strong> ${client.email} &middot; <strong>Phone:</strong> ${client.phone} &middot; <strong>Since:</strong> ${client.since}
+          </div>
+        </div>
+      </div>`;
+    } else {
+      detailHeader = `<div class="inbox-detail-header">
+        <button class="record-back-btn" id="recordBackBtn"><i data-lucide="arrow-left"></i> Back</button>
+        <div class="inbox-detail-avatar" style="background:${record.color}">${record.initials}</div>
+        <div class="inbox-detail-title">${record.name}</div>
+      </div>`;
+    }
+
+    const tabList = (patient) ? ['Chart','Medications','Immunizations','Labs','Billing','Messages','Tasks','Forms','Consultations'] : ['Overview','Pets','Billing','Messages','Tasks','Forms','Info'];
     let detailTabs = '<div class="inbox-detail-tabs">' + tabList.map((t,i) => '<div class="inbox-detail-tab' + (i===0?' active':'') + '">' + t + '</div>').join('') + '</div>';
 
-    let detailBody = isPatient ? renderRecordChart(record) : renderClientOverview(record);
+    let detailBody = (patient) ? renderRecordChart(patient) : renderClientOverview(record);
 
     const drawerTabs = `<div class="inbox-drawer-tabs" id="recordDrawerTabs">
-      <div class="inbox-drawer-tab${recordDrawerTab==='client'?' active':''}" data-drawer-tab="client">Client</div>
-      <div class="inbox-drawer-tab${recordDrawerTab==='patient'?' active':''}" data-drawer-tab="patient">Patient</div>
-      <div class="inbox-drawer-tab${recordDrawerTab==='ask-ai'?' active':''}" data-drawer-tab="ask-ai">Ask AI</div>
+      <div class="inbox-drawer-tab active" data-drawer-tab="ask-ai">Ask AI</div>
     </div>`;
 
     c.innerHTML = `<div class="record-page">
@@ -4683,13 +5173,47 @@
       document.getElementById('welcomeScreen').style.display = 'flex';
     });
 
-    renderRecordDrawer(record);
-    c.querySelectorAll('#recordDrawerTabs .inbox-drawer-tab').forEach(tab => {
+    // Pet selector change
+    const petSelect = document.getElementById('recordPetSelect');
+    if (petSelect) {
+      petSelect.addEventListener('change', () => {
+        openRecordView(client, petSelect.value);
+      });
+    }
+
+    renderRecordDrawer(record, patient);
+
+    // Wire tab switching
+    c.querySelectorAll('.inbox-detail-tab').forEach(tab => {
       tab.addEventListener('click', () => {
-        recordDrawerTab = tab.dataset.drawerTab;
-        c.querySelectorAll('#recordDrawerTabs .inbox-drawer-tab').forEach(t => t.classList.remove('active'));
+        c.querySelectorAll('.inbox-detail-tab').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        renderRecordDrawer(record);
+        const tabName = tab.textContent.replace(/Due$/,'').trim();
+        const bodyEl = c.querySelector('.inbox-detail-body');
+        // Build a context object compatible with renderTabContent
+        if (patient) {
+          const recCtx = { client: client ? client.name : '', pet: patient.name, species: patient.species, breed: patient.breed, sex: patient.sex, age: patient.age, weight: patient.weight, dob: patient.dob || '—', id: patient.id };
+          bodyEl.innerHTML = renderTabContent(tabName, 0, recCtx);
+        } else if (tabName === 'Overview') {
+          bodyEl.innerHTML = renderClientOverview(record);
+        } else if (tabName === 'Pets') {
+          bodyEl.innerHTML = renderClientOverview(record);
+        } else {
+          const recCtx = { client: record.name, pet: record.pets?.[0] || '—', species: '—', breed: '—', sex: '—', age: '—', weight: '—', dob: '—', id: '—' };
+          bodyEl.innerHTML = renderTabContent(tabName, 0, recCtx);
+        }
+        // Handle chat bar for Messages tab
+        if (tabName === 'Messages') {
+          bodyEl.insertAdjacentHTML('afterend', '');
+        }
+        lucide.createIcons({ nodes: bodyEl.querySelectorAll('i') });
+        // Re-wire pet clicks
+        c.querySelectorAll('[data-pet-name]').forEach(el => {
+          el.addEventListener('click', () => {
+            const pet = SEARCH_RECORDS.find(sr => sr.type === 'patient' && sr.name === el.dataset.petName);
+            if (pet) openRecordView(client || record, pet.name);
+          });
+        });
       });
     });
 
@@ -4697,7 +5221,7 @@
     c.querySelectorAll('[data-pet-name]').forEach(el => {
       el.addEventListener('click', () => {
         const pet = SEARCH_RECORDS.find(sr => sr.type === 'patient' && sr.name === el.dataset.petName);
-        if (pet) openRecordView(pet);
+        if (pet) openRecordView(client || record, pet.name);
       });
     });
   }
@@ -4743,53 +5267,39 @@
       ${petList}`;
   }
 
-  function renderRecordDrawer(record) {
+  function renderRecordDrawer(record, patient) {
     const body = document.getElementById('recordDrawerBody');
     if (!body) return;
-    const isClient = record.type === 'client';
+    const petName = patient ? patient.name : (record.type === 'patient' ? record.name : record.pets?.[0] || 'patient');
 
-    if (recordDrawerTab === 'client') {
-      const client = isClient ? record : SEARCH_RECORDS.find(r => r.type === 'client' && r.name === record.owner);
-      if (!client) { body.innerHTML = '<div style="padding:24px;text-align:center;color:rgba(0,0,0,0.3);font-size:13px;">No client data</div>'; return; }
-      body.innerHTML = `
-        <div class="inbox-drawer-avatar-row"><div class="inbox-drawer-avatar" style="background:${client.color}">${client.initials}</div><div><div class="inbox-drawer-name">${client.name}</div><div class="inbox-drawer-sub">Client</div></div></div>
-        <div class="inbox-drawer-section"><div class="inbox-drawer-section-title">Contact</div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Email</div><div class="inbox-drawer-value">${client.email}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Phone</div><div class="inbox-drawer-value">${client.phone}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Address</div><div class="inbox-drawer-value">${client.address}</div></div>
+    const actions = patient ? [
+      ['file-text', 'Summarize ' + petName + '\u2019s history'],
+      ['send', 'Draft a message to the client'],
+      ['pill', 'Review current medications'],
+      ['alert-triangle', 'Check for drug interactions'],
+      ['calendar', 'Schedule next appointment'],
+    ] : [
+      ['file-text', 'Summarize client account'],
+      ['send', 'Draft a message to ' + record.name],
+      ['clipboard-list', 'Review outstanding balance'],
+      ['calendar', 'Schedule next visit'],
+    ];
+
+    body.innerHTML = `
+      <div class="ask-ai-scroll">
+        <div class="inbox-drawer-section">
+          <div class="inbox-drawer-section-title">Current Task</div>
+          <div style="font-size:12px;color:#333;line-height:1.5;padding:8px 10px;background:rgba(0,0,0,0.02);border-radius:6px;">Review ${petName}\u2019s medical records and update chart.</div>
         </div>
-        <div class="inbox-drawer-section"><div class="inbox-drawer-section-title">Account</div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Client since</div><div class="inbox-drawer-value">${client.since}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Outstanding balance</div><div class="inbox-drawer-value">$0.00</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Pets</div><div class="inbox-drawer-value">${client.pets.join(', ')}</div></div>
-        </div>`;
-    } else if (recordDrawerTab === 'patient') {
-      const patient = !isClient ? record : (record.pets?.[0] ? SEARCH_RECORDS.find(r => r.type === 'patient' && r.name === record.pets[0]) : null);
-      if (!patient) { body.innerHTML = '<div style="padding:24px;text-align:center;color:rgba(0,0,0,0.3);font-size:13px;">No patient data</div>'; return; }
-      body.innerHTML = `
-        <div class="inbox-drawer-avatar-row"><div class="inbox-drawer-avatar" style="background:${patient.color}"><i data-lucide="paw-print" style="width:16px;height:16px;stroke-width:2;color:#fff;"></i></div><div><div class="inbox-drawer-name">${patient.name}</div><div class="inbox-drawer-sub">${patient.breed}</div></div></div>
-        <div class="inbox-drawer-section"><div class="inbox-drawer-section-title">Details</div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Species</div><div class="inbox-drawer-value">${patient.species}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Breed</div><div class="inbox-drawer-value">${patient.breed}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Sex</div><div class="inbox-drawer-value">${patient.sex}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Age</div><div class="inbox-drawer-value">${patient.age}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Weight</div><div class="inbox-drawer-value">${patient.weight}</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Patient ID</div><div class="inbox-drawer-value">${patient.id}</div></div>
+        <div class="ask-ai-suggestions">
+          <div class="inbox-drawer-section-title">Suggested Actions</div>
+          ${actions.map(a => `<div class="ask-ai-suggestion"><i data-lucide="${a[0]}"></i> ${a[1]}</div>`).join('')}
         </div>
-        <div class="inbox-drawer-section"><div class="inbox-drawer-section-title">Medical</div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Allergies</div><div class="inbox-drawer-value">None known</div></div>
-          <div class="inbox-drawer-field"><div class="inbox-drawer-label">Last vaccination</div><div class="inbox-drawer-value">Feb 28, 2026</div></div>
-        </div>`;
-    } else {
-      body.innerHTML = `
-        <div style="margin-bottom:12px;"><textarea class="ask-ai-input" placeholder="Ask AI about this record..."></textarea><div class="ask-ai-hint">Press Enter to ask</div></div>
-        <div class="ask-ai-suggestions"><div class="inbox-drawer-section-title">Suggestions</div>
-          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Summarize patient history</div>
-          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Draft a message to the client</div>
-          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Check for drug interactions</div>
-          <div class="ask-ai-suggestion"><i data-lucide="sparkles"></i> Suggest next steps</div>
-        </div>`;
-    }
+      </div>
+      <div class="ask-ai-input-bar">
+        <textarea class="ask-ai-input" placeholder="Ask AI about this patient, client, or case..."></textarea>
+        <div class="ask-ai-hint">Press Enter to ask</div>
+      </div>`;
     lucide.createIcons({ nodes: body.querySelectorAll('i') });
   }
 
