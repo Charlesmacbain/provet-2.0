@@ -24,7 +24,9 @@ import { renderTablePage } from './pages/table-page.js';
 import { renderDbView, wireDbView } from './pages/database-view.js';
 import { enterSettingsMode } from './pages/settings.js';
 import { renderPlaceholderPage } from './pages/placeholder.js';
+import { renderAskAiPage, wireAskAi } from './pages/ask-ai.js';
 import { wireBillingDelegation } from './tabs/billing-tab.js';
+import { initGlobalAiDrawer, onNavigate as onAiNavigate } from './components/global-ai-drawer.js';
 
 /* ═══ Application State ═══ */
 
@@ -60,6 +62,9 @@ function navigateTo(navKey) {
   inbox.classList.remove('active');
   pageView.style.display = 'none';
 
+  // Update global AI drawer context
+  onAiNavigate(navKey);
+
   const page = NAV_PAGES[navKey];
   if (!page) {
     welcome.style.display = 'flex';
@@ -90,6 +95,12 @@ function navigateTo(navKey) {
     case 'care':
       showPageView();
       renderNavListPage('Care', CARE_PAGE_VIEWS);
+      return;
+
+    case 'ask-ai':
+      showPageView();
+      renderPage(renderAskAiPage());
+      wireAskAi(document.getElementById('pageViewContent'));
       return;
 
     case 'settings':
@@ -244,6 +255,9 @@ function init() {
 
   // Keyboard navigation
   initKeyboardNav();
+
+  // Global AI drawer
+  initGlobalAiDrawer(() => appState.activeNav);
 
   // Expose globals needed by page modules
   window.navigateTo = navigateTo;

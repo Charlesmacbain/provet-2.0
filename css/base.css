@@ -23,9 +23,18 @@ html, body {
   flex: 1;
   overflow: hidden;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   background: #fff;
   position: relative;
+}
+
+/* === Content Main (wraps welcome, inbox, pageView) === */
+.content-main {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .content-area iframe { flex: 1; width: 100%; border: none; }

@@ -6,6 +6,7 @@
 import { SEARCH_RECORDS } from '../data/search-records.js';
 import { renderTabContent } from '../tabs/tab-router.js';
 import { renderChartTab } from '../tabs/chart.js';
+import { hideGlobalDrawer } from '../components/global-ai-drawer.js';
 
 let recordDrawerTab = 'client';
 
@@ -22,6 +23,7 @@ export function openRecordView(record, selectedPetName) {
   }
   window.activeNav = null;
   window.updateActiveStates();
+  hideGlobalDrawer();
   document.getElementById('welcomeScreen').style.display = 'none';
   document.getElementById('inboxPanel').classList.remove('active');
   const pageView = document.getElementById('pageView');

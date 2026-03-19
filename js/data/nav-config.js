@@ -8,6 +8,7 @@ export const NAV_PAGES = {
   'billing-page': { title: 'Billing', icon: 'receipt', type: 'billing' },
   'care-page': { title: 'Care', icon: 'heart-pulse', type: 'care' },
   'inventory-page': { title: 'Inventory', icon: 'package', type: 'placeholder' },
+  'ask-ai': { title: 'Ask AI', icon: 'sparkles', type: 'ask-ai' },
   'settings': { title: 'Settings', icon: 'settings', type: 'settings' },
   'diagnostic-imaging': { title: 'Diagnostic imaging', icon: 'scan', type: 'table' },
   'estimates': { title: 'Estimates', icon: 'file-text', type: 'table' },
@@ -38,6 +39,7 @@ export const SIDEBAR_ITEMS = [
   { id: 'care-page', label: 'Care', icon: 'heart-pulse', group: 'workspace' },
   { id: 'inventory-page', label: 'Inventory', icon: 'package', group: 'workspace' },
   { id: 'reports', label: 'Reports', icon: 'bar-chart-3', group: 'workspace' },
+  { id: 'ask-ai', label: 'Ask AI', icon: 'sparkles', group: 'workspace' },
 ];
 
 // Visibility options for sidebar customization modal

@@ -17,6 +17,7 @@ const SIDEBAR_ITEMS = [
   { id: 'care-page', label: 'Care', icon: 'heart-pulse', group: 'workspace' },
   { id: 'inventory-page', label: 'Inventory', icon: 'package', group: 'workspace' },
   { id: 'reports', label: 'Reports', icon: 'bar-chart-3', group: 'workspace' },
+  { id: 'ask-ai', label: 'Ask AI', icon: 'sparkles', group: 'workspace' },
 ];
 
 /** Available visibility options for sidebar items. */

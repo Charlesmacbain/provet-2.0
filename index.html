@@ -28,6 +28,8 @@
   <link rel="stylesheet" href="css/search.css" />
   <link rel="stylesheet" href="css/customize.css" />
   <link rel="stylesheet" href="css/database-view.css" />
+  <link rel="stylesheet" href="css/ask-ai.css" />
+  <link rel="stylesheet" href="css/global-ai-drawer.css" />
   <link rel="stylesheet" href="css/dark-mode.css" />
 </head>
 <body>
@@ -115,6 +117,10 @@
         <span class="nav-icon"><i data-lucide="bar-chart-3"></i></span>
         <span class="nav-label">Reports</span>
       </div>
+      <div class="nav-item" data-nav="ask-ai" data-tooltip="Ask AI" tabindex="0">
+        <span class="nav-icon"><i data-lucide="sparkles"></i></span>
+        <span class="nav-label">Ask AI</span>
+      </div>
       <div class="favourites-section" id="favouritesSection">
         <div class="section-label-header" id="favouritesHeader" tabindex="0" role="button">
           Favourites <span class="section-arrow">&#9660;</span>
@@ -128,6 +134,7 @@
 
   <!-- Content Area -->
   <div class="content-area" id="contentArea">
+    <div class="content-main">
     <div class="welcome-screen" id="welcomeScreen">
       <span class="w-icon"><i data-lucide="stethoscope"></i></span>
       <h2>Welcome to Provet Cloud</h2>
@@ -163,6 +170,17 @@
     </div>
 
     <div id="pageView"><div id="pageViewContent"></div></div>
+    </div>
+
+    <!-- Global Ask AI Drawer -->
+    <div class="global-ai-drawer collapsed" id="globalAiDrawer">
+      <div class="global-ai-drawer-tabs">
+        <div class="global-ai-drawer-tab active">Ask AI</div>
+        <button class="global-ai-close" id="globalAiClose" title="Close Ask AI"><i data-lucide="panel-right-close"></i></button>
+      </div>
+      <div class="global-ai-drawer-body" id="globalAiDrawerBody"></div>
+    </div>
+    <button class="global-ai-toggle" id="globalAiToggle" title="Toggle Ask AI"><i data-lucide="sparkles"></i></button>
   </div>
 </div>
 
