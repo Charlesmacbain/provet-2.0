@@ -29,21 +29,17 @@ export function renderCustomersPage() {
 
   return `
     <div class="cust-page">
-      <div class="page-topbar" style="border-bottom:none; padding-bottom:4px;">
+      <div class="page-topbar">
         <span class="page-topbar-title">Clients</span>
         <span class="page-topbar-count">${CLIENTS_LIST.length}</span>
-        <div class="page-topbar-right">
-          <button class="ptb-add"><i data-lucide="plus"></i></button>
-        </div>
-      </div>
-      <div class="cust-search-row">
-        <div class="cust-search-input">
+        <div class="cust-topbar-search">
           <i data-lucide="search"></i>
           <input type="text" placeholder="Find by name or email..." />
         </div>
-        <div class="cust-search-actions">
+        <div class="page-topbar-right">
           <button><i data-lucide="filter"></i></button>
           <button><i data-lucide="sliders-horizontal"></i></button>
+          <button class="ptb-add"><i data-lucide="plus"></i></button>
         </div>
       </div>
       <div class="cust-scroll">

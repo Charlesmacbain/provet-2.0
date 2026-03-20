@@ -6,7 +6,7 @@
 import { SEARCH_RECORDS } from '../data/search-records.js';
 import { renderTabContent } from '../tabs/tab-router.js';
 import { renderChartTab } from '../tabs/chart.js';
-import { hideGlobalDrawer } from '../components/global-ai-drawer.js';
+// Global AI drawer is always available
 
 let recordDrawerTab = 'client';
 
@@ -23,7 +23,6 @@ export function openRecordView(record, selectedPetName) {
   }
   window.activeNav = null;
   window.updateActiveStates();
-  hideGlobalDrawer();
   document.getElementById('welcomeScreen').style.display = 'none';
   document.getElementById('inboxPanel').classList.remove('active');
   const pageView = document.getElementById('pageView');
@@ -93,13 +92,8 @@ export function openRecordView(record, selectedPetName) {
 
   let detailBody = (patient) ? renderRecordChart(patient) : renderClientOverview(record);
 
-  const drawerTabs = `<div class="inbox-drawer-tabs" id="recordDrawerTabs">
-    <div class="inbox-drawer-tab active" data-drawer-tab="ask-ai">Ask AI</div>
-  </div>`;
-
   c.innerHTML = `<div class="record-page">
     <div class="record-main">${detailHeader}${detailTabs}<div class="inbox-detail-body">${detailBody}</div></div>
-    <div class="record-drawer" id="recordDrawer">${drawerTabs}<div class="inbox-drawer-body" id="recordDrawerBody"></div></div>
   </div>`;
 
   lucide.createIcons({ nodes: c.querySelectorAll('i') });
@@ -116,7 +110,7 @@ export function openRecordView(record, selectedPetName) {
     });
   }
 
-  renderRecordDrawer(record, patient);
+  // Record drawer removed — global AI drawer handles this
 
   c.querySelectorAll('.inbox-detail-tab').forEach(tab => {
     tab.addEventListener('click', () => {

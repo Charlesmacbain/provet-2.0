@@ -27,9 +27,11 @@
   <link rel="stylesheet" href="css/pages.css" />
   <link rel="stylesheet" href="css/search.css" />
   <link rel="stylesheet" href="css/customize.css" />
+  <link rel="stylesheet" href="css/templates.css" />
   <link rel="stylesheet" href="css/database-view.css" />
   <link rel="stylesheet" href="css/ask-ai.css" />
   <link rel="stylesheet" href="css/global-ai-drawer.css" />
+  <link rel="stylesheet" href="css/reports.css" />
   <link rel="stylesheet" href="css/dark-mode.css" />
 </head>
 <body>
@@ -83,6 +85,7 @@
       <div class="nav-item" id="searchBtn" data-tooltip="Search" tabindex="0" role="button">
         <span class="nav-icon"><i data-lucide="search"></i></span>
         <span class="nav-label">Search</span>
+        <span class="nav-kbd" id="searchNavKbd"></span>
       </div>
       <div class="nav-item" data-nav="inbox" data-tooltip="Inbox" tabindex="0">
         <span class="nav-icon"><i data-lucide="inbox"></i></span>
@@ -97,29 +100,21 @@
         <span class="nav-icon"><i data-lucide="users"></i></span>
         <span class="nav-label">Clients</span>
       </div>
-      <div class="nav-item" data-nav="views-page" data-tooltip="Views" tabindex="0">
-        <span class="nav-icon"><i data-lucide="layout-grid"></i></span>
-        <span class="nav-label">Views</span>
-      </div>
-      <div class="nav-item" data-nav="billing-page" data-tooltip="Billing" tabindex="0">
-        <span class="nav-icon"><i data-lucide="receipt"></i></span>
-        <span class="nav-label">Billing</span>
-      </div>
-      <div class="nav-item" data-nav="care-page" data-tooltip="Care" tabindex="0">
-        <span class="nav-icon"><i data-lucide="heart-pulse"></i></span>
-        <span class="nav-label">Care</span>
-      </div>
-      <div class="nav-item" data-nav="inventory-page" data-tooltip="Inventory" tabindex="0">
-        <span class="nav-icon"><i data-lucide="package"></i></span>
-        <span class="nav-label">Inventory</span>
+      <div class="lists-section" id="listsSection">
+        <div class="section-label-header" id="listsHeader" tabindex="0" role="button">
+          Lists <span class="section-arrow">&#9660;</span>
+        </div>
+        <div id="listsContent">
+          <div id="listsList"></div>
+          <div class="lists-new-btn" id="listsNewBtn">
+            <span class="lists-new-icon">+</span>
+            <span class="lists-new-label">New list</span>
+          </div>
+        </div>
       </div>
       <div class="nav-item" data-nav="reports" data-tooltip="Reports" tabindex="0">
         <span class="nav-icon"><i data-lucide="bar-chart-3"></i></span>
         <span class="nav-label">Reports</span>
-      </div>
-      <div class="nav-item" data-nav="ask-ai" data-tooltip="Ask AI" tabindex="0">
-        <span class="nav-icon"><i data-lucide="sparkles"></i></span>
-        <span class="nav-label">Ask AI</span>
       </div>
       <div class="favourites-section" id="favouritesSection">
         <div class="section-label-header" id="favouritesHeader" tabindex="0" role="button">
@@ -130,6 +125,40 @@
     </div>
 
     <div class="settings-sidebar-nav" id="settingsSidebarNav"></div>
+
+    <div class="sidebar-profile" id="sidebarProfile">
+      <div class="sidebar-profile-btn" id="profileBtn">
+        <div class="sidebar-profile-avatar">CM</div>
+        <span class="sidebar-profile-name">Charles Macbain</span>
+        <i data-lucide="chevron-up" class="sidebar-profile-chevron"></i>
+      </div>
+      <div class="sidebar-profile-menu" id="profileMenu">
+        <div class="profile-menu-header">
+          <div class="profile-menu-avatar">CM</div>
+          <div class="profile-menu-info">
+            <div class="profile-menu-name">Charles Macbain</div>
+            <div class="profile-menu-email">charles@provetcloud.com</div>
+          </div>
+        </div>
+        <div class="profile-menu-divider"></div>
+        <div class="profile-menu-section-label">Switch user</div>
+        <div class="profile-menu-user" data-user="Sarah Smith">
+          <div class="profile-menu-user-avatar" style="background:#986ee2">SS</div>
+          <span>Sarah Smith</span>
+        </div>
+        <div class="profile-menu-user" data-user="Mike Johnson">
+          <div class="profile-menu-user-avatar" style="background:#57ab5a">MJ</div>
+          <span>Mike Johnson</span>
+        </div>
+        <div class="profile-menu-user" data-user="Katie Brown">
+          <div class="profile-menu-user-avatar" style="background:#c96198">KB</div>
+          <span>Katie Brown</span>
+        </div>
+        <div class="profile-menu-divider"></div>
+        <div class="profile-menu-option" data-action="settings"><i data-lucide="settings"></i><span>Account settings</span></div>
+        <div class="profile-menu-option logout" data-action="logout"><i data-lucide="log-out"></i><span>Log out</span></div>
+      </div>
+    </div>
   </nav>
 
   <!-- Content Area -->
@@ -143,13 +172,7 @@
 
     <div class="inbox-panel" id="inboxPanel">
       <div class="inbox-left">
-        <div class="page-topbar" style="border-bottom:none; padding-bottom:0;">
-          <span class="page-topbar-title">Inbox</span>
-          <span class="page-topbar-dots">&middot;&middot;&middot;</span>
-          <div class="page-topbar-right">
-            <button><i data-lucide="filter"></i></button>
-            <button><i data-lucide="sliders-horizontal"></i></button>
-          </div>
+        <div class="page-topbar inbox-page-topbar">
         </div>
         <div class="inbox-list" id="inboxList"></div>
       </div>
@@ -160,27 +183,62 @@
         </div>
         <div class="inbox-detail" id="inboxDetail" style="display:none;"></div>
       </div>
-      <div class="inbox-drawer" id="inboxDrawer">
+      <div class="inbox-drawer" id="inboxDrawer" style="display:none;">
         <div class="inbox-drawer-tabs" id="inboxDrawerTabs">
           <div class="inbox-drawer-tab active" data-drawer-tab="ask-ai">Ask AI</div>
         </div>
         <div class="inbox-drawer-body" id="inboxDrawerBody"></div>
       </div>
-      <button class="inbox-drawer-toggle" id="inboxDrawerToggle" title="Toggle side panel"><i data-lucide="panel-right-close"></i></button>
+      <button class="inbox-drawer-toggle" id="inboxDrawerToggle" style="display:none;" title="Toggle side panel"><i data-lucide="panel-right-close"></i></button>
     </div>
 
     <div id="pageView"><div id="pageViewContent"></div></div>
     </div>
 
-    <!-- Global Ask AI Drawer -->
+    <!-- Ask AI (tri-mode: floating, sidebar, full-page) -->
     <div class="global-ai-drawer collapsed" id="globalAiDrawer">
       <div class="global-ai-drawer-tabs">
-        <div class="global-ai-drawer-tab active">Ask AI</div>
-        <button class="global-ai-close" id="globalAiClose" title="Close Ask AI"><i data-lucide="panel-right-close"></i></button>
+        <div class="global-ai-drawer-tab active">New AI chat <i data-lucide="chevron-down" class="gai-tab-chevron"></i></div>
+        <div class="gai-mode-btns">
+          <button class="gai-mode-btn" data-ai-mode="fullpage" title="Open full page"><i data-lucide="maximize-2"></i></button>
+          <button class="gai-mode-btn" data-ai-mode="sidebar" title="Sidebar"><i data-lucide="panel-right"></i></button>
+          <button class="gai-mode-btn" data-ai-mode="floating" title="Floating window"><i data-lucide="minimize-2"></i></button>
+          <button class="global-ai-close" id="globalAiClose" title="Close"><i data-lucide="minus"></i></button>
+        </div>
       </div>
       <div class="global-ai-drawer-body" id="globalAiDrawerBody"></div>
     </div>
-    <button class="global-ai-toggle" id="globalAiToggle" title="Toggle Ask AI"><i data-lucide="sparkles"></i></button>
+    <button class="global-ai-toggle" id="globalAiToggle" title="Ask AI"><i data-lucide="sparkles"></i></button>
+  </div>
+</div>
+
+<!-- List Templates Modal -->
+<div class="templates-overlay" id="templatesOverlay">
+  <div class="templates-modal" role="dialog" aria-label="Templates">
+    <div class="templates-header">
+      <h3>Templates</h3>
+      <button class="templates-close" id="templatesClose"><i data-lucide="x"></i></button>
+    </div>
+    <div class="templates-body">
+      <div class="templates-sidebar" id="templatesSidebar"></div>
+      <div class="templates-content">
+        <div class="templates-search-row">
+          <input type="text" id="templatesSearchInput" placeholder="Search for templates, topics, goals..." autocomplete="off" />
+        </div>
+        <div class="templates-list" id="templatesList"></div>
+      </div>
+    </div>
+    <div class="templates-footer">
+      <div class="templates-footer-nav">
+        <span class="key">&uarr;</span>
+        <span class="key">&darr;</span>
+        Navigate
+      </div>
+      <div class="templates-footer-right">
+        <button class="templates-scratch-btn" id="templatesScratchBtn">Start from scratch</button>
+        <button class="templates-use-btn" id="templatesUseBtn">Use template</button>
+      </div>
+    </div>
   </div>
 </div>
 

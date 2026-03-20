@@ -91,7 +91,37 @@ export const VIEW_SOURCES = {
       { ID:'CON-904', Patient:'Daisy', Owner:'Emma Rodriguez', Reason:'Mass evaluation \u2014 left flank', Veterinarian:'Dr. Wilson', Date:'Mar 5, 2026', Status:'Completed', Notes:'FNA sent to lab, surgery rec' },
       { ID:'CON-905', Patient:'Nala', Owner:'Rebecca Young', Reason:'Annual wellness exam', Veterinarian:'Dr. Smith', Date:'Mar 14, 2026', Status:'Completed', Notes:'Healthy, all vaccinations current' },
       { ID:'CON-906', Patient:'Charlie', Owner:'Emma Rodriguez', Reason:'Pre-surgical assessment', Veterinarian:'Dr. Wilson', Date:'Mar 16, 2026', Status:'In progress', Notes:'Awaiting lab results' },
-    ] }
+    ] },
+  stock: { label: 'Stock', icon: 'package',
+    columns: ['ID','Item','Category','Quantity','Unit','Reorder Level','Supplier','Location','Expiry','Status'],
+    filterFields: ['Item','Category','Status','Supplier','Location','Expiry'],
+    data: [
+      { ID:'STK-001', Item:'Metacam 1.5mg/ml (100ml)', Category:'Medication', Quantity:'3', Unit:'bottles', 'Reorder Level':'5', Supplier:'Boehringer', Location:'Pharmacy', Expiry:'Sep 2027', Status:'Low stock' },
+      { ID:'STK-002', Item:'Amoxicillin 250mg (500 caps)', Category:'Medication', Quantity:'8', Unit:'boxes', 'Reorder Level':'3', Supplier:'Zoetis', Location:'Pharmacy', Expiry:'Dec 2027', Status:'In stock' },
+      { ID:'STK-003', Item:'Surgical gloves (M)', Category:'Consumable', Quantity:'1', Unit:'boxes', 'Reorder Level':'5', Supplier:'MedSupply Co', Location:'Surgery', Expiry:'\u2014', Status:'Low stock' },
+      { ID:'STK-004', Item:'Rabies vaccine (10 dose)', Category:'Vaccine', Quantity:'12', Unit:'vials', 'Reorder Level':'4', Supplier:'Merck', Location:'Vaccine fridge', Expiry:'Jun 2027', Status:'In stock' },
+      { ID:'STK-005', Item:'DHPP vaccine (25 dose)', Category:'Vaccine', Quantity:'6', Unit:'vials', 'Reorder Level':'5', Supplier:'Zoetis', Location:'Vaccine fridge', Expiry:'Aug 2027', Status:'In stock' },
+      { ID:'STK-006', Item:'Isoflurane (250ml)', Category:'Anaesthetic', Quantity:'2', Unit:'bottles', 'Reorder Level':'2', Supplier:'Piramal', Location:'Surgery', Expiry:'Mar 2028', Status:'In stock' },
+      { ID:'STK-007', Item:'IV catheter 22g (50pk)', Category:'Consumable', Quantity:'4', Unit:'packs', 'Reorder Level':'3', Supplier:'BD Medical', Location:'Treatment', Expiry:'\u2014', Status:'In stock' },
+      { ID:'STK-008', Item:'Apoquel 16mg (100 tabs)', Category:'Medication', Quantity:'0', Unit:'boxes', 'Reorder Level':'2', Supplier:'Zoetis', Location:'Pharmacy', Expiry:'Nov 2027', Status:'Out of stock' },
+      { ID:'STK-009', Item:'Suture Vicryl 3-0 (36pk)', Category:'Consumable', Quantity:'7', Unit:'boxes', 'Reorder Level':'3', Supplier:'Ethicon', Location:'Surgery', Expiry:'Jan 2029', Status:'In stock' },
+      { ID:'STK-010', Item:'Nexgard 68mg (6pk)', Category:'Medication', Quantity:'15', Unit:'packs', 'Reorder Level':'5', Supplier:'Boehringer', Location:'Pharmacy', Expiry:'Apr 2027', Status:'In stock' },
+    ] },
+  orders: { label: 'Upcoming Orders', icon: 'clipboard-list',
+    columns: ['ID','Patient','Owner','Order','Type','Assigned To','Ward','Priority','Due','Status'],
+    filterFields: ['Patient','Owner','Type','Assigned To','Ward','Priority','Status'],
+    data: [
+      { ID:'ORD-101', Patient:'Milo', Owner:'Amy Collins', Order:'Blood draw — CBC + chemistry', Type:'Lab', 'Assigned To':'Nurse Katie Brown', Ward:'Treatment', Priority:'Routine', Due:'10:00 AM', Status:'Pending' },
+      { ID:'ORD-102', Patient:'Daisy', Owner:'Emma Patel', Order:'Post-op vitals check (q2h)', Type:'Monitoring', 'Assigned To':'Nurse Katie Brown', Ward:'Surgery Recovery', Priority:'High', Due:'10:30 AM', Status:'Pending' },
+      { ID:'ORD-103', Patient:'Rex', Owner:'Olivia Zhang', Order:'Administer Metacam 0.2mg/kg IV', Type:'Medication', 'Assigned To':'Dr. Sarah Smith', Ward:'Treatment', Priority:'Urgent', Due:'11:00 AM', Status:'In progress' },
+      { ID:'ORD-104', Patient:'Luna', Owner:'Daniel Reyes', Order:'FVRCP booster vaccination', Type:'Vaccination', 'Assigned To':'Nurse Katie Brown', Ward:'Exam Room 2', Priority:'Routine', Due:'11:15 AM', Status:'Pending' },
+      { ID:'ORD-105', Patient:'Nala', Owner:'Rebecca Young', Order:'Wound dressing change — left flank', Type:'Wound Care', 'Assigned To':'Nurse Katie Brown', Ward:'Surgery Recovery', Priority:'High', Due:'12:00 PM', Status:'Pending' },
+      { ID:'ORD-106', Patient:'Buddy', Owner:'Sarah Smith', Order:'Radiograph — right forelimb', Type:'Imaging', 'Assigned To':'Dr. Mike Johnson', Ward:'Radiology', Priority:'Routine', Due:'1:00 PM', Status:'Scheduled' },
+      { ID:'ORD-107', Patient:'Archie', Owner:'David Turner', Order:'Fasting blood glucose check', Type:'Lab', 'Assigned To':'Nurse Katie Brown', Ward:'Treatment', Priority:'Routine', Due:'1:30 PM', Status:'Scheduled' },
+      { ID:'ORD-108', Patient:'Pepper', Owner:'Hannah Wells', Order:'Fluid therapy — LRS 50ml/hr', Type:'IV Fluids', 'Assigned To':'Nurse Katie Brown', Ward:'ICU', Priority:'Urgent', Due:'Continuous', Status:'In progress' },
+      { ID:'ORD-109', Patient:'Daisy', Owner:'Emma Patel', Order:'Discharge prep — remove catheter', Type:'Discharge', 'Assigned To':'Dr. Mike Johnson', Ward:'Surgery Recovery', Priority:'Routine', Due:'3:00 PM', Status:'Scheduled' },
+      { ID:'ORD-110', Patient:'Rex', Owner:'Olivia Zhang', Order:'Afternoon rounds — reassess lameness', Type:'Rounds', 'Assigned To':'Dr. Sarah Smith', Ward:'Treatment', Priority:'Routine', Due:'2:00 PM', Status:'Scheduled' },
+    ] },
 };
 
 // Billing page navigation links

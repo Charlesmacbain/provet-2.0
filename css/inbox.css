@@ -10,22 +10,133 @@
 }
 
 /* === Inbox Topbar === */
-.inbox-topbar {
+.inbox-page-topbar {
+  flex-direction: column; align-items: stretch; padding-bottom: 8px;
+}
+.inbox-topbar-main {
   display: flex; align-items: center; gap: 8px;
-  padding: 10px 16px; flex-shrink: 0;
+  padding: 0; flex-shrink: 0; width: 100%;
 }
-.inbox-topbar h2 { font-size: 14px; font-weight: 600; color: #222; }
-.inbox-topbar .inbox-dots {
-  font-size: 14px; color: rgba(0,0,0,0.3); cursor: pointer; letter-spacing: 1px;
+.inbox-topbar-main .page-topbar-title {
+  font-size: 15px; font-weight: 600;
 }
-.inbox-topbar-icons { margin-left: auto; display: flex; gap: 2px; }
-.inbox-topbar-icons button {
+.inbox-unread-count {
+  font-size: 10px; font-weight: 600; color: #fff;
+  background: var(--color-primary); border-radius: 10px;
+  padding: 1px 6px; min-width: 18px; text-align: center;
+}
+
+.inbox-multiselect-btn.active {
+  background: rgba(94,106,210,0.1); color: var(--color-primary);
+}
+
+/* === Inbox Filter Button === */
+.inbox-filter-wrap { position: relative; }
+.inbox-filter-btn {
   width: 26px; height: 26px; border-radius: 4px; border: none;
+  background: none; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; color: rgba(0,0,0,0.35); position: relative;
+}
+.inbox-filter-btn:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
+.inbox-filter-btn svg { width: 15px; height: 15px; stroke-width: 1.7; }
+.inbox-filter-btn.has-filter { color: var(--color-primary); }
+.inbox-filter-badge {
+  position: absolute; top: 1px; right: 1px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--color-primary); color: #fff;
+  font-size: 8px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* === Filter Dropdown === */
+.inbox-filter-dropdown {
+  display: none; position: absolute; top: calc(100% + 6px); right: 0;
+  width: 200px; background: #fff; border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+  z-index: 50; padding: 6px;
+}
+.inbox-filter-dropdown.open { display: block; }
+
+.inbox-filter-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 6px;
+  font-size: 12px; color: rgba(0,0,0,0.6);
+  cursor: pointer; transition: background 0.08s;
+}
+.inbox-filter-option:hover { background: rgba(0,0,0,0.03); }
+.inbox-filter-option.checked { color: #222; }
+.inbox-filter-option input { accent-color: var(--color-primary); cursor: pointer; width: 14px; height: 14px; flex-shrink: 0; }
+.inbox-filter-option svg { width: 14px; height: 14px; stroke-width: 1.7; color: rgba(0,0,0,0.3); flex-shrink: 0; }
+.inbox-filter-option.checked svg { color: var(--color-primary); }
+.inbox-filter-option-label { flex: 1; font-weight: 500; }
+.inbox-filter-option-count { font-size: 10px; font-weight: 600; color: rgba(0,0,0,0.25); }
+
+.inbox-filter-dropdown-footer {
+  padding: 4px 4px 2px; border-top: 1px solid rgba(0,0,0,0.06); margin-top: 4px;
+}
+.inbox-filter-clear {
+  width: 100%; padding: 5px 8px; border: none; background: none;
+  font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.4);
+  cursor: pointer; border-radius: 4px; text-align: left; font-family: inherit;
+}
+.inbox-filter-clear:hover { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.6); }
+
+/* === Active Filter Chips === */
+.inbox-active-filters {
+  display: flex; gap: 5px; padding: 6px 0 2px; flex-wrap: wrap;
+}
+.inbox-active-filter {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 20px;
+  background: rgba(94,106,210,0.08); color: var(--color-primary);
+  font-size: 11px; font-weight: 500; cursor: pointer;
+  transition: background 0.1s;
+}
+.inbox-active-filter:hover { background: rgba(94,106,210,0.15); }
+.inbox-active-filter .inbox-filter-count {
+  font-size: 10px; font-weight: 600; color: rgba(94,106,210,0.5);
+}
+
+/* === Inbox List Empty === */
+.inbox-list-empty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 8px;
+  padding: 40px 20px; color: rgba(0,0,0,0.2);
+}
+.inbox-list-empty svg { width: 32px; height: 32px; stroke-width: 1; }
+.inbox-list-empty span { font-size: 12px; }
+
+/* === Multi-select === */
+.inbox-item-check {
+  width: 15px; height: 15px; flex-shrink: 0; cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+/* === Bulk Action Bar === */
+.inbox-bulk-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 10px; border-bottom: 1px solid rgba(0,0,0,0.06);
+  background: rgba(94,106,210,0.04); flex-shrink: 0;
+}
+.inbox-select-all {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: rgba(0,0,0,0.5); cursor: pointer;
+}
+.inbox-select-all input { accent-color: var(--color-primary); cursor: pointer; }
+.inbox-bulk-actions {
+  display: flex; align-items: center; gap: 4px;
+}
+.inbox-bulk-count {
+  font-size: 10px; font-weight: 600; color: var(--color-primary);
+  margin-right: 4px;
+}
+.inbox-bulk-btn {
+  width: 24px; height: 24px; border-radius: 4px; border: none;
   background: none; cursor: pointer; display: flex; align-items: center;
   justify-content: center; color: rgba(0,0,0,0.35);
 }
-.inbox-topbar-icons button:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
-.inbox-topbar-icons button svg { width: 15px; height: 15px; stroke-width: 1.7; }
+.inbox-bulk-btn:hover { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.6); }
+.inbox-bulk-btn svg { width: 13px; height: 13px; stroke-width: 1.8; }
 
 /* === Inbox List === */
 .inbox-list { flex: 1; overflow-y: auto; }
@@ -226,3 +337,131 @@
   background: #fff; color: #e5534b; border-color: rgba(229,83,75,0.3);
 }
 .inbox-action-btn.danger:hover { background: rgba(229,83,75,0.04); }
+
+/* === Inbox Item Hover Actions === */
+.inbox-item-actions {
+  display: none; align-items: center; gap: 2px;
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  background: #fff; padding: 0 2px;
+  border-radius: 4px;
+}
+.inbox-item { position: relative; }
+.inbox-item:hover .inbox-item-actions { display: flex; }
+.inbox-item:hover .inbox-meta { opacity: 0; }
+.inbox-item-action {
+  width: 24px; height: 24px; border-radius: 4px; border: none;
+  background: none; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; color: rgba(0,0,0,0.3);
+}
+.inbox-item-action:hover { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.6); }
+.inbox-item-action svg { width: 13px; height: 13px; stroke-width: 1.8; }
+
+/* === Snooze Menu === */
+.inbox-snooze-menu {
+  position: absolute; right: 4px; top: 100%; z-index: 60;
+  width: 180px; background: #fff; border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+  padding: 6px; animation: snoozeIn 0.1s ease;
+}
+@keyframes snoozeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.inbox-snooze-title {
+  padding: 6px 10px 4px; font-size: 10px; font-weight: 600;
+  color: rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 0.3px;
+}
+.inbox-snooze-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 6px;
+  font-size: 12px; font-weight: 500; color: rgba(0,0,0,0.6);
+  cursor: pointer; transition: background 0.08s;
+}
+.inbox-snooze-option:hover { background: rgba(0,0,0,0.03); color: #222; }
+.inbox-snooze-option svg { width: 14px; height: 14px; stroke-width: 1.7; color: rgba(0,0,0,0.3); }
+
+/* === New Item Dropdown === */
+.inbox-new-wrap { position: relative; }
+.inbox-new-btn {
+  width: 26px; height: 26px; border-radius: 4px; border: none;
+  background: none; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; color: rgba(0,0,0,0.35);
+}
+.inbox-new-btn:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
+.inbox-new-btn svg { width: 15px; height: 15px; stroke-width: 1.7; }
+.inbox-new-dropdown {
+  display: none; position: absolute; top: calc(100% + 6px); right: 0;
+  width: 200px; background: #fff; border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+  z-index: 50; padding: 6px;
+}
+.inbox-new-dropdown.open { display: block; }
+.inbox-new-dropdown-title {
+  padding: 6px 10px 4px; font-size: 10px; font-weight: 600;
+  color: rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 0.4px;
+}
+.inbox-new-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 6px;
+  font-size: 12px; font-weight: 500; color: rgba(0,0,0,0.6);
+  cursor: pointer; transition: background 0.08s;
+}
+.inbox-new-option:hover { background: rgba(0,0,0,0.03); color: #222; }
+.inbox-new-option svg { width: 14px; height: 14px; stroke-width: 1.7; color: rgba(0,0,0,0.35); flex-shrink: 0; }
+.inbox-new-option:hover svg { color: rgba(0,0,0,0.55); }
+
+/* === Patient Picker (Inline in Inbox Middle) === */
+.patient-picker-inline {
+  display: flex; flex-direction: column; flex: 1;
+  overflow: hidden;
+}
+.patient-picker-inline-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 20px 24px; flex-shrink: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.patient-picker-header-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(94,106,210,0.08); color: var(--color-primary);
+  flex-shrink: 0;
+}
+.patient-picker-header-icon svg { width: 18px; height: 18px; stroke-width: 1.8; }
+.patient-picker-inline-title { font-size: 15px; font-weight: 600; color: #222; }
+.patient-picker-inline-subtitle { font-size: 12px; color: rgba(0,0,0,0.4); margin-top: 1px; }
+.patient-picker-search {
+  display: flex; align-items: center; gap: 8px;
+  margin: 16px 24px 8px; padding: 9px 14px; border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1); background: #fff; flex-shrink: 0;
+}
+.patient-picker-search svg { width: 14px; height: 14px; stroke-width: 1.8; color: rgba(0,0,0,0.3); flex-shrink: 0; }
+.patient-picker-search input {
+  flex: 1; border: none; outline: none; font-size: 13px;
+  font-family: inherit; color: #222; background: transparent;
+}
+.patient-picker-search input::placeholder { color: rgba(0,0,0,0.3); }
+.patient-picker-search:focus-within { border-color: rgba(94,106,210,0.4); }
+.patient-picker-list {
+  flex: 1; overflow-y: auto; padding: 4px 16px 16px;
+}
+.patient-picker-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px; cursor: pointer;
+  transition: background 0.08s;
+}
+.patient-picker-item:hover { background: rgba(0,0,0,0.03); }
+.patient-picker-item-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.patient-picker-item-info { flex: 1; min-width: 0; }
+.patient-picker-item-name { font-size: 13px; font-weight: 500; color: #222; }
+.patient-picker-item-meta {
+  font-size: 11px; color: rgba(0,0,0,0.4); margin-top: 1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.patient-picker-item-owner {
+  font-size: 11px; color: rgba(0,0,0,0.35); flex-shrink: 0;
+}
+.patient-picker-empty {
+  padding: 32px 16px; text-align: center;
+  font-size: 12px; color: rgba(0,0,0,0.3);
+}

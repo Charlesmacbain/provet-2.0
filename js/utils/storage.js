@@ -19,6 +19,9 @@ export const KEY_FAVOURITES = 'provet-favourites';
 /** Storage key for sidebar customize config. */
 export const KEY_SIDEBAR_CUSTOMIZE = 'provet-sidebar-customize';
 
+/** Storage key for user-added lists. */
+export const KEY_LISTS = 'provet-lists';
+
 /**
  * Reads and parses a JSON value from localStorage.
  * Returns the defaultValue if the key is missing or the value cannot be parsed.
@@ -109,6 +112,22 @@ export function getCollapsedSections() {
  */
 export function setCollapsedSections(sections) {
   setJSON(KEY_COLLAPSED_SECTIONS, sections);
+}
+
+/**
+ * Reads the saved lists from localStorage.
+ * @returns {Array} Array of list objects.
+ */
+export function getLists() {
+  return getJSON(KEY_LISTS, []);
+}
+
+/**
+ * Saves the lists to localStorage.
+ * @param {Array} lists - Array of list objects.
+ */
+export function setLists(lists) {
+  setJSON(KEY_LISTS, lists);
 }
 
 /**

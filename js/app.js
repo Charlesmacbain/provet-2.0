@@ -5,11 +5,10 @@
 
 import { NAV_PAGES } from './data/nav-config.js';
 import { SEARCH_RECORDS } from './data/search-records.js';
-import { BILLING_PAGE_VIEWS, CARE_PAGE_VIEWS } from './data/view-sources.js';
 
 import { refreshIcons } from './utils/dom.js';
-import { getJSON, getSidebarCollapsed, getFavourites, getCollapsedSections } from './utils/storage.js';
-import { renderListPage } from './utils/templates.js';
+import { getJSON, getSidebarCollapsed, getFavourites, getCollapsedSections, getLists, setLists } from './utils/storage.js';
+// import { renderListPage } from './utils/templates.js';
 
 import { initDarkMode } from './components/dark-mode.js';
 import { initSidebar, applySidebarState, updateActiveStates } from './components/sidebar.js';
@@ -20,13 +19,16 @@ import { initCustomizeModal, applySidebarConfig, openCustomizeModal } from './co
 import { renderInbox, initInbox } from './pages/inbox.js';
 import { openRecordView } from './pages/record.js';
 import { renderCustomersPage } from './pages/customers.js';
-import { renderTablePage } from './pages/table-page.js';
-import { renderDbView, wireDbView } from './pages/database-view.js';
+import { renderTablePage, wireTablePage } from './pages/table-page.js';
+// import { renderDbView, wireDbView } from './pages/database-view.js';
 import { enterSettingsMode } from './pages/settings.js';
 import { renderPlaceholderPage } from './pages/placeholder.js';
-import { renderAskAiPage, wireAskAi } from './pages/ask-ai.js';
+import { renderReportsPage } from './pages/reports.js';
+// import { renderAskAiPage, wireAskAi } from './pages/ask-ai.js';
 import { wireBillingDelegation } from './tabs/billing-tab.js';
 import { initGlobalAiDrawer, onNavigate as onAiNavigate } from './components/global-ai-drawer.js';
+import { initLists, getCustomListConfig, renderListsNav } from './components/lists.js';
+import { VIEW_SOURCES } from './data/view-sources.js';
 
 /* ═══ Application State ═══ */
 
@@ -67,6 +69,13 @@ function navigateTo(navKey) {
 
   const page = NAV_PAGES[navKey];
   if (!page) {
+    // Check if it's a custom list
+    const customCfg = getCustomListConfig(navKey);
+    if (customCfg) {
+      showPageView();
+      renderCustomListPage(customCfg);
+      return;
+    }
     welcome.style.display = 'flex';
     return;
   }
@@ -82,25 +91,9 @@ function navigateTo(navKey) {
       renderCalendarPage();
       return;
 
-    case 'views':
+    case 'reports':
       showPageView();
-      renderViewsPage();
-      return;
-
-    case 'billing':
-      showPageView();
-      renderNavListPage('Billing', BILLING_PAGE_VIEWS);
-      return;
-
-    case 'care':
-      showPageView();
-      renderNavListPage('Care', CARE_PAGE_VIEWS);
-      return;
-
-    case 'ask-ai':
-      showPageView();
-      renderPage(renderAskAiPage());
-      wireAskAi(document.getElementById('pageViewContent'));
+      renderPage(renderReportsPage());
       return;
 
     case 'settings':
@@ -116,6 +109,7 @@ function navigateTo(navKey) {
     case 'table':
       showPageView();
       renderPage(renderTablePage(navKey, page));
+      wireTablePage(document.getElementById('pageViewContent'), navKey, navigateTo);
       return;
 
     default:
@@ -139,19 +133,303 @@ function renderPage(html) {
   refreshIcons(container);
 }
 
-/** Render the calendar iframe page. */
-function renderCalendarPage() {
-  const container = document.getElementById('pageViewContent');
-  const darkParam = document.body.classList.contains('dark') ? '?dark=1' : '';
-  container.innerHTML = `<iframe id="calFrame" src="calendar.html${darkParam}" style="width:100%;flex:1;border:none;"></iframe>`;
+/** Calendar appointments data for list view */
+const CAL_APPOINTMENTS = [
+  { time: '9:00 AM', end: '9:30 AM', patient: 'Rex', owner: 'Olivia Zhang', type: 'Follow-up', vet: 'Dr. Jordan Nguyen', status: 'Confirmed', color: '#4dab9a', icon: 'stethoscope' },
+  { time: '10:00 AM', end: '11:00 AM', patient: 'Milo', owner: 'Amy Collins', type: 'Consultation', vet: 'Dr. Sarah Smith', status: 'Confirmed', color: '#5e6ad2', icon: 'stethoscope' },
+  { time: '10:00 AM', end: '11:00 AM', patient: 'Rex', owner: 'Olivia Zhang', type: 'Consultation', vet: 'Dr. Katie Brown', status: 'Confirmed', color: '#5e6ad2', icon: 'stethoscope' },
+  { time: '11:00 AM', end: '11:15 AM', patient: 'Luna', owner: 'Daniel Reyes', type: 'Vaccination', vet: 'Dr. Katie Brown', status: 'Scheduled', color: '#57ab5a', icon: 'syringe' },
+  { time: '11:30 AM', end: '12:30 PM', patient: 'Archie', owner: 'David Turner', type: 'Vaccination', vet: 'Dr. Sarah Smith', status: 'Confirmed', color: '#57ab5a', icon: 'syringe' },
+  { time: '11:00 AM', end: '12:00 PM', patient: 'Tigger', owner: 'Michael Green', type: 'Follow-up', vet: 'Dr. Mike Johnson', status: 'Confirmed', color: '#4dab9a', icon: 'clipboard-check' },
+  { time: '12:00 PM', end: '1:00 PM', patient: 'Daisy', owner: 'Emma Patel', type: 'Surgery', vet: 'Dr. Mike Johnson', status: 'Confirmed', color: '#e5534b', icon: 'scissors' },
+  { time: '1:00 PM', end: '1:30 PM', patient: 'Pepper', owner: 'Hannah Wells', type: 'Dental cleaning', vet: 'Dr. Sarah Smith', status: 'Scheduled', color: '#cf8e3e', icon: 'sparkles' },
+  { time: '2:00 PM', end: '2:30 PM', patient: 'Buddy', owner: 'Sarah Smith', type: 'Follow-up', vet: 'Dr. Katie Brown', status: 'Confirmed', color: '#4dab9a', icon: 'clipboard-check' },
+  { time: '3:00 PM', end: '3:15 PM', patient: 'Nala', owner: 'Emma Patel', type: 'Vaccination', vet: 'Dr. Sarah Smith', status: 'Scheduled', color: '#57ab5a', icon: 'syringe' },
+  { time: '4:00 PM', end: '5:00 PM', patient: 'Nala', owner: 'Rebecca Young', type: 'Surgery', vet: 'Dr. Mike Johnson', status: 'Confirmed', color: '#e5534b', icon: 'scissors' },
+  { time: '5:00 PM', end: '5:30 PM', patient: 'Luna', owner: 'Daniel Reyes', type: 'Diagnostics', vet: 'Dr. Emily Carter', status: 'Scheduled', color: '#986ee2', icon: 'scan' },
+];
+
+let calendarViewMode = 'calendar';
+let calendarPeriod = 'Day';
+
+function getCalendarDateStr() {
+  const d = new Date();
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
-/** Render the views page with database view. */
-function renderViewsPage() {
+function renderCalendarTopbar() {
+  return `
+    <div class="page-topbar cal-topbar">
+      <span class="page-topbar-title">${getCalendarDateStr()}</span>
+      <span class="cal-today-badge">Today</span>
+      <div class="page-topbar-right">
+        <button class="cal-nav-btn cal-arrow" id="calPrev"><i data-lucide="chevron-left"></i></button>
+        <button class="cal-nav-btn cal-arrow" id="calNext"><i data-lucide="chevron-right"></i></button>
+        <div class="cal-view-toggle">
+          <button class="cal-period-btn${calendarPeriod === 'Day' && calendarViewMode === 'calendar' ? ' active' : ''}" data-period="Day" data-cal-view="calendar">Day</button>
+          <button class="cal-period-btn${calendarPeriod === 'Week' && calendarViewMode === 'calendar' ? ' active' : ''}" data-period="Week" data-cal-view="calendar">Week</button>
+          <button class="cal-period-btn${calendarViewMode === 'list' ? ' active' : ''}" data-cal-view="list">List</button>
+          <button class="cal-period-btn${calendarViewMode === 'board' ? ' active' : ''}" data-cal-view="board">Board</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+/** Render the calendar page with view toggle. */
+function renderCalendarPage() {
   const container = document.getElementById('pageViewContent');
-  container.innerHTML = renderDbView();
+  if (calendarViewMode === 'list') {
+    renderCalendarListView(container);
+  } else if (calendarViewMode === 'board') {
+    renderCalendarBoardView(container);
+  } else {
+    renderCalendarGridView(container);
+  }
+}
+
+function renderCalendarGridView(container) {
+  const darkParam = document.body.classList.contains('dark') ? '?dark=1&v=3' : '?v=3';
+  container.innerHTML = renderCalendarTopbar() +
+    `<iframe id="calFrame" src="calendar.html${darkParam}" style="width:100%;flex:1;border:none;"></iframe>`;
   refreshIcons(container);
-  wireDbView(container);
+  wireCalendarControls(container);
+}
+
+function renderCalendarListView(container) {
+  const statusClass = (s) => s === 'Confirmed' ? 'active' : 'pending';
+  const rows = CAL_APPOINTMENTS.map(a => `
+    <div class="tp-row">
+      <div class="tp-col-name" style="flex:1.5">
+        <span class="tp-row-icon" style="color:${a.color}"><i data-lucide="${a.icon}"></i></span>
+        <span class="tp-row-title">${a.patient}</span>
+        <span class="tp-row-sub">${a.owner}</span>
+      </div>
+      <div class="cal-list-col" style="width:110px">${a.type}</div>
+      <div class="cal-list-col" style="width:90px"><span class="cal-list-time">${a.time}</span></div>
+      <div class="cal-list-col" style="width:90px"><span class="cal-list-time">${a.end}</span></div>
+      <div class="cal-list-col" style="width:130px">${a.vet}</div>
+      <div class="cal-list-col" style="width:80px"><span class="status-pill ${statusClass(a.status)} dot">${a.status}</span></div>
+    </div>`).join('');
+
+  container.innerHTML = `<div class="table-page">` + renderCalendarTopbar() + `
+      <div class="tp-scroll">
+        <div class="tp-table-head">
+          <div class="tp-col-name" style="flex:1.5">Patient</div>
+          <div class="cal-list-col" style="width:110px">Type</div>
+          <div class="cal-list-col" style="width:90px">Start</div>
+          <div class="cal-list-col" style="width:90px">End</div>
+          <div class="cal-list-col" style="width:130px">Veterinarian</div>
+          <div class="cal-list-col" style="width:80px">Status</div>
+        </div>
+        ${rows}
+      </div>
+    </div>`;
+  refreshIcons(container);
+  wireCalendarControls(container);
+}
+
+const BOARD_STATUSES = ['Scheduled', 'Checked In', 'In Progress', 'Late', 'Ready for Discharge', 'No Show'];
+const BOARD_STATUS_COLORS = {
+  'Scheduled': '#539bf5', 'Checked In': '#57ab5a', 'In Progress': '#5e6ad2',
+  'Late': '#e5534b', 'Ready for Discharge': '#cf8e3e', 'No Show': 'rgba(0,0,0,0.25)',
+};
+
+// Assign board statuses to appointments for demo
+const CAL_BOARD_STATUS = [
+  'Checked In', 'In Progress', 'Checked In', 'Scheduled', 'Scheduled',
+  'In Progress', 'In Progress', 'Scheduled', 'Ready for Discharge', 'Scheduled',
+  'Late', 'No Show',
+];
+
+function renderCalendarBoardView(container) {
+  const groups = {};
+  BOARD_STATUSES.forEach(s => groups[s] = []);
+  CAL_APPOINTMENTS.forEach((a, i) => {
+    const status = CAL_BOARD_STATUS[i] || 'Scheduled';
+    groups[status].push({ ...a, boardStatus: status });
+  });
+
+  const lanes = BOARD_STATUSES.map(status => {
+    const items = groups[status];
+    const color = BOARD_STATUS_COLORS[status];
+    return `
+    <div class="kanban-lane">
+      <div class="kanban-lane-header">
+        <span class="kanban-lane-dot" style="background:${color}"></span>
+        <span class="kanban-lane-title">${status}</span>
+        <span class="kanban-lane-count">${items.length}</span>
+      </div>
+      <div class="kanban-lane-cards">
+        ${items.map(a => `
+          <div class="kanban-card">
+            <div class="kanban-card-title">${a.patient}</div>
+            <div class="kanban-card-desc">${a.owner}</div>
+            <div class="kanban-card-meta">${a.time} – ${a.end} · ${a.type}</div>
+            <div class="kanban-card-vet">${a.vet}</div>
+          </div>`).join('') || '<div class="kanban-lane-empty">No appointments</div>'}
+      </div>
+    </div>`;
+  }).join('');
+
+  container.innerHTML = `<div class="table-page">` + renderCalendarTopbar() + `<div class="kanban-board">${lanes}</div></div>`;
+  refreshIcons(container);
+  wireCalendarControls(container);
+}
+
+function wireCalendarControls(container) {
+  container.querySelectorAll('.cal-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      calendarViewMode = btn.dataset.calView;
+      if (btn.dataset.period) calendarPeriod = btn.dataset.period;
+      renderCalendarPage();
+    });
+  });
+}
+
+/** Render a custom list page from wizard config. */
+function renderCustomListPage(cfg) {
+  const container = document.getElementById('pageViewContent');
+  const src = VIEW_SOURCES[cfg.objectKey];
+  if (!src) {
+    // No data source — remove this broken list and navigate home
+    const lists = getLists();
+    const idx = lists.findIndex(l => l.nav === cfg.nav);
+    if (idx >= 0) { lists.splice(idx, 1); setLists(lists); }
+    renderListsNav();
+    document.getElementById('welcomeScreen').style.display = 'flex';
+    return;
+  }
+
+  // Apply filters
+  let data = [...src.data];
+  if (cfg.filters && cfg.filters.length > 0) {
+    cfg.filters.forEach(f => {
+      if (!f.value) return;
+      data = data.filter(row => {
+        const val = (row[f.field] || '').toLowerCase();
+        const target = f.value.toLowerCase();
+        if (f.op === 'is') return val === target;
+        if (f.op === 'is not') return val !== target;
+        if (f.op === 'contains') return val.includes(target);
+        return true;
+      });
+    });
+  }
+
+  if (cfg.viewType === 'kanban') {
+    renderKanbanView(container, cfg, src, data);
+  } else {
+    renderListView(container, cfg, src, data);
+  }
+}
+
+function renderListView(container, cfg, src, data) {
+  const cols = src.columns;
+  const groupBy = cfg.groupBy;
+
+  let rows;
+  if (groupBy && cols.includes(groupBy)) {
+    const groups = {};
+    data.forEach(row => {
+      const key = row[groupBy] || 'Other';
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(row);
+    });
+    rows = Object.entries(groups).map(([group, items]) => `
+      <div class="tp-group-header">${groupBy}: ${group} <span class="tp-group-count">${items.length}</span></div>
+      ${items.map(row => renderListRow(row, cols)).join('')}
+    `).join('');
+  } else {
+    rows = data.map(row => renderListRow(row, cols)).join('');
+  }
+
+  const headerCols = cols.map((col, i) => `<div class="cl-col" style="${i === 0 ? 'flex:1' : 'width:110px'}">${col}</div>`).join('');
+
+  container.innerHTML = `
+    <div class="table-page" data-list-nav="${cfg.nav}">
+      <div class="page-topbar">
+        <span class="page-topbar-title">${cfg.name}</span>
+        <div class="list-menu-wrap">
+          <button class="list-menu-trigger" id="listMenuTrigger"><i data-lucide="more-horizontal"></i></button>
+          <div class="list-menu-dropdown" id="listMenuDropdown">
+            <div class="list-menu-option" data-action="settings"><i data-lucide="settings"></i><span>List settings</span></div>
+            <div class="list-menu-option" data-action="attributes"><i data-lucide="sliders-horizontal"></i><span>Manage attributes</span></div>
+            <div class="list-menu-divider"></div>
+            <div class="list-menu-option has-sub" data-action="notifications"><i data-lucide="bell"></i><span>Notifications</span><i data-lucide="chevron-right" class="list-menu-chevron"></i></div>
+            <div class="list-menu-divider"></div>
+            <div class="list-menu-option danger" data-action="delete"><i data-lucide="trash-2"></i><span>Delete list</span></div>
+          </div>
+        </div>
+        <div class="page-topbar-right">
+          <button><i data-lucide="filter"></i></button>
+          <button><i data-lucide="sliders-horizontal"></i></button>
+        </div>
+      </div>
+      <div class="tp-scroll">
+        <div class="tp-table-head">${headerCols}</div>
+        ${rows}
+      </div>
+    </div>`;
+  refreshIcons(container);
+  wireTablePage(container, cfg.nav, navigateTo);
+}
+
+function renderListRow(row, cols) {
+  return `<div class="tp-row">${cols.map((col, i) => {
+    const val = row[col] || '';
+    if (i === 0) return `<div class="cl-col" style="flex:1"><span class="tp-row-title">${val}</span></div>`;
+    if (col === 'Status') return `<div class="cl-col" style="width:110px"><span class="status-pill ${val === 'Active' || val === 'Paid' || val === 'Completed' || val === 'Approved' ? 'active' : val === 'Overdue' || val === 'Inactive' || val === 'Expired' ? 'overdue' : 'pending'} dot">${val}</span></div>`;
+    return `<div class="cl-col" style="width:110px">${val}</div>`;
+  }).join('')}</div>`;
+}
+
+function renderKanbanView(container, cfg, src, data) {
+  const groupCol = cfg.groupBy || 'Status';
+  const groups = {};
+  data.forEach(row => {
+    const key = row[groupCol] || 'Other';
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(row);
+  });
+
+  const nameCol = src.columns[0];
+  const descCol = src.columns.length > 2 ? src.columns[2] : src.columns[1];
+
+  const lanes = Object.entries(groups).map(([group, items]) => `
+    <div class="kanban-lane">
+      <div class="kanban-lane-header">
+        <span class="kanban-lane-title">${group}</span>
+        <span class="kanban-lane-count">${items.length}</span>
+      </div>
+      <div class="kanban-lane-cards">
+        ${items.map(row => `
+          <div class="kanban-card">
+            <div class="kanban-card-title">${row[nameCol] || ''}</div>
+            <div class="kanban-card-desc">${row[descCol] || ''}</div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  container.innerHTML = `
+    <div class="table-page" data-list-nav="${cfg.nav}">
+      <div class="page-topbar">
+        <span class="page-topbar-title">${cfg.name}</span>
+        <div class="list-menu-wrap">
+          <button class="list-menu-trigger" id="listMenuTrigger"><i data-lucide="more-horizontal"></i></button>
+          <div class="list-menu-dropdown" id="listMenuDropdown">
+            <div class="list-menu-option" data-action="settings"><i data-lucide="settings"></i><span>List settings</span></div>
+            <div class="list-menu-divider"></div>
+            <div class="list-menu-option danger" data-action="delete"><i data-lucide="trash-2"></i><span>Delete list</span></div>
+          </div>
+        </div>
+        <div class="page-topbar-right">
+          <button><i data-lucide="filter"></i></button>
+        </div>
+      </div>
+      <div class="kanban-board">${lanes}</div>
+    </div>`;
+  refreshIcons(container);
+  wireTablePage(container, cfg.nav, navigateTo);
 }
 
 /** Wire client row clicks to open record view. */
@@ -165,16 +443,6 @@ function wireClientRowClicks() {
   });
 }
 
-/** Render a list page (billing/care) and wire row navigation. */
-function renderNavListPage(title, views) {
-  const container = document.getElementById('pageViewContent');
-  container.innerHTML = renderListPage(title, views);
-  refreshIcons(container);
-  container.querySelectorAll('.vp-row[data-nav]').forEach(row => {
-    row.onclick = function () { navigateTo(this.dataset.nav); };
-  });
-}
-
 /* ═══ Platform Detection ═══ */
 
 function detectPlatform() {
@@ -184,6 +452,8 @@ function detectPlatform() {
   const searchKbd = document.getElementById('searchActionsKbd');
   if (welcomeKbd) welcomeKbd.textContent = modKey + 'K';
   if (searchKbd) searchKbd.textContent = modKey + 'K';
+  const navKbd = document.getElementById('searchNavKbd');
+  if (navKbd) navKbd.textContent = modKey + 'K';
 }
 
 /* ═══ Keyboard Navigation ═══ */
@@ -250,6 +520,9 @@ function init() {
   // Inbox initialization
   initInbox();
 
+  // Lists section
+  initLists({ navigateTo });
+
   // Billing tab delegation (global event listeners)
   wireBillingDelegation();
 
@@ -258,6 +531,19 @@ function init() {
 
   // Global AI drawer
   initGlobalAiDrawer(() => appState.activeNav);
+
+  // Profile menu
+  const profileBtn = document.getElementById('profileBtn');
+  const profileMenu = document.getElementById('profileMenu');
+  if (profileBtn && profileMenu) {
+    profileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileMenu.classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.sidebar-profile')) profileMenu.classList.remove('open');
+    });
+  }
 
   // Expose globals needed by page modules
   window.navigateTo = navigateTo;

@@ -25,6 +25,7 @@ body.dark .nav-item.active { background: rgba(255,255,255,0.08); color: rgba(255
 body.dark .nav-item .nav-icon { color: rgba(255,255,255,0.35); }
 body.dark .nav-item.active .nav-icon { color: rgba(255,255,255,0.6); }
 body.dark .nav-badge { color: rgba(255,255,255,0.4); }
+body.dark .nav-kbd { color: rgba(255,255,255,0.15); }
 
 /* === Section Labels === */
 body.dark .section-label-header { color: rgba(255,255,255,0.35); }
@@ -43,6 +44,63 @@ body.dark .star-toggle { color: rgba(255,255,255,0.2); }
 body.dark .fav-item { color: rgba(255,255,255,0.5); }
 body.dark .fav-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
 body.dark .fav-item.active { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.95); }
+
+/* === Lists Section === */
+body.dark .list-nav-item { color: rgba(255,255,255,0.5); }
+body.dark .list-nav-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+body.dark .list-nav-item.active { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.95); }
+body.dark .list-nav-icon { color: rgba(255,255,255,0.3); }
+body.dark .lists-new-btn { border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); }
+body.dark .lists-new-btn:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); }
+
+/* === Templates Modal === */
+body.dark .templates-overlay { background: rgba(0,0,0,0.5); }
+body.dark .templates-modal { background: #2a2a2a; box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06); }
+body.dark .templates-header { border-bottom-color: rgba(255,255,255,0.06); }
+body.dark .templates-header h3 { color: #d4d4d4; }
+body.dark .templates-close { color: rgba(255,255,255,0.3); }
+body.dark .templates-close:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+body.dark .templates-sidebar { border-right-color: rgba(255,255,255,0.06); }
+body.dark .templates-sidebar-label { color: rgba(255,255,255,0.25); }
+body.dark .templates-cat-item { color: rgba(255,255,255,0.55); }
+body.dark .templates-cat-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+body.dark .templates-cat-item.active { background: rgba(255,255,255,0.08); color: #d4d4d4; }
+body.dark .templates-cat-icon { color: rgba(255,255,255,0.3); }
+body.dark .templates-search-row input { background: #222; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+body.dark .templates-search-row input::placeholder { color: rgba(255,255,255,0.3); }
+body.dark .templates-search-row input:focus { border-color: rgba(94,106,210,0.4); }
+body.dark .templates-card { border-color: rgba(255,255,255,0.08); }
+body.dark .templates-card:hover { border-color: rgba(255,255,255,0.15); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+body.dark .templates-card.selected { border-color: rgba(94,106,210,0.5); box-shadow: 0 0 0 1px rgba(94,106,210,0.25), 0 2px 8px rgba(94,106,210,0.1); }
+body.dark .templates-card-preview { background: rgba(255,255,255,0.03); }
+body.dark .templates-card-preview-icon { color: rgba(255,255,255,0.2); }
+body.dark .templates-card-name { color: #d4d4d4; }
+body.dark .templates-card-desc { color: rgba(255,255,255,0.4); }
+body.dark .templates-tag { background: rgba(94,106,210,0.12); color: rgba(124,138,255,0.8); }
+body.dark .templates-empty { color: rgba(255,255,255,0.25); }
+body.dark .templates-footer { border-top-color: rgba(255,255,255,0.06); }
+body.dark .templates-footer-nav { color: rgba(255,255,255,0.3); }
+body.dark .templates-footer-nav .key { border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.03); }
+body.dark .templates-scratch-btn { background: #333; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+body.dark .templates-scratch-btn:hover { background: #3a3a3a; border-color: rgba(255,255,255,0.15); }
+
+/* === Sidebar Profile === */
+body.dark .sidebar-profile { border-top-color: rgba(255,255,255,0.06); }
+body.dark .sidebar-profile-btn:hover { background: rgba(255,255,255,0.05); }
+body.dark .sidebar-profile-name { color: rgba(255,255,255,0.65); }
+body.dark .sidebar-profile-chevron { color: rgba(255,255,255,0.2); }
+body.dark .sidebar-profile-menu { background: #2a2a2a; box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06); }
+body.dark .profile-menu-name { color: #d4d4d4; }
+body.dark .profile-menu-email { color: rgba(255,255,255,0.35); }
+body.dark .profile-menu-divider { background: rgba(255,255,255,0.06); }
+body.dark .profile-menu-section-label { color: rgba(255,255,255,0.25); }
+body.dark .profile-menu-user { color: rgba(255,255,255,0.55); }
+body.dark .profile-menu-user:hover { background: rgba(255,255,255,0.05); color: #d4d4d4; }
+body.dark .profile-menu-option { color: rgba(255,255,255,0.55); }
+body.dark .profile-menu-option:hover { background: rgba(255,255,255,0.05); color: #d4d4d4; }
+body.dark .profile-menu-option svg { color: rgba(255,255,255,0.3); }
+body.dark .profile-menu-option.logout { color: #e5534b; }
+body.dark .profile-menu-option.logout svg { color: #e5534b; }
 
 /* === Sidebar Footer === */
 body.dark .sidebar-footer { border-top-color: rgba(255,255,255,0.06); }
@@ -72,10 +130,31 @@ body.dark .welcome-screen .w-icon { color: rgba(255,255,255,0.08); }
 body.dark .inbox-panel { background: #1a1a1a; }
 body.dark .inbox-left { background: #1a1a1a; border-right-color: rgba(255,255,255,0.06); }
 body.dark .inbox-middle { background: #1a1a1a; }
-body.dark .inbox-topbar h2 { color: #d4d4d4; }
-body.dark .inbox-topbar .inbox-dots { color: rgba(255,255,255,0.3); }
-body.dark .inbox-topbar-icons button { color: rgba(255,255,255,0.3); }
-body.dark .inbox-topbar-icons button:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+body.dark .inbox-topbar-main .page-topbar-title { color: #d4d4d4; }
+body.dark .inbox-unread-count { background: #5e6ad2; }
+body.dark .inbox-filter-btn { color: rgba(255,255,255,0.35); }
+body.dark .inbox-filter-btn:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+body.dark .inbox-filter-btn.has-filter { color: #7c8aff; }
+body.dark .inbox-filter-dropdown { background: #2a2a2a; box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06); }
+body.dark .inbox-filter-option { color: rgba(255,255,255,0.55); }
+body.dark .inbox-filter-option:hover { background: rgba(255,255,255,0.05); }
+body.dark .inbox-filter-option.checked { color: #d4d4d4; }
+body.dark .inbox-filter-option svg { color: rgba(255,255,255,0.25); }
+body.dark .inbox-filter-option.checked svg { color: #7c8aff; }
+body.dark .inbox-filter-option-count { color: rgba(255,255,255,0.2); }
+body.dark .inbox-filter-dropdown-footer { border-top-color: rgba(255,255,255,0.06); }
+body.dark .inbox-filter-clear { color: rgba(255,255,255,0.35); }
+body.dark .inbox-filter-clear:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); }
+body.dark .inbox-active-filter { background: rgba(94,106,210,0.15); color: #7c8aff; }
+body.dark .inbox-active-filter:hover { background: rgba(94,106,210,0.22); }
+body.dark .inbox-active-filter .inbox-filter-count { color: rgba(94,106,210,0.6); }
+body.dark .inbox-multiselect-btn.active { background: rgba(94,106,210,0.15); color: #7c8aff; }
+body.dark .inbox-bulk-bar { background: rgba(94,106,210,0.06); border-bottom-color: rgba(255,255,255,0.06); }
+body.dark .inbox-select-all { color: rgba(255,255,255,0.5); }
+body.dark .inbox-bulk-count { color: #7c8aff; }
+body.dark .inbox-bulk-btn { color: rgba(255,255,255,0.35); }
+body.dark .inbox-bulk-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); }
+body.dark .inbox-list-empty { color: rgba(255,255,255,0.15); }
 body.dark .inbox-item { border-bottom-color: rgba(255,255,255,0.04); }
 body.dark .inbox-item:hover { background: rgba(255,255,255,0.03); }
 body.dark .inbox-item.selected { background: rgba(94,106,210,0.1); }
@@ -92,6 +171,42 @@ body.dark .inbox-middle-empty .inbox-empty-text { color: rgba(255,255,255,0.25);
 body.dark .page-topbar-dots { color: rgba(255,255,255,0.2); }
 body.dark .page-topbar-right button { color: rgba(255,255,255,0.3); }
 body.dark .page-topbar-right button:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.55); }
+
+/* === Inbox Item Actions === */
+body.dark .inbox-item-actions { background: #1a1a1a; }
+body.dark .inbox-item-action { color: rgba(255,255,255,0.3); }
+body.dark .inbox-item-action:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); }
+body.dark .inbox-snooze-menu { background: #2a2a2a; box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06); }
+body.dark .inbox-snooze-title { color: rgba(255,255,255,0.25); }
+body.dark .inbox-snooze-option { color: rgba(255,255,255,0.55); }
+body.dark .inbox-snooze-option:hover { background: rgba(255,255,255,0.05); color: #d4d4d4; }
+body.dark .inbox-snooze-option svg { color: rgba(255,255,255,0.25); }
+
+/* === Inbox New Dropdown === */
+body.dark .inbox-new-btn { color: rgba(255,255,255,0.35); }
+body.dark .inbox-new-btn:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+body.dark .inbox-new-dropdown { background: #2a2a2a; box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06); }
+body.dark .inbox-new-dropdown-title { color: rgba(255,255,255,0.3); }
+body.dark .inbox-new-option { color: rgba(255,255,255,0.6); }
+body.dark .inbox-new-option:hover { background: rgba(255,255,255,0.05); color: #d4d4d4; }
+body.dark .inbox-new-option svg { color: rgba(255,255,255,0.3); }
+body.dark .inbox-new-option:hover svg { color: rgba(255,255,255,0.5); }
+
+/* === Patient Picker (Inline) === */
+body.dark .patient-picker-inline-header { border-bottom-color: rgba(255,255,255,0.06); }
+body.dark .patient-picker-header-icon { background: rgba(94,106,210,0.15); color: #7c8aff; }
+body.dark .patient-picker-inline-title { color: #d4d4d4; }
+body.dark .patient-picker-inline-subtitle { color: rgba(255,255,255,0.35); }
+body.dark .patient-picker-search { border-color: rgba(255,255,255,0.1); background: #222; }
+body.dark .patient-picker-search svg { color: rgba(255,255,255,0.3); }
+body.dark .patient-picker-search input { color: #d4d4d4; }
+body.dark .patient-picker-search input::placeholder { color: rgba(255,255,255,0.3); }
+body.dark .patient-picker-search:focus-within { border-color: rgba(94,106,210,0.4); }
+body.dark .patient-picker-item:hover { background: rgba(255,255,255,0.05); }
+body.dark .patient-picker-item-name { color: #d4d4d4; }
+body.dark .patient-picker-item-meta { color: rgba(255,255,255,0.35); }
+body.dark .patient-picker-item-owner { color: rgba(255,255,255,0.3); }
+body.dark .patient-picker-empty { color: rgba(255,255,255,0.25); }
 
 /* === Inbox Detail === */
 body.dark .inbox-detail { background: #1a1a1a; }
@@ -279,6 +394,61 @@ body.dark .vp-row-owner { color: rgba(255,255,255,0.35); }
 body.dark .vp-workspace-row { background: rgba(255,255,255,0.02); border-bottom-color: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); }
 body.dark .vp-ws-icon { color: rgba(255,255,255,0.25); }
 
+/* === Calendar Topbar === */
+body.dark .cal-today-badge { background: rgba(94,106,210,0.15); color: #7c8aff; }
+body.dark .cal-nav-btn { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.55); }
+body.dark .cal-nav-btn:hover { background: #333; border-color: rgba(255,255,255,0.15); }
+body.dark .cal-period-btn { color: rgba(255,255,255,0.35); }
+body.dark .cal-period-btn:hover { color: rgba(255,255,255,0.65); }
+body.dark .cal-period-btn.active { color: #7c8aff; }
+body.dark .cal-new-apt-btn { background: #5e6ad2; }
+body.dark .cal-new-apt-btn:hover { background: #4f5bc4; }
+
+/* === Calendar View Toggle === */
+body.dark .cal-view-toggle { border-color: rgba(255,255,255,0.1); }
+body.dark .cal-view-btn { color: rgba(255,255,255,0.3); }
+body.dark .cal-view-btn:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.55); }
+body.dark .cal-view-btn.active { background: rgba(255,255,255,0.08); color: #d4d4d4; }
+body.dark .cal-view-btn + .cal-view-btn { border-left-color: rgba(255,255,255,0.06); }
+body.dark .cal-list-col { color: rgba(255,255,255,0.45); }
+body.dark .tp-table-head .cal-list-col { color: rgba(255,255,255,0.3); }
+
+/* === List Menu === */
+body.dark .list-menu-trigger { color: rgba(255,255,255,0.3); }
+body.dark .list-menu-trigger:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.55); }
+body.dark .list-menu-dropdown { background: #2a2a2a; box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06); }
+body.dark .list-menu-option { color: rgba(255,255,255,0.7); }
+body.dark .list-menu-option:hover { background: rgba(255,255,255,0.05); }
+body.dark .list-menu-option svg { color: rgba(255,255,255,0.35); }
+body.dark .list-menu-option.danger { color: #e5534b; }
+body.dark .list-menu-option.danger svg { color: #e5534b; }
+body.dark .list-menu-option.danger:hover { background: rgba(229,83,75,0.08); }
+body.dark .list-menu-chevron { color: rgba(255,255,255,0.2) !important; }
+body.dark .list-menu-divider { background: rgba(255,255,255,0.06); }
+body.dark .list-menu-sub { background: #2a2a2a; }
+body.dark .list-menu-sub-header { border-bottom-color: rgba(255,255,255,0.06); color: #d4d4d4; }
+body.dark .list-menu-sub-back { color: rgba(255,255,255,0.35); }
+body.dark .list-menu-sub-back:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+body.dark .list-notif-rule:hover { background: rgba(255,255,255,0.04); }
+body.dark .list-notif-rule-icon { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.35); }
+body.dark .list-notif-rule-label { color: #d4d4d4; }
+body.dark .list-notif-rule-desc { color: rgba(255,255,255,0.3); }
+
+/* === List Settings Drawer === */
+body.dark .list-settings-overlay { background: rgba(0,0,0,0.3); }
+body.dark .list-settings-drawer { background: #2a2a2a; box-shadow: -4px 0 24px rgba(0,0,0,0.3); }
+body.dark .list-settings-header { border-bottom-color: rgba(255,255,255,0.06); }
+body.dark .list-settings-header h3 { color: #d4d4d4; }
+body.dark .list-settings-close { color: rgba(255,255,255,0.3); }
+body.dark .list-settings-close:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+body.dark .list-settings-label { color: rgba(255,255,255,0.35); }
+body.dark .list-settings-input { background: #222; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+body.dark .list-settings-input:focus { border-color: rgba(94,106,210,0.4); }
+body.dark .list-settings-textarea { background: #222; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+body.dark .list-settings-textarea:focus { border-color: rgba(94,106,210,0.4); }
+body.dark .list-settings-select { background: #222; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+body.dark .list-settings-footer { border-top-color: rgba(255,255,255,0.06); }
+
 /* === Table Page === */
 body.dark .tp-header h1 { color: #d4d4d4; }
 body.dark .tp-header-icon { color: rgba(255,255,255,0.3); }
@@ -309,6 +479,10 @@ body.dark .cust-search-input { border-color: rgba(255,255,255,0.08); }
 body.dark .cust-search-input input { color: #d4d4d4; }
 body.dark .cust-search-input input::placeholder { color: rgba(255,255,255,0.25); }
 body.dark .cust-search-input svg { color: rgba(255,255,255,0.25); }
+body.dark .cust-topbar-search { border-color: rgba(255,255,255,0.08); }
+body.dark .cust-topbar-search input { color: #d4d4d4; }
+body.dark .cust-topbar-search input::placeholder { color: rgba(255,255,255,0.25); }
+body.dark .cust-topbar-search svg { color: rgba(255,255,255,0.25); }
 body.dark .cust-search-actions button { color: rgba(255,255,255,0.25); }
 body.dark .cust-search-actions button:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
 body.dark .cust-table-head { color: rgba(255,255,255,0.3); border-bottom-color: rgba(255,255,255,0.06); background: #1a1a1a; }

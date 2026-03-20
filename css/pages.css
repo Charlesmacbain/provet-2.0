@@ -36,7 +36,7 @@
 
 .vp-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 24px 0; flex-shrink: 0;
+  padding: 12px 20px 0; flex-shrink: 0;
 }
 .vp-title { font-size: 17px; font-weight: 700; color: #222; }
 .vp-add-btn {
@@ -48,7 +48,7 @@
 .vp-add-btn svg { width: 14px; height: 14px; stroke-width: 2; }
 
 .vp-tabs {
-  display: flex; gap: 0; padding: 12px 24px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: flex; gap: 0; padding: 12px 20px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
   flex-shrink: 0;
 }
 .vp-tab {
@@ -61,7 +61,7 @@
 .vp-scroll { flex: 1; overflow-y: auto; }
 
 .vp-table-header {
-  display: flex; align-items: center; padding: 8px 24px;
+  display: flex; align-items: center; padding: 8px 20px;
   font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.35);
   border-bottom: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
 }
@@ -70,7 +70,7 @@
 
 .vp-section-row {
   display: flex; align-items: center; gap: 8px;
-  padding: 10px 24px; background: rgba(0,0,0,0.015);
+  padding: 10px 20px; background: rgba(0,0,0,0.015);
   border-bottom: 1px solid rgba(0,0,0,0.04);
   font-size: 13px; color: rgba(0,0,0,0.7); flex-shrink: 0;
 }
@@ -91,7 +91,7 @@
 
 .vp-row {
   display: flex; align-items: center; gap: 12px;
-  padding: 12px 24px; border-bottom: 1px solid rgba(0,0,0,0.04);
+  padding: 12px 20px; border-bottom: 1px solid rgba(0,0,0,0.04);
   cursor: pointer; transition: background 0.08s;
 }
 .vp-row:hover { background: rgba(0,0,0,0.02); }
@@ -119,7 +119,7 @@
 
 .vp-workspace-row {
   display: flex; align-items: center; gap: 8px;
-  padding: 10px 24px; background: rgba(0,0,0,0.015);
+  padding: 10px 20px; background: rgba(0,0,0,0.015);
   border-bottom: 1px solid rgba(0,0,0,0.04);
   font-size: 13px; color: rgba(0,0,0,0.5);
 }
@@ -127,12 +127,202 @@
 .vp-ws-icon svg { width: 16px; height: 16px; stroke-width: 1.7; }
 .vp-ws-label { font-weight: 500; }
 
+/* === List Menu (dots dropdown) === */
+.list-menu-wrap { position: relative; }
+.list-menu-trigger {
+  width: 26px; height: 26px; border-radius: 4px; border: none;
+  background: none; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; color: rgba(0,0,0,0.3); font-family: inherit;
+}
+.list-menu-trigger:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55); }
+.list-menu-trigger svg { width: 15px; height: 15px; stroke-width: 1.7; }
+.list-menu-dropdown {
+  display: none; position: absolute; top: calc(100% + 6px); left: 0;
+  width: 220px; background: #fff; border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+  z-index: 50; padding: 6px; overflow: visible;
+}
+.list-menu-dropdown.open { display: block; }
+.list-menu-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: 6px;
+  font-size: 13px; font-weight: 500; color: rgba(0,0,0,0.7);
+  cursor: pointer; transition: background 0.08s; position: relative;
+}
+.list-menu-option:hover { background: rgba(0,0,0,0.03); }
+.list-menu-option svg { width: 15px; height: 15px; stroke-width: 1.7; color: rgba(0,0,0,0.4); flex-shrink: 0; }
+.list-menu-option.danger { color: #e5534b; }
+.list-menu-option.danger svg { color: #e5534b; }
+.list-menu-option.danger:hover { background: rgba(229,83,75,0.04); }
+.list-menu-chevron { width: 12px !important; height: 12px !important; margin-left: auto; color: rgba(0,0,0,0.25) !important; }
+.list-menu-divider { height: 1px; background: rgba(0,0,0,0.06); margin: 4px 6px; }
+
+/* === List Menu Notifications Sub-Panel === */
+.list-menu-sub {
+  position: absolute; top: 0; left: 0; right: 0;
+  background: #fff; border-radius: 10px; z-index: 2;
+  animation: listSubIn 0.12s ease;
+}
+@keyframes listSubIn { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: translateX(0); } }
+.list-menu-sub-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px; border-bottom: 1px solid rgba(0,0,0,0.06);
+  font-size: 13px; font-weight: 600; color: #222;
+}
+.list-menu-sub-back {
+  width: 22px; height: 22px; border-radius: 4px; border: none;
+  background: none; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; color: rgba(0,0,0,0.35);
+}
+.list-menu-sub-back:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
+.list-menu-sub-back svg { width: 14px; height: 14px; stroke-width: 2; }
+.list-menu-sub-body { padding: 6px; }
+.list-notif-rule {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 6px; cursor: pointer;
+  transition: background 0.08s;
+}
+.list-notif-rule:hover { background: rgba(0,0,0,0.03); }
+.list-notif-rule-icon {
+  width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.4);
+}
+.list-notif-rule-icon svg { width: 14px; height: 14px; stroke-width: 1.8; }
+.list-notif-rule-info { flex: 1; min-width: 0; }
+.list-notif-rule-label { font-size: 12px; font-weight: 500; color: #222; }
+.list-notif-rule-desc { font-size: 10px; color: rgba(0,0,0,0.4); margin-top: 1px; }
+.list-notif-toggle {
+  width: 14px; height: 14px; accent-color: var(--color-primary); cursor: pointer; flex-shrink: 0;
+}
+
+/* === List Settings Drawer === */
+.list-settings-panel { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 60; display: flex; }
+.list-settings-overlay { flex: 1; background: rgba(0,0,0,0.15); }
+.list-settings-drawer {
+  width: 380px; background: #fff; display: flex; flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.08);
+  animation: lsDrawerIn 0.15s ease;
+}
+@keyframes lsDrawerIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.list-settings-header {
+  display: flex; align-items: center; padding: 16px 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.list-settings-header h3 { font-size: 15px; font-weight: 600; color: #222; flex: 1; margin: 0; }
+.list-settings-close {
+  width: 26px; height: 26px; border-radius: 5px; border: none;
+  background: none; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; color: rgba(0,0,0,0.3);
+}
+.list-settings-close:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
+.list-settings-close svg { width: 16px; height: 16px; stroke-width: 2; }
+.list-settings-body { flex: 1; padding: 20px; overflow-y: auto; }
+.list-settings-section { margin-bottom: 20px; }
+.list-settings-label {
+  display: block; font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.4);
+  text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px;
+}
+.list-settings-input {
+  width: 100%; padding: 8px 12px; border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 6px; font-size: 13px; font-family: inherit; color: #222;
+  outline: none; box-sizing: border-box;
+}
+.list-settings-input:focus { border-color: rgba(94,106,210,0.4); }
+.list-settings-textarea {
+  width: 100%; padding: 8px 12px; border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 6px; font-size: 13px; font-family: inherit; color: #222;
+  outline: none; resize: vertical; min-height: 72px; box-sizing: border-box;
+}
+.list-settings-textarea:focus { border-color: rgba(94,106,210,0.4); }
+.list-settings-select {
+  width: 100%; padding: 8px 12px; border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 6px; font-size: 13px; font-family: inherit; color: #222;
+  outline: none; background: #fff; cursor: pointer; box-sizing: border-box;
+}
+.list-settings-footer {
+  padding: 16px 0 0; border-top: 1px solid rgba(0,0,0,0.06); margin-top: 8px;
+}
+.list-settings-save {
+  padding: 8px 16px; border-radius: 6px; border: none;
+  background: #5e6ad2; font-size: 13px; font-weight: 500;
+  font-family: inherit; color: #fff; cursor: pointer;
+}
+.list-settings-save:hover { background: #4f5bc4; }
+
+/* === Calendar Topbar === */
+.cal-topbar .page-topbar-title {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  min-width: 0; flex-shrink: 1;
+}
+.cal-today-badge {
+  font-size: 10px; font-weight: 600; color: var(--color-primary);
+  background: rgba(94,106,210,0.08); padding: 2px 6px; border-radius: 4px;
+  flex-shrink: 0; white-space: nowrap;
+}
+.cal-topbar .page-topbar-right { gap: 10px; flex-shrink: 0; }
+.cal-nav-group { display: flex; align-items: center; gap: 1px; flex-shrink: 0; }
+.cal-nav-btn {
+  padding: 3px 10px; border: 1px solid rgba(0,0,0,0.12); border-radius: 5px;
+  background: #fff; font-size: 11px; font-weight: 500; font-family: inherit;
+  color: rgba(0,0,0,0.6); cursor: pointer; height: 26px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.cal-nav-btn:hover { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.18); }
+.cal-nav-btn.cal-arrow { padding: 3px 5px; width: 26px; }
+.cal-nav-btn.cal-arrow svg { width: 13px; height: 13px; stroke-width: 2; }
+
+.cal-period-btn {
+  padding: 6px 20px; border: none; background: none;
+  font-size: 12px; font-weight: 500; font-family: inherit;
+  color: rgba(0,0,0,0.4); cursor: pointer; height: 28px;
+}
+.cal-period-btn:hover { color: rgba(0,0,0,0.7); }
+.cal-period-btn.active { color: var(--color-primary); font-weight: 600; }
+.cal-period-btn + .cal-period-btn { border-left: 1px solid rgba(0,0,0,0.08); }
+
+.cal-new-apt-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border: none; border-radius: 6px;
+  background: var(--color-primary); color: #fff;
+  font-size: 11px; font-weight: 500; font-family: inherit;
+  cursor: pointer; height: 26px; white-space: nowrap; flex-shrink: 0;
+}
+.cal-new-apt-btn:hover { background: #4f5bc4; }
+.cal-new-apt-btn svg { width: 12px; height: 12px; stroke-width: 2; }
+
+/* === Calendar View Toggle === */
+.cal-view-toggle {
+  display: flex; align-items: center;
+  border: 1px solid rgba(0,0,0,0.1); border-radius: 6px;
+  overflow: hidden; flex-shrink: 0;
+}
+.cal-view-btn {
+  width: 26px; height: 24px; border: none; background: none;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: rgba(0,0,0,0.3); transition: all 0.08s;
+}
+.cal-view-btn:hover { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.5); }
+.cal-view-btn.active { background: rgba(0,0,0,0.06); color: #222; }
+.cal-view-btn svg { width: 14px; height: 14px; stroke-width: 1.7; }
+.cal-view-btn + .cal-view-btn { border-left: 1px solid rgba(0,0,0,0.08); }
+
+/* === Calendar List View Columns === */
+.cal-list-col {
+  font-size: 12px; color: rgba(0,0,0,0.55); flex-shrink: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cal-list-time { font-variant-numeric: tabular-nums; }
+.tp-table-head .cal-list-col {
+  font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.35);
+}
+
 /* === Table Page === */
-.table-page { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+.table-page { height: 100%; display: flex; flex-direction: column; overflow: hidden; position: relative; }
 
 .tp-header {
   display: flex; align-items: center; gap: 8px;
-  padding: 10px 24px; flex-shrink: 0;
+  padding: 12px 20px; flex-shrink: 0;
 }
 .tp-header-icon { color: rgba(0,0,0,0.35); }
 .tp-header-icon svg { width: 16px; height: 16px; stroke-width: 1.7; }
@@ -149,12 +339,12 @@
 .tp-header-right button:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55); }
 .tp-header-right button svg { width: 15px; height: 15px; stroke-width: 1.7; }
 
-.tp-count { padding: 0 24px 6px; font-size: 12px; color: rgba(0,0,0,0.4); flex-shrink: 0; }
+.tp-count { padding: 0 20px 6px; font-size: 12px; color: rgba(0,0,0,0.4); flex-shrink: 0; }
 
 .tp-scroll { flex: 1; overflow-y: auto; }
 
 .tp-table-head {
-  display: flex; align-items: center; padding: 6px 24px;
+  display: flex; align-items: center; padding: 6px 20px;
   font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.35);
   border-bottom: 1px solid rgba(0,0,0,0.06); position: sticky; top: 0;
   background: #fff; z-index: 1;
@@ -167,7 +357,7 @@
 .tp-col-status { width: 70px; text-align: right; }
 
 .tp-row {
-  display: flex; align-items: center; padding: 10px 24px;
+  display: flex; align-items: center; padding: 10px 20px;
   border-bottom: 1px solid rgba(0,0,0,0.04);
   cursor: pointer; transition: background 0.06s;
   font-size: 13px;
@@ -220,7 +410,7 @@
 .cust-page { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
 .cust-header {
   display: flex; align-items: center; gap: 10px;
-  padding: 10px 24px; flex-shrink: 0;
+  padding: 12px 20px; flex-shrink: 0;
 }
 .cust-header h1 { font-size: 14px; font-weight: 600; color: #222; }
 .cust-header .cust-count {
@@ -236,9 +426,21 @@
 .cust-header-right button:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.55); }
 .cust-header-right button svg { width: 15px; height: 15px; stroke-width: 1.7; }
 
+.cust-topbar-search {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 6px; margin-left: 8px;
+}
+.cust-topbar-search svg { width: 13px; height: 13px; color: rgba(0,0,0,0.3); stroke-width: 1.8; flex-shrink: 0; }
+.cust-topbar-search input {
+  border: none; outline: none; font-size: 12px; font-family: inherit;
+  color: #222; background: transparent; width: 140px;
+}
+.cust-topbar-search input::placeholder { color: rgba(0,0,0,0.3); }
+
 .cust-search-row {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 4px 20px 8px; flex-shrink: 0;
+  padding: 0 20px 8px; flex-shrink: 0;
 }
 .cust-search-input {
   display: flex; align-items: center; gap: 6px;
@@ -265,7 +467,7 @@
 .cust-scroll { flex: 1; overflow-y: auto; }
 
 .cust-table-head {
-  display: flex; align-items: center; padding: 6px 24px;
+  display: flex; align-items: center; padding: 6px 20px;
   font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.35);
   border-bottom: 1px solid rgba(0,0,0,0.06); position: sticky; top: 0;
   background: #fff; z-index: 1;
@@ -280,7 +482,7 @@
 .cust-col-phone { flex: 1; min-width: 0; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .cust-row {
-  display: flex; align-items: center; padding: 7px 24px;
+  display: flex; align-items: center; padding: 7px 20px;
   border-bottom: 1px solid rgba(0,0,0,0.04);
   cursor: pointer; transition: background 0.06s; font-size: 12px;
 }

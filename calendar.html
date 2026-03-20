@@ -18,9 +18,7 @@
 
     /* ── Toolbar ── */
     .cal-toolbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 8px 16px; height: 48px; border-bottom: 1px solid rgba(0,0,0,0.06);
-      flex-shrink: 0;
+      display: none;
     }
     .cal-toolbar-left { display: flex; align-items: center; gap: 8px; }
     .cal-toolbar-right { display: flex; align-items: center; gap: 6px; }
@@ -337,74 +335,70 @@
 
     /* ── Right panel (edit appointment) ── */
     .edit-panel {
-      width: 360px;
-      min-width: 360px;
+      width: 300px; min-width: 300px;
       border-left: 1px solid rgba(0,0,0,0.06);
-      background: #fff;
-      overflow-y: auto;
-      padding: 20px;
-      display: none;
-      flex-shrink: 0;
-      box-shadow: -4px 0 12px rgba(0, 0, 0, 0.04);
+      background: #fff; display: none; flex-shrink: 0;
+      flex-direction: column; overflow: hidden;
     }
-    .edit-panel.open { display: block; }
+    .edit-panel.open { display: flex; }
+    .ep-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
+    }
+    .ep-title { font-size: 13px; font-weight: 600; color: #222; }
+    .ep-close {
+      width: 22px; height: 22px; border: none; background: none;
+      font-size: 16px; color: rgba(0,0,0,0.3); cursor: pointer; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ep-close:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.6); }
+    .ep-body { flex: 1; overflow-y: auto; padding: 12px 14px; }
+    .ep-section { margin-bottom: 12px; }
+    .ep-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .ep-label { font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.4); display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .ep-section-header .ep-label { margin-bottom: 0; }
+    .ep-link-btn { font-size: 11px; color: rgba(0,0,0,0.35); border: none; background: none; cursor: pointer; font-family: inherit; }
+    .ep-link-btn:hover { color: rgba(0,0,0,0.6); }
+    .ep-input {
+      width: 100%; padding: 6px 10px; border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 6px; font-size: 12px; font-family: inherit; color: #222;
+      outline: none; box-sizing: border-box;
+    }
+    .ep-input:focus { border-color: rgba(94,106,210,0.4); }
+    .ep-row { display: flex; gap: 8px; margin-bottom: 12px; }
+    .ep-half { flex: 1; }
+    .ep-footer {
+      display: flex; gap: 6px; padding: 10px 14px;
+      border-top: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
+    }
+    .ep-btn {
+      flex: 1; padding: 6px 12px; border-radius: 6px; font-size: 12px;
+      font-weight: 500; font-family: inherit; cursor: pointer; text-align: center;
+    }
+    .ep-btn.secondary { background: #fff; border: 1px solid rgba(0,0,0,0.12); color: #222; }
+    .ep-btn.secondary:hover { background: rgba(0,0,0,0.02); }
+    .ep-btn.primary { background: #5e6ad2; border: none; color: #fff; }
+    .ep-btn.primary:hover { background: #4f5bc4; }
 
     .client-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px;
-      background: rgba(55,53,47,0.03);
-      border-radius: 6px;
-      margin-bottom: 4px;
-      font-size: 13px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 8px; background: rgba(0,0,0,0.03);
+      border-radius: 6px; margin-bottom: 3px; font-size: 12px; color: #222;
     }
 
-    /* Reason type grid */
-    .reason-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px;
-    }
+    .reason-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
     .reason-option {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 8px;
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: all 0.1s ease;
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 8px; border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 5px; cursor: pointer; font-size: 11px;
+      transition: all 0.08s;
     }
-    .reason-option:hover { background: rgba(55,53,47,0.03); border-color: rgba(0,0,0,0.15); }
-    .reason-option.selected { border-color: #2383e2; background: rgba(35,131,226,0.04); }
-    .reason-option .color-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+    .reason-option:hover { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.12); }
+    .reason-option.selected { border-color: #5e6ad2; background: rgba(94,106,210,0.04); }
+    .reason-option .color-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
     .reason-option .reason-info { line-height: 1.3; }
-    .reason-option .reason-name { font-weight: 500; font-size: 12px; }
-    .reason-option .reason-dur { font-size: 10px; color: rgba(55,53,47,0.5); }
-
-    .panel-link {
-      font-size: 12px;
-      color: #2383e2;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      margin-top: 4px;
-    }
-    .panel-link:hover { text-decoration: underline; }
-
-    .sidebar-section-title-panel {
-      font-size: 12px;
-      font-weight: 500;
-      color: rgba(55,53,47,0.65);
-      margin: 0;
-    }
+    .reason-option .reason-name { font-weight: 500; font-size: 11px; }
+    .reason-option .reason-dur { font-size: 9px; color: rgba(0,0,0,0.35); }
 
     /* Staff color palette (Notion-inspired) */
     .staff-color-1 { --staff-color: #2383e2; --n-avatar-color: #2383e2; }
@@ -456,7 +450,23 @@
     body.dark .appt-grooming { background: #2a4a2a; color: #a3d4a3; }
     body.dark .appt-break { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.35); border-color: rgba(255,255,255,0.08); }
 
-    body.dark .edit-panel { background: #1e1e1e; border-left-color: rgba(255,255,255,0.06); box-shadow: -4px 0 12px rgba(0,0,0,0.3); }
+    body.dark .edit-panel { background: #1e1e1e; border-left-color: rgba(255,255,255,0.06); }
+    body.dark .ep-header { border-bottom-color: rgba(255,255,255,0.06); }
+    body.dark .ep-title { color: #d4d4d4; }
+    body.dark .ep-close { color: rgba(255,255,255,0.3); }
+    body.dark .ep-close:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); }
+    body.dark .ep-label { color: rgba(255,255,255,0.35); }
+    body.dark .ep-link-btn { color: rgba(255,255,255,0.3); }
+    body.dark .ep-input { background: #222; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+    body.dark .ep-input:focus { border-color: rgba(94,106,210,0.4); }
+    body.dark .ep-footer { border-top-color: rgba(255,255,255,0.06); }
+    body.dark .ep-btn.secondary { background: #2a2a2a; border-color: rgba(255,255,255,0.1); color: #d4d4d4; }
+    body.dark .client-info { background: rgba(255,255,255,0.04); color: #d4d4d4; }
+    body.dark .reason-option { border-color: rgba(255,255,255,0.06); }
+    body.dark .reason-option:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); }
+    body.dark .reason-option.selected { border-color: #5e6ad2; background: rgba(94,106,210,0.08); }
+    body.dark .reason-option .reason-name { color: #d4d4d4; }
+    body.dark .reason-option .reason-dur { color: rgba(255,255,255,0.3); }
     body.dark .client-info { background: rgba(255,255,255,0.04); color: #d4d4d4; }
     body.dark .reason-option { border-color: rgba(255,255,255,0.08); color: #d4d4d4; }
     body.dark .reason-option:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12); }
@@ -467,7 +477,7 @@
     /* ── Responsive ── */
     @media (max-width: 900px) {
       .cal-sidebar { display: none; }
-      .edit-panel { width: 300px; min-width: 300px; }
+      .edit-panel { width: 280px; min-width: 280px; }
     }
     @media (max-width: 600px) {
       .edit-panel { width: 100%; min-width: 100%; position: absolute; top: 0; right: 0; z-index: 20; }
@@ -516,50 +526,45 @@
 
       <!-- Edit appointment panel -->
       <div class="edit-panel" id="editPanel">
-        <nord-stack gap="m">
-          <nord-stack direction="horizontal" align-items="center" justify-content="space-between">
-            <h3 class="n-typescale-m" id="panelTitle" style="margin: 0;">Edit appointment</h3>
-            <nord-button size="s" variant="plain" square id="closePanel">
-              <nord-icon name="interface-close" label="Close panel"></nord-icon>
-            </nord-button>
-          </nord-stack>
-
-          <nord-divider></nord-divider>
-
-          <nord-stack gap="xs">
-            <nord-stack direction="horizontal" align-items="center" justify-content="space-between">
-              <span class="sidebar-section-title-panel">Client &amp; patient</span>
-              <nord-button size="s" variant="plain" id="clearClient">Clear</nord-button>
-            </nord-stack>
+        <div class="ep-header">
+          <span class="ep-title" id="panelTitle">New appointment</span>
+          <button class="ep-close" id="closePanel">&times;</button>
+        </div>
+        <div class="ep-body">
+          <div class="ep-section">
+            <div class="ep-section-header">
+              <span class="ep-label">Client & patient</span>
+              <button class="ep-link-btn" id="clearClient">Clear</button>
+            </div>
             <div id="clientInfo"></div>
-          </nord-stack>
-
-          <nord-divider></nord-divider>
-
-          <nord-stack gap="xs">
-            <span class="sidebar-section-title-panel">Reason type</span>
-            <div class="reason-grid" id="reasonGrid"></div>
-            <a class="panel-link">View all reason types</a>
-          </nord-stack>
-
-          <nord-divider></nord-divider>
-
-          <nord-input label="Reason for visit" id="panelReason" placeholder="E.g. Annual check-up" expand></nord-input>
-
-          <nord-input type="date" label="Date" id="panelDate" expand></nord-input>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--n-space-s);">
-            <nord-input type="time" label="Start time" id="panelStart" expand></nord-input>
-            <nord-input type="time" label="End time" id="panelEnd" expand></nord-input>
           </div>
-
-          <nord-divider></nord-divider>
-
-          <nord-button-group variant="spaced">
-            <nord-button id="discardAppt">Discard</nord-button>
-            <nord-button variant="primary" id="createAppt">Create</nord-button>
-          </nord-button-group>
-        </nord-stack>
+          <div class="ep-section">
+            <span class="ep-label">Reason type</span>
+            <div class="reason-grid" id="reasonGrid"></div>
+          </div>
+          <div class="ep-section">
+            <label class="ep-label">Reason for visit</label>
+            <input class="ep-input" id="panelReason" placeholder="E.g. Annual check-up" />
+          </div>
+          <div class="ep-section">
+            <label class="ep-label">Date</label>
+            <input class="ep-input" type="date" id="panelDate" />
+          </div>
+          <div class="ep-row">
+            <div class="ep-half">
+              <label class="ep-label">Start</label>
+              <input class="ep-input" type="time" id="panelStart" />
+            </div>
+            <div class="ep-half">
+              <label class="ep-label">End</label>
+              <input class="ep-input" type="time" id="panelEnd" />
+            </div>
+          </div>
+        </div>
+        <div class="ep-footer">
+          <button class="ep-btn secondary" id="discardAppt">Discard</button>
+          <button class="ep-btn primary" id="createAppt">Create</button>
+        </div>
       </div>
 
     </div>

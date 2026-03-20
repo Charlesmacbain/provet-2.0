@@ -158,6 +158,9 @@ export function updateActiveStates() {
   document.querySelectorAll('.nav-subitem[data-nav]').forEach(el =>
     el.classList.toggle('active', el.dataset.nav === state.activeNav)
   );
+  document.querySelectorAll('.list-nav-item[data-nav]').forEach(el =>
+    el.classList.toggle('active', el.dataset.nav === state.activeNav)
+  );
   renderFavourites();
 }
 

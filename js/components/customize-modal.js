@@ -12,12 +12,7 @@ const SIDEBAR_ITEMS = [
   { id: 'inbox', label: 'Inbox', icon: 'inbox', group: 'navigation' },
   { id: 'calendar', label: 'Calendar', icon: 'calendar', group: 'navigation' },
   { id: 'customers', label: 'Clients', icon: 'users', group: 'workspace' },
-  { id: 'views-page', label: 'Views', icon: 'layout-grid', group: 'workspace' },
-  { id: 'billing-page', label: 'Billing', icon: 'receipt', group: 'workspace' },
-  { id: 'care-page', label: 'Care', icon: 'heart-pulse', group: 'workspace' },
-  { id: 'inventory-page', label: 'Inventory', icon: 'package', group: 'workspace' },
   { id: 'reports', label: 'Reports', icon: 'bar-chart-3', group: 'workspace' },
-  { id: 'ask-ai', label: 'Ask AI', icon: 'sparkles', group: 'workspace' },
 ];
 
 /** Available visibility options for sidebar items. */
@@ -68,9 +63,9 @@ export function applySidebarConfig() {
     const ob = cfg[b.dataset.nav] ? cfg[b.dataset.nav].order : 99;
     return oa - ob;
   });
-  const favSection = document.getElementById('favouritesSection');
+  const listsSection = document.getElementById('listsSection') || document.getElementById('favouritesSection');
   sorted.forEach(item => {
-    nav.insertBefore(item, favSection);
+    nav.insertBefore(item, listsSection);
     const vis = cfg[item.dataset.nav] ? cfg[item.dataset.nav].visibility : 'Always show';
     item.classList.toggle('sidebar-hidden', vis === 'Hide');
   });

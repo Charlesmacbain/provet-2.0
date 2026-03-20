@@ -95,19 +95,21 @@ function getContext(navKey) {
 
 function renderSuggestionsView(ctx) {
   return `
-    <div class="ask-ai-scroll">
-      <div class="current-task-card">
-        <div class="current-task-label"><i data-lucide="clipboard-check"></i> Current Task</div>
-        <div class="current-task-text">${ctx.task}</div>
+    <div class="gai-welcome-scroll">
+      <div class="gai-welcome-hero">
+        <div class="gai-welcome-icon"><i data-lucide="sparkles"></i></div>
+        <h2 class="gai-welcome-title">How can I help you today?</h2>
       </div>
-      <div class="ask-ai-suggestions">
-        <div class="inbox-drawer-section-title">Suggested Actions</div>
-        ${ctx.actions.map(a => `<div class="ask-ai-suggestion" data-gai-action="${a[1]}"><i data-lucide="${a[0]}"></i> ${a[1]}</div>`).join('')}
+      <div class="gai-suggestions-list">
+        ${ctx.actions.map(a => `<div class="gai-suggestion-item" data-gai-action="${a[1]}"><i data-lucide="${a[0]}"></i> <span>${a[1]}</span></div>`).join('')}
       </div>
     </div>
-    <div class="ask-ai-input-bar">
-      <textarea class="ask-ai-input" id="globalAiInput" placeholder="Ask AI about this patient, client, or case..."></textarea>
-      <div class="ask-ai-hint">Press Enter to ask</div>
+    <div class="global-ai-input-bar">
+      <div class="global-ai-input-row">
+        <textarea class="global-ai-textarea" id="globalAiInput" placeholder="Do anything with AI..." rows="1"></textarea>
+        <button class="global-ai-send-btn" id="gaiSendBtn"><i data-lucide="arrow-up"></i></button>
+      </div>
+      <div class="global-ai-hint">Enter to send</div>
     </div>`;
 }
 
@@ -255,13 +257,32 @@ function generateResponse(text) {
   return `<p>I've looked into that for you. Based on the current records, everything appears to be in order. Would you like me to go into more detail or help with something specific?</p>`;
 }
 
-/* ═══ Toggle ═══ */
+/* ═══ Mode Management ═══ */
+
+// Modes: 'floating' | 'sidebar' | 'fullpage'
+let currentMode = 'floating';
+let getNavFn = null;
+
+function setMode(mode) {
+  const drawer = document.getElementById('globalAiDrawer');
+  const toggle = document.getElementById('globalAiToggle');
+  if (!drawer) return;
+
+  currentMode = mode;
+  drawer.classList.remove('mode-floating', 'mode-sidebar', 'mode-fullpage', 'collapsed');
+  toggle.classList.add('hidden');
+
+  drawer.classList.add('mode-' + mode);
+  drawerOpen = true;
+  updateDrawerContent(getNavFn ? getNavFn() : null);
+}
 
 function openDrawer() {
   const drawer = document.getElementById('globalAiDrawer');
   const toggle = document.getElementById('globalAiToggle');
   if (!drawer) return;
   drawer.classList.remove('collapsed');
+  drawer.classList.add('mode-' + currentMode);
   toggle.classList.add('hidden');
   drawerOpen = true;
 }
@@ -271,6 +292,7 @@ function closeDrawer() {
   const toggle = document.getElementById('globalAiToggle');
   if (!drawer) return;
   drawer.classList.add('collapsed');
+  drawer.classList.remove('mode-floating', 'mode-sidebar', 'mode-fullpage');
   toggle.classList.remove('hidden');
   drawerOpen = false;
 }
@@ -278,6 +300,7 @@ function closeDrawer() {
 /* ═══ Init ═══ */
 
 export function initGlobalAiDrawer(getActiveNav) {
+  getNavFn = getActiveNav;
   const toggle = document.getElementById('globalAiToggle');
   const closeBtn = document.getElementById('globalAiClose');
 
@@ -291,32 +314,31 @@ export function initGlobalAiDrawer(getActiveNav) {
   if (closeBtn) {
     closeBtn.addEventListener('click', closeDrawer);
   }
+
+  // Mode switch buttons
+  document.querySelectorAll('.gai-mode-btn[data-ai-mode]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setMode(btn.dataset.aiMode);
+    });
+  });
 }
 
 /**
  * Called after navigation to update the drawer context.
- * Hides on inbox (which has its own drawer).
  */
 export function onNavigate(navKey) {
   const drawer = document.getElementById('globalAiDrawer');
   const toggle = document.getElementById('globalAiToggle');
   if (!drawer || !toggle) return;
 
-  // Hide on inbox (it has its own drawer)
-  const hidePages = ['inbox'];
-  const shouldHide = hidePages.includes(navKey);
+  drawer.style.display = '';
+  toggle.style.display = '';
 
-  drawer.style.display = shouldHide ? 'none' : '';
-  toggle.style.display = shouldHide ? 'none' : '';
-
-  if (drawerOpen && !shouldHide) {
+  if (drawerOpen) {
     updateDrawerContent(navKey);
   }
 }
 
-/**
- * Hide global drawer (e.g. when record view opens with its own drawer).
- */
 export function hideGlobalDrawer() {
   const drawer = document.getElementById('globalAiDrawer');
   const toggle = document.getElementById('globalAiToggle');
@@ -324,9 +346,6 @@ export function hideGlobalDrawer() {
   if (toggle) toggle.style.display = 'none';
 }
 
-/**
- * Show global drawer (restore visibility).
- */
 export function showGlobalDrawer() {
   const drawer = document.getElementById('globalAiDrawer');
   const toggle = document.getElementById('globalAiToggle');
@@ -334,9 +353,6 @@ export function showGlobalDrawer() {
   if (toggle) toggle.style.display = '';
 }
 
-/**
- * Start a new AI conversation (clears chat history).
- */
 export function resetChat() {
   chatMessages = [];
 }
