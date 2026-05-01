@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "static",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-Ic",
+        "import os; os.chdir('/Users/charlesmacbain/Desktop/Claude/Provet 2.0/.claude/worktrees/hungry-franklin-7ae5bb'); import sys; sys.path = [p for p in sys.path if p]; from http.server import HTTPServer, SimpleHTTPRequestHandler; port=int(os.environ.get('PORT','8000')); HTTPServer(('127.0.0.1', port), SimpleHTTPRequestHandler).serve_forever()"
+      ],
+      "port": 8000,
+      "autoPort": true
+    }
+  ]
+}
