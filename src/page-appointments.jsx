@@ -121,22 +121,6 @@ function AddCalendarFlyout({ open, pos, onMouseEnter, onMouseLeave }) {
 }
 
 function LeftRail({ collapsed, onToggle }) {
-  const [addOpen, setAddOpen] = React.useState(false);
-  const [addPos, setAddPos] = React.useState({ left: 0, top: 0 });
-  const addTimer = React.useRef(null);
-  const addBtnRef = React.useRef(null);
-  const showAdd = (el) => {
-    clearTimeout(addTimer.current);
-    if (el) {
-      const r = el.getBoundingClientRect();
-      setAddPos({ left: r.right + 8, top: r.top - 4 });
-    }
-    setAddOpen(true);
-  };
-  const hideAdd = () => {
-    clearTimeout(addTimer.current);
-    addTimer.current = setTimeout(() => setAddOpen(false), 140);
-  };
   if (collapsed) {
     return (
       <aside className="gc-rail gc-rail--collapsed">
@@ -145,9 +129,6 @@ function LeftRail({ collapsed, onToggle }) {
         </button>
         <button className="gc-iconbtn" title="Mini month">
           <IconA name="interface-calendar" size={14} />
-        </button>
-        <button className="gc-iconbtn" title="My calendars">
-          <IconA name="text-list" size={14} />
         </button>
       </aside>);
 
@@ -166,49 +147,107 @@ function LeftRail({ collapsed, onToggle }) {
         <IconA name="navigation-search" size={12} style={{ color: "var(--n-color-icon)" }} />
         <input placeholder="Search for people" />
       </div>
-
-      <div className="gc-railsec">
-        <div className="gc-railsec__head">
-          <span>My calendars</span>
-          <div className="row gap-xs">
-            <button
-              ref={addBtnRef}
-              className="gc-iconbtn gc-iconbtn--xs"
-              title="Add people"
-              onMouseEnter={() => showAdd(addBtnRef.current)}
-              onMouseLeave={hideAdd}
-              onClick={() => showAdd(addBtnRef.current)}>
-              <IconA name="interface-add" size={10} />
-            </button>
-            <IconA name="interface-dropdown-small" size={10} style={{ color: "var(--n-color-icon)" }} />
-          </div>
-        </div>
-        <AddCalendarFlyout
-          open={addOpen}
-          pos={addPos}
-          onMouseEnter={() => clearTimeout(addTimer.current)}
-          onMouseLeave={hideAdd} />
-        <CalRow color="#0E7C5C" label="Dr. Sara Lindqvist" />
-        <CalRow color="#1F6FEB" label="Consultations" />
-        <CalRow color="#D63B3B" label="Surgery" />
-        <CalRow color="#B8860B" label="Lab & imaging" />
-        <CalRow color="#7C4DFF" label="Tasks" checked={false} />
-      </div>
-
-      <div className="gc-railsec">
-        <div className="gc-railsec__head">
-          <span>Other calendars</span>
-          <div className="row gap-xs">
-            <button className="gc-iconbtn gc-iconbtn--xs"><IconA name="interface-add" size={10} /></button>
-            <IconA name="interface-dropdown-small" size={10} style={{ color: "var(--n-color-icon)" }} />
-          </div>
-        </div>
-        <CalRow color="#11894C" label="Dr. Patel" />
-        <CalRow color="#A26900" label="OR 1 — Surgery" />
-        <CalRow color="#5A6BB0" label="Boarding" checked={false} />
-        <CalRow color="#666666" label="UK Holidays" />
-      </div>
     </aside>);
+
+}
+
+function CalendarsFilter() {
+  const [open, setOpen] = React.useState(false);
+  const [addOpen, setAddOpen] = React.useState(false);
+  const [addPos, setAddPos] = React.useState({ left: 0, top: 0 });
+  const addTimer = React.useRef(null);
+  const addBtnRef = React.useRef(null);
+  const btnRef = React.useRef(null);
+  const popRef = React.useRef(null);
+  const [pos, setPos] = React.useState({ left: 0, top: 0 });
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onDoc = (e) => {
+      if (popRef.current?.contains(e.target)) return;
+      if (btnRef.current?.contains(e.target)) return;
+      setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
+
+  const toggle = () => {
+    if (btnRef.current) {
+      const r = btnRef.current.getBoundingClientRect();
+      setPos({ left: r.left, top: r.bottom + 4 });
+    }
+    setOpen((o) => !o);
+  };
+
+  const showAdd = (el) => {
+    clearTimeout(addTimer.current);
+    if (el) {
+      const r = el.getBoundingClientRect();
+      setAddPos({ left: r.right + 8, top: r.top - 4 });
+    }
+    setAddOpen(true);
+  };
+  const hideAdd = () => {
+    clearTimeout(addTimer.current);
+    addTimer.current = setTimeout(() => setAddOpen(false), 140);
+  };
+
+  return (
+    <>
+      <button ref={btnRef} className="gc-calfilter__btn" onClick={toggle} title="Calendar filters">
+        <IconA name="interface-filter" size={11} />
+        <span>Calendars</span>
+        <IconA name="interface-dropdown-small" size={10} />
+      </button>
+      {open && (
+        <div
+          ref={popRef}
+          className="gc-calfilter__pop"
+          style={{ position: "fixed", left: pos.left, top: pos.top }}>
+          <div className="gc-railsec">
+            <div className="gc-railsec__head">
+              <span>My calendars</span>
+              <div className="row gap-xs">
+                <button
+                  ref={addBtnRef}
+                  className="gc-iconbtn gc-iconbtn--xs"
+                  title="Add people"
+                  onMouseEnter={() => showAdd(addBtnRef.current)}
+                  onMouseLeave={hideAdd}
+                  onClick={(e) => { e.stopPropagation(); showAdd(addBtnRef.current); }}>
+                  <IconA name="interface-add" size={10} />
+                </button>
+                <IconA name="interface-dropdown-small" size={10} style={{ color: "var(--n-color-icon)" }} />
+              </div>
+            </div>
+            <AddCalendarFlyout
+              open={addOpen}
+              pos={addPos}
+              onMouseEnter={() => clearTimeout(addTimer.current)}
+              onMouseLeave={hideAdd} />
+            <CalRow color="#0E7C5C" label="Dr. Sara Lindqvist" />
+            <CalRow color="#1F6FEB" label="Consultations" />
+            <CalRow color="#D63B3B" label="Surgery" />
+            <CalRow color="#B8860B" label="Lab & imaging" />
+            <CalRow color="#7C4DFF" label="Tasks" checked={false} />
+          </div>
+          <div className="gc-railsec">
+            <div className="gc-railsec__head">
+              <span>Other calendars</span>
+              <div className="row gap-xs">
+                <button className="gc-iconbtn gc-iconbtn--xs"><IconA name="interface-add" size={10} /></button>
+                <IconA name="interface-dropdown-small" size={10} style={{ color: "var(--n-color-icon)" }} />
+              </div>
+            </div>
+            <CalRow color="#11894C" label="Dr. Patel" />
+            <CalRow color="#A26900" label="OR 1 — Surgery" />
+            <CalRow color="#5A6BB0" label="Boarding" checked={false} />
+            <CalRow color="#666666" label="UK Holidays" />
+          </div>
+        </div>
+      )}
+    </>);
 
 }
 
@@ -224,6 +263,7 @@ function CalHeader({ view, setView, onCreate }) {
       <button className="gc-iconbtn" title="Search"><IconA name="navigation-search" size={14} /></button>
       <button className="gc-iconbtn" title="Help"><IconA name="interface-help" size={14} /></button>
       <button className="gc-iconbtn" title="Settings"><IconA name="navigation-settings" size={14} /></button>
+      <CalendarsFilter />
       <div className="gc-segmented">
         {["Day", "Week", "Kanban", "List"].map((v) =>
         <button
