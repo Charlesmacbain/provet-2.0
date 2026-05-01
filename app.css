@@ -9,7 +9,7 @@ body { background: lch(95.94% 0.5 282 / 1); }
 .app-shell { --nav-width: 200px; }
 .app-shell { grid-template-columns: var(--nav-width) 1fr !important; }
 .sidenav { background: lch(95.94% 0.5 282 / 1) !important; }
-.main { background: lch(95.94% 0.5 282 / 1); padding: 8px 8px 8px 0; gap: 8px; }
+.main { background: lch(95.94% 0.5 282 / 1); padding: 8px; gap: 8px; }
 .content {
   background: #FCFCFD;
   border-radius: 8px;
@@ -27,6 +27,9 @@ body { background: lch(95.94% 0.5 282 / 1); }
 
 /* When aside is shown */
 .main--with-aside { padding-right: 8px; }
+
+/* Sidebar acts as the page background (no border / divider) */
+.sidenav { border-inline-end: none !important; box-shadow: none !important; }
 .aside {
   background: #FCFCFD !important;
   border: 1px solid #E4E4E7 !important;
