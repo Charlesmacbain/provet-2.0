@@ -940,6 +940,30 @@ kbd {
   margin-inline-start: 8px;
   background: var(--n-color-surface);
 }
+
+.gc-calfilter__btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 10px;
+  margin-inline-start: 8px;
+  border: 1px solid var(--n-color-border);
+  border-radius: 999px;
+  background: var(--n-color-surface);
+  font: inherit; font-size: 10px; font-weight: 500;
+  color: var(--n-color-text);
+  cursor: pointer;
+}
+.gc-calfilter__btn:hover { background: var(--n-color-nav-hover); }
+.gc-calfilter__btn .n-icon-mask { background-color: var(--n-color-text-weak); }
+.gc-calfilter__pop {
+  background: var(--n-color-surface);
+  border: 1px solid var(--n-color-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 8px 8px 12px;
+  min-width: 220px;
+  z-index: 1000;
+  display: flex; flex-direction: column; gap: 10px;
+}
 .gc-segmented__btn {
   border: 0; background: transparent;
   padding: 3px 9px;
