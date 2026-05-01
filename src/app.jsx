@@ -65,7 +65,7 @@ function App() {
     pageEl = <window.StubPage {...s} />;
   }
 
-  const showAside = aiMode === "sidebar" || (page === "appointments" && !!apptSide);
+  const showAside = aiMode !== "fullscreen";
   const navActiveId = aiMode === "fullscreen" ? "ai" : page;
   const closeAi = () => setAiMode("closed");
 

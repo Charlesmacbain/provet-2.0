@@ -30,6 +30,65 @@ body { background: lch(95.94% 0.5 282 / 1); }
 
 /* Sidebar acts as the page background (no border / divider) */
 .sidenav { border-inline-end: none !important; box-shadow: none !important; }
+
+/* ---------- Linear-style sidebar items ---------- */
+.sidenav__item {
+  padding: 4px 8px !important;
+  gap: 8px !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: rgba(0,0,0,0.65) !important;
+  border-radius: 5px !important;
+  min-height: 26px;
+}
+.sidenav__item:hover { background: rgba(0,0,0,0.04) !important; color: rgba(0,0,0,0.85) !important; }
+.sidenav__item--active {
+  background: rgba(0,0,0,0.06) !important;
+  color: rgba(0,0,0,0.95) !important;
+  font-weight: 500 !important;
+}
+.sidenav__item--active .sidenav__icon { color: rgba(0,0,0,0.7) !important; }
+.sidenav__icon { width: 16px !important; height: 16px !important; color: rgba(0,0,0,0.45); }
+
+/* Plain right-aligned counts — no pill */
+.sidenav__count {
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: rgba(0,0,0,0.4) !important;
+}
+.sidenav__item--active .sidenav__count { color: rgba(0,0,0,0.55) !important; }
+
+/* Section headings — sentence case, subtle */
+.sidenav__heading {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: rgba(0,0,0,0.4) !important;
+  padding: 14px 8px 4px !important;
+}
+.sidenav__heading--withaction { padding-inline-end: 4px !important; }
+
+/* Search row matches list item density */
+.sidenav__item--search {
+  color: rgba(0,0,0,0.45) !important;
+  font-size: 13px !important;
+}
+.sidenav__search-kbd {
+  font-size: 10px !important;
+  background: transparent !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  color: rgba(0,0,0,0.35) !important;
+}
+
+/* Brand row tightens */
+.sidenav__brand { padding: 4px 6px !important; }
+.sidenav__clinic-name { font-size: 13px !important; font-weight: 600 !important; }
+.sidenav__clinic-loc { font-size: 11px !important; }
 .aside {
   background: #FCFCFD !important;
   border: 1px solid #E4E4E7 !important;
