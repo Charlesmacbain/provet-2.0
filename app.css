@@ -2772,9 +2772,6 @@ body.theme-dark { --linear-mono: #9aa0a6; --linear-faint: #6b6f76; }
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 14px;
 }
-.cl-chart__title { font-size: var(--n-font-size-body); font-weight: 600; }
-.cl-chart__sub { font-size: var(--n-font-size-body); color: var(--n-color-text-weaker); margin-top: 2px; }
-
 .cl-timeline { display: flex; flex-direction: column; gap: 10px; }
 .cl-event {
   display: grid;

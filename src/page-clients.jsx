@@ -603,7 +603,7 @@ function ClientDetailPage({ client, onBack }) {
             </button>
           ))}
           <span className="cl-tab__sep" />
-          {PAST_CONSULTATIONS.map(c => (
+          {PAST_CONSULTATIONS.filter(c => c.status === "active").map(c => (
             <button key={"cons-" + c.id}
                     className={"cl-tab cl-tab--consult" + (tab === "cons-" + c.id ? " cl-tab--active" : "")}
                     onClick={() => setTab("cons-" + c.id)}
@@ -971,10 +971,6 @@ function ChartTab({ pet }) {
       {/* Timeline */}
       <div className="cl-chart">
         <div className="cl-chart__head">
-          <div>
-            <div className="cl-chart__title">Chart → {pet.name}</div>
-            <div className="cl-chart__sub">{visitCount} visits · {visible.length - future.length} past entries · {future.length} upcoming</div>
-          </div>
           <div className="row gap-xs">
             <button className="n-button n-button--s"><IconCl name="interface-add" size={11} /> Add entry</button>
             <button className="n-button n-button--s"><IconCl name="interface-download" size={11} /> Export</button>
@@ -1266,10 +1262,6 @@ function MedicationsTab({ pet }) {
   return (
     <div className="bl-tab">
       <div className="cl-chart__head">
-        <div>
-          <div className="cl-chart__title">Medications → {pet.name}</div>
-          <div className="cl-chart__sub">{groups.active.length} active · {groups.completed.length} completed · {groups.discontinued.length} discontinued</div>
-        </div>
         <div className="row gap-xs">
           <button className="n-button n-button--s"><IconCl name="interface-add" size={11} /> Prescribe</button>
           <button className="n-button n-button--s"><IconCl name="interface-download" size={11} /> Export</button>
@@ -1345,10 +1337,6 @@ function ImmunizationsTab({ pet }) {
   return (
     <div className="bl-tab">
       <div className="cl-chart__head">
-        <div>
-          <div className="cl-chart__title">Immunizations → {pet.name}</div>
-          <div className="cl-chart__sub">{cur.length} current · {due.length} due or missing · {old.length} historical</div>
-        </div>
         <div className="row gap-xs">
           <button className="n-button n-button--s"><IconCl name="interface-add" size={11} /> Record</button>
           <button className="n-button n-button--s"><IconCl name="interface-download" size={11} /> Export</button>
@@ -1482,10 +1470,6 @@ function VitalsTab({ pet }) {
   return (
     <div className="bl-tab">
       <div className="cl-chart__head">
-        <div>
-          <div className="cl-chart__title">Vitals → {pet.name}</div>
-          <div className="cl-chart__sub">{VITALS_HISTORY.length} readings · last recorded {latest.date} by {latest.recordedBy}</div>
-        </div>
         <div className="row gap-xs">
           <button className="n-button n-button--primary n-button--s"><IconCl name="interface-add" size={11} style={{ color: "#fff" }} /> Record vitals</button>
           <button className="n-button n-button--s"><IconCl name="interface-download" size={11} /> Export</button>
@@ -1678,10 +1662,6 @@ function ImagingTab({ pet }) {
   return (
     <div className="bl-tab">
       <div className="cl-chart__head">
-        <div>
-          <div className="cl-chart__title">Imaging → {pet.name}</div>
-          <div className="cl-chart__sub">{IMAGING_STUDIES.length} studies · {pending.length} awaiting review</div>
-        </div>
         <div className="row gap-xs">
           <button className="n-button n-button--primary n-button--s"><IconCl name="interface-add" size={11} style={{ color: "#fff" }} /> Order study</button>
           <button className="n-button n-button--s"><IconCl name="interface-upload" size={11} /> Upload</button>
